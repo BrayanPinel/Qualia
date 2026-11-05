@@ -2,7 +2,7 @@
 
 > **La IA propone, el humano decide.**
 
-CallScore es una plataforma web SaaS B2B dirigida a centros de contacto para gestionar la evaluación de calidad de llamadas mediante rúbricas configurables, asistencia de IA y validación humana. El sistema garantiza un aislamiento estricto de los datos de cada empresa (arquitectura Multi-tenant).
+Qualia es una plataforma web SaaS B2B dirigida a centros de contacto para gestionar la evaluación de calidad de llamadas mediante rúbricas configurables, asistencia de IA y validación humana. El sistema garantiza un aislamiento estricto de los datos de cada empresa (arquitectura Multi-tenant).
 
 ---
 
