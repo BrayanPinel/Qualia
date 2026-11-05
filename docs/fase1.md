@@ -26,7 +26,7 @@ La plataforma parte de grabaciones ficticias precargadas, las transcribe, enmasc
 
 El valor central es combinar automatización con control humano. **Una evaluación generada por IA no se convierte automáticamente en una calificación oficial.** El supervisor confirma o ajusta los resultados y sus cambios quedan registrados. El agente puede consultar sus evaluaciones y presentar una disputa. El sistema ofrece evidencia para apoyar la mejora del desempeño; no toma decisiones disciplinarias automáticas.
 
-Las evaluaciones validadas alimentan un scorecard individual con puntaje, resultados por criterio y seguimiento del agente. Las funciones de tendencia, comparación por campaña, disputas y coaching se habilitan según el plan. Solo se muestran promedios oficiales cuando existe una cantidad mínima de llamadas confirmadas, y las evaluaciones con disputas abiertas se excluyen temporalmente del cálculo.
+Las evaluaciones validadas alimentan un scorecard individual con puntaje, resultados por criterio y seguimiento del agente. Las funciones de tendencia, comparación por campaña y disputas se habilitan según el plan. Solo se muestran promedios oficiales cuando existe una cantidad mínima de llamadas confirmadas, y las evaluaciones con disputas abiertas se excluyen temporalmente del cálculo.
 
 El modelo comercial consiste en una suscripción mensual por empresa con minutos de audio incluidos y límites de uso. Los planes propuestos son Básico, Pro y Enterprise. El consumo por minuto permite relacionar el servicio ofrecido con el volumen de conversaciones procesadas. Para el proyecto académico, el cobro se simula y se utilizan audios ficticios. El modo de IA simulado permite demostrar el flujo completo sin depender de créditos de proveedores.
 
@@ -71,7 +71,7 @@ Se sigue la estructura introductoria del proyecto trabajado en clases: visión g
 6. Procesamiento asíncrono: transcripción, enmascarado, evaluación y validación de evidencia.
 7. Consulta de transcripción y reproducción del fragmento asociado a un criterio.
 8. Confirmación o ajuste humano, con registro de los cambios.
-9. Disputas, scorecards y coaching, respetando las funciones del plan.
+9. Disputas y scorecards, respetando las funciones del plan.
 10. Consulta de suscripción y consumo; bloqueo de nuevas evaluaciones cuando corresponda.
 11. Administración comercial por PlatformAdmin, sin acceso al contenido de llamadas.
 12. Modo simulado de IA y planificación de verificaciones de aislamiento.
@@ -80,7 +80,7 @@ Se sigue la estructura introductoria del proyecto trabajado en clases: visión g
 
 ### 2.2 Fuera del MVP
 
-Carga manual de audios, integración real con centrales telefónicas, webhooks de producción, carga masiva por SFTP, pagos reales, evaluación en tiempo real, soporte multilingüe, búsqueda semántica, coaching automático y decisiones disciplinarias automáticas.
+Carga manual de audios, integración real con centrales telefónicas, webhooks de producción, carga masiva por SFTP, pagos reales, evaluación en tiempo real, soporte multilingüe, búsqueda semántica y decisiones disciplinarias automáticas.
 
 ### 2.3 Actores y permisos
 
@@ -88,8 +88,8 @@ Carga manual de audios, integración real con centrales telefónicas, webhooks d
 |---|---|---|
 | PlatformAdmin | Gestionar empresas, planes y suscripciones; consultar consumo global | Sin acceso a audios, transcripciones ni evaluaciones individuales |
 | AdminEmpresa | Gestionar usuarios, campañas, rúbricas, asignaciones y suscripción; consultar resultados | Solo su empresa; no confirma evaluaciones por este rol |
-| Supervisor | Seleccionar llamadas precargadas, revisar evidencia, confirmar o ajustar, resolver disputas y crear coaching | Solo campañas asignadas |
-| Agente | Consultar sus llamadas, calificaciones, scorecard y coaching; abrir disputas | Solo información propia |
+| Supervisor | Seleccionar llamadas precargadas, revisar evidencia, confirmar o ajustar y resolver disputas | Solo campañas asignadas |
+| Agente | Consultar sus llamadas, calificaciones y scorecard; abrir disputas | Solo información propia |
 | Auditor | Consultar reportes agregados | Solo su empresa; sin audio ni scorecards individuales |
 
 Para el MVP se adopta la restricción más específica del documento base para Auditor: reportes agregados. No se habilita la consulta de evaluaciones individuales.
@@ -99,7 +99,7 @@ Para el MVP se adopta la restricción más específica del documento base para A
 | Plan propuesto | Minutos mensuales | Supervisores | Rúbricas activas | Funciones |
 |---|---:|---:|---:|---|
 | Básico | 1,000 | 2 | 1 | Evaluación y scorecard básico |
-| Pro | 5,000 | 10 | Sin límite | Básico más tendencia, comparación, disputas y coaching |
+| Pro | 5,000 | 10 | Sin límite | Básico más tendencia, comparación y disputas |
 | Enterprise | 20,000 | Sin límite | Sin límite | Pro más prioridad de procesamiento y retención extendida |
 
 Los valores son propuestas del documento de Qualia, no tarifas verificadas de servicios externos.
@@ -143,7 +143,7 @@ El backend consulta el estado vigente y los límites antes de iniciar una evalua
 | EP-03 | Campañas y rúbricas | Campañas, asignaciones y versiones de evaluación |
 | EP-04 | Motor de evaluación | Selección de llamadas, cola, transcripción y evaluación asistida |
 | EP-05 | Revisión humana | Evidencia, confirmación, ajustes y disputas |
-| EP-06 | Desempeño individual | Scorecard, resultados por campaña y coaching |
+| EP-06 | Desempeño individual | Scorecard y resultados por campaña |
 
 ---
 
@@ -247,12 +247,10 @@ El backend consulta el estado vigente y los límites antes de iniciar una evalua
 - Con menos de 5 llamadas elegibles muestra cantidad y “muestra insuficiente”, sin promedio oficial.
 - Tendencia compara periodos equivalentes cuando el plan lo permite; no mezcla criterios de versiones distintas sin identificarlos.
 
-**HU-10 — Equipo y coaching · P1**  
-*Como* Supervisor, *quiero* consultar el desempeño de mi equipo y crear objetivos, *para* dar seguimiento.
+**HU-10 — Desempeño del equipo · P1**  
+*Como* Supervisor, *quiero* consultar el desempeño de mi equipo, *para* dar seguimiento.
 
 - Solo consulta agentes de campañas asignadas y funciones permitidas por el plan.
-- El plan de coaching incluye agente, campaña, objetivo y fecha límite.
-- Los estados son Propuesto, EnCurso, Cumplido y Cancelado; cada cambio queda registrado.
 
 ---
 
@@ -340,7 +338,36 @@ Los 19 registros siguientes corresponden a las tablas de la imagen entregada. To
 
 La raíz Empresa se relaciona con cada tabla que incluye `empresa_id`. El diagrama detalla las demás referencias. Las restricciones de unicidad del MVP limitan a uno el número de trabajos, evaluaciones y cargos asociados a cada llamada.
 
-![Diagrama de Base de Datos](diagrama_base_de_datos.jpeg)
+```mermaid
+erDiagram
+    Empresa ||--o{ Suscripcion : contrata
+    Empresa ||--o{ Usuario : registra
+    Empresa ||--o{ Campana : organiza
+    Administrador {
+        uuid id PK
+    }
+    Plan ||--o{ Suscripcion : plan_id
+    Suscripcion ||--o{ Periodo_consumo : suscripcion_id
+    Usuario ||--o{ Usuario_campana : usuario_id
+    Campana ||--o{ Usuario_campana : campana_id
+    Campana ||--o{ Rubrica : campana_id
+    Rubrica ||--o{ Criterio_rubrica : rubrica_id
+    Rubrica ||--o{ Llamada : rubrica_id
+    Usuario ||--o{ Llamada : agente_id
+    Llamada ||--o| Trabajo_procesamiento : llamada_id
+    Llamada ||--o| Consumo_llamada : llamada_id
+    Periodo_consumo ||--o{ Consumo_llamada : periodo_id
+    Llamada ||--o{ Segmento_transcripcion : llamada_id
+    Llamada ||--o| Evaluacion_IA : llamada_id
+    Evaluacion_IA ||--o{ Detalle_evaluacion : evaluacion_id
+    Criterio_rubrica ||--o{ Detalle_evaluacion : criterio_id
+    Detalle_evaluacion ||--o{ Evidencia_criterio : detalle_id
+    Segmento_transcripcion ||--o{ Evidencia_criterio : segmento_id
+    Evaluacion_IA ||--o{ Revision_humana : evaluacion_id
+    Usuario ||--o{ Revision_humana : supervisor_id
+    Revision_humana ||--o{ Criterio_revisado : revision_id
+    Detalle_evaluacion ||--o{ Criterio_revisado : detalle_id
+```
 
 ### 6.4 Normalización, restricciones e índices propuestos
 
@@ -361,7 +388,7 @@ El siguiente complemento distingue lo que muestra el dibujo de lo que requieren 
 | Plan y cuota | Añadir a Plan los límites de supervisores y rúbricas y los días de retención. Asociar las funciones mediante Funcion_plan(plan_id, codigo_funcion), PK en ambos campos. Añadir permite_excedente y gracia_hasta a Suscripcion. |
 | Reservas y reintentos | En Consumo_llamada agregar minutos_reservados y estado. Al encolar, reservar duración/60 contra el saldo del periodo bajo bloqueo transaccional. Al completar, pasar la reserva a minutos facturables una sola vez. Ante fallo definitivo, liberar la reserva. Acumular el costo técnico por llamada. |
 | Reglas de evaluación | Añadir umbral_cumplimiento a Criterio_rubrica y minimo_muestra a Empresa. Para evidencia corregida, vincular el criterio revisado, segmento y cita en Evidencia_revision, separada de la propuesta original. |
-| Disputas y coaching | Disputa(empresa_id, id, evaluacion_id, motivo, estado, resolucion, resuelta_por_id, creada_en, resuelta_en). Plan_coaching(empresa_id, id, campana_id, agente_id, supervisor_id, objetivo, fecha_limite, estado). Aplicar FK por empresa y una sola disputa abierta por evaluación. |
+| Disputas | Disputa(empresa_id, id, evaluacion_id, motivo, estado, resolucion, resuelta_por_id, creada_en, resuelta_en). Aplicar FK por empresa y una sola disputa abierta por evaluación. |
 | Auditoría | Registrar accesos y cambios empresariales en Auditoria(empresa_id, id, usuario_id, accion, entidad, entidad_id, antes, despues, fecha). Registrar cambios comerciales del administrador en Auditoria_plataforma(id, administrador_id, empresa_objetivo_id, accion, antes, despues, fecha). |
 
 Los identificadores de estas ampliaciones también son UUID. Las tablas empresariales propuestas siguen las reglas de aislamiento de 6.1. Un trabajo reintentado conserva la misma llamada y el mismo registro de consumo.
@@ -434,9 +461,6 @@ Los identificadores de estas ampliaciones también son UUID. Las tablas empresar
 | GET /api/agentes/me/scorecard | Agente | Query: campanaId, periodo | 200 ScorecardDto |
 | GET /api/agentes/{id}/scorecard | AdminEmpresa; Supervisor asignado | Query: campanaId, periodo | 200 ScorecardDto |
 | GET /api/campanas/{id}/scorecards | AdminEmpresa; Supervisor asignado | Query: periodo y paginación | 200 PaginaDto<ScorecardDto> |
-| POST /api/agentes/{id}/coaching | Supervisor asignado; plan habilitado | CrearCoachingDto | 201 CoachingDto |
-| GET /api/agentes/{id}/coaching | AdminEmpresa; Supervisor asignado; propio Agente | Paginación | 200 PaginaDto<CoachingDto> |
-| PUT /api/coaching/{id}/estado | Supervisor asignado | CambiarEstadoCoachingDto | 200 CoachingDto |
 | GET /api/reportes/campanas/{id} | AdminEmpresa; Supervisor asignado; Auditor | Query: periodo | 200 ReporteCampanaDto agregado |
 
 ### 7.6 DTOs de entrada
@@ -479,11 +503,9 @@ ResolverDisputaDto {
   decision: "Mantener" | "Modificar", resolucion: string,
   revisionEsperada: integer, criterios?: AjusteCriterioDto[]
 }
-CrearCoachingDto { campanaId: id, objetivo: string, fechaLimite: date }
-CambiarEstadoCoachingDto { estado: EstadoCoaching, motivo: string }
 ```
 
-**Validaciones del contrato:** nombres de 3 a 100 caracteres; código de empresa de 3 a 40 caracteres alfanuméricos o guiones; email válido hasta 254; contraseña de 12 a 128 caracteres; textos de motivos, objetivos y justificaciones de 10 a 2,000 caracteres; rúbricas de 1 a 30 criterios. Una publicación exige suma de pesos igual a 100. Los límites son decisiones de diseño propuestas para concretar la fase 1.
+**Validaciones del contrato:** nombres de 3 a 100 caracteres; código de empresa de 3 a 40 caracteres alfanuméricos o guiones; email válido hasta 254; contraseña de 12 a 128 caracteres; textos de motivos y justificaciones de 10 a 2,000 caracteres; rúbricas de 1 a 30 criterios. Una publicación exige suma de pesos igual a 100. Los límites son decisiones de diseño propuestas para concretar la fase 1.
 
 Las grabaciones se preparan como datos de demostración. La duración y la referencia de audio se leen desde Llamada.
 
@@ -518,7 +540,6 @@ EvidenciaDto { segmentoId: id, citaTextual: string, inicioSeg: decimal, finSeg: 
 DisputaDto { id: id, evaluacionId: id, estado: "Abierta" | "Resuelta", motivo: string, resolucion?: string, resueltaPorId?: id, creadaEn: datetime, resueltaEn?: datetime }
 ScorecardDto { agenteId: id, campanaId: id, periodo: string, llamadasEvaluadas: integer, llamadasConfirmadas: integer, llamadasElegibles: integer, muestraSuficiente: boolean, puntajePromedio?: decimal, tendencia?: decimal, promedioCampana?: decimal, criticosFallidos: integer, criterios: PromedioCriterioDto[] }
 PromedioCriterioDto { rubricaId: id, version: integer, criterioId: id, nombre: string, promedio: decimal, cantidad: integer }
-CoachingDto { id: id, campanaId: id, agenteId: id, supervisorId: id, objetivo: string, fechaLimite: date, estado: EstadoCoaching }
 ReporteCampanaDto { campanaId: id, periodo: string, llamadasElegibles: integer, muestraSuficiente: boolean, promedio?: decimal, criticosFallidos: integer }
 ErrorDto { status: integer, codigo: string, mensaje: string, errores?: Map<string,string[]>, traceId: string }
 ```
@@ -534,7 +555,6 @@ Los campos calculados pueden aparecer en DTOs sin almacenarse redundantemente en
 | EstadoRubrica | Borrador, Activa, Retirada |
 | EstadoLlamada | Disponible, EnCola, Transcribiendo, Transcrita, Evaluando, EvaluadaPorIA, Fallida |
 | EstadoEvaluacion | EvaluadaPorIA, ConfirmadaPorSupervisor, AjustadaPorSupervisor |
-| EstadoCoaching | Propuesto, EnCurso, Cumplido, Cancelado |
 
 La disputa tiene su propio estado, independiente del estado de revisión de Evaluacion. Así no se pierde la condición de confirmada o ajustada al abrir o resolver una disputa. La precarga guarda la llamada en `Disponible`. El supervisor inicia su evaluación para pasarla a `EnCola`.
 
