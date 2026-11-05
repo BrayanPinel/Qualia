@@ -340,6 +340,37 @@ La raíz Empresa se relaciona con cada tabla que incluye `empresa_id`. El diagra
 
 ![Diagrama de Base de Datos](diagrama_base_de_datos.jpeg)
 
+```mermaid
+erDiagram
+    Empresa ||--o{ Suscripcion : contrata
+    Empresa ||--o{ Usuario : registra
+    Empresa ||--o{ Campana : organiza
+    Administrador {
+        uuid id PK
+    }
+    Plan ||--o{ Suscripcion : plan_id
+    Suscripcion ||--o{ Periodo_consumo : suscripcion_id
+    Usuario ||--o{ Usuario_campana : usuario_id
+    Campana ||--o{ Usuario_campana : campana_id
+    Campana ||--o{ Rubrica : campana_id
+    Rubrica ||--o{ Criterio_rubrica : rubrica_id
+    Rubrica ||--o{ Llamada : rubrica_id
+    Usuario ||--o{ Llamada : agente_id
+    Llamada ||--o| Trabajo_procesamiento : llamada_id
+    Llamada ||--o| Consumo_llamada : llamada_id
+    Periodo_consumo ||--o{ Consumo_llamada : periodo_id
+    Llamada ||--o{ Segmento_transcripcion : llamada_id
+    Llamada ||--o| Evaluacion_IA : llamada_id
+    Evaluacion_IA ||--o{ Detalle_evaluacion : evaluacion_id
+    Criterio_rubrica ||--o{ Detalle_evaluacion : criterio_id
+    Detalle_evaluacion ||--o{ Evidencia_criterio : detalle_id
+    Segmento_transcripcion ||--o{ Evidencia_criterio : segmento_id
+    Evaluacion_IA ||--o{ Revision_humana : evaluacion_id
+    Usuario ||--o{ Revision_humana : supervisor_id
+    Revision_humana ||--o{ Criterio_revisado : revision_id
+    Detalle_evaluacion ||--o{ Criterio_revisado : detalle_id
+```
+
 ### 6.4 Normalización, restricciones e índices propuestos
 
 - **1FN.** Cada segmento, evidencia y criterio revisado tiene su propia fila.
@@ -370,7 +401,7 @@ Los identificadores de estas ampliaciones también son UUID. Las tablas empresar
 ### 7.1 Convenciones
 
 - Prefijo `/api`; JSON en `camelCase`.
-- IDs del recurso en ruta; `EmpresaId` proviene del contexto autenticado. Un ID de otra empresa responde 404.
+- La API obtiene `empresaId` del JWT validado y lo aplica a las consultas y escrituras empresariales. Cada búsqueda por ID comprueba también la empresa y los permisos del usuario. Un recurso de otra empresa devuelve 404. En las rutas de administración global, PlatformAdmin indica la empresa objetivo en la ruta.
 - Fechas de instante en ISO 8601 UTC; periodo de scorecard como `YYYY-MM`.
 - Listados paginados: `pagina` desde 1 y `tamanoPagina` de 1 a 100; predeterminado 20.
 - Campos desconocidos de entrada se rechazan. No se aceptan entidades de dominio directamente.
@@ -393,7 +424,7 @@ Los identificadores de estas ampliaciones también son UUID. Las tablas empresar
 | GET /api/consumo?periodo=YYYY-MM | AdminEmpresa | Periodo | 200 ConsumoDto |
 | POST /api/suscripcion/pago-simulado | AdminEmpresa | PagoSimuladoDto | 200 SuscripcionDto |
 | GET /api/plataforma/empresas | PlatformAdmin | Paginación | 200 PaginaDto<EmpresaComercialDto> |
-| PUT /api/plataforma/empresas/{id}/suscripcion | PlatformAdmin | CambiarSuscripcionDto | 200 SuscripcionDto |
+| PUT /api/plataforma/empresas/{empresaId}/suscripcion | PlatformAdmin | CambiarSuscripcionDto | 200 SuscripcionDto |
 
 ### 7.3 Endpoints de campañas y rúbricas
 
@@ -494,24 +525,24 @@ PlanDto {
 EmpresaRegistradaDto { empresaId: id, codigoEmpresa: string, administradorId: id, suscripcion: SuscripcionDto }
 SesionDto { accessToken: string, tokenType: "Bearer", expiraEn: datetime, usuario: UsuarioDto, empresaId: id }
 SesionPlataformaDto { accessToken: string, tokenType: "Bearer", expiraEn: datetime, administradorId: id, rol: "PlatformAdmin" }
-UsuarioDto { id: id, nombre: string, email: string, rol: RolEmpresa, activo: boolean }
-SuscripcionDto { id: id, planId: id, estado: EstadoSuscripcion, fechaVencimiento: datetime, permiteExcedente: boolean }
-ConsumoDto { periodo: string, minutosContratados: decimal, minutosReservados: decimal, minutosFacturables: decimal, minutosDisponibles: decimal, minutosExcedentes: decimal }
-EmpresaComercialDto { id: id, codigo: string, nombre: string, estado: string, suscripcion?: SuscripcionDto, consumo?: ConsumoDto }
-CampanaDto { id: id, nombre: string, activa: boolean, rubricaActivaId?: id }
-RubricaDto { id: id, campanaId: id, nombre: string, version: integer, estado: EstadoRubrica, criterios: CriterioDto[] }
+UsuarioDto { id: id, empresaId: id, nombre: string, email: string, rol: RolEmpresa, activo: boolean }
+SuscripcionDto { id: id, empresaId: id, planId: id, estado: EstadoSuscripcion, fechaVencimiento: datetime, permiteExcedente: boolean }
+ConsumoDto { empresaId: id, periodo: string, minutosContratados: decimal, minutosReservados: decimal, minutosFacturables: decimal, minutosDisponibles: decimal, minutosExcedentes: decimal }
+EmpresaComercialDto { empresaId: id, codigo: string, nombre: string, estado: string, suscripcion?: SuscripcionDto, consumo?: ConsumoDto }
+CampanaDto { id: id, empresaId: id, nombre: string, activa: boolean, rubricaActivaId?: id }
+RubricaDto { id: id, empresaId: id, campanaId: id, nombre: string, version: integer, estado: EstadoRubrica, criterios: CriterioDto[] }
 CriterioDto { id: id, nombre: string, descripcion: string, peso: decimal, esCritico: boolean, umbralCumplimiento: decimal }
-EvaluacionAceptadaDto { id: id, estado: EstadoLlamada, seguimientoUrl: string }
-LlamadaDto { id: id, campanaId: id, agenteId: id, rubricaId: id, versionRubrica: integer, duracionSeg: decimal, estado: EstadoLlamada, fechaLlamada: datetime, motivoFallo?: string }
-SegmentoDto { id: id, orden: integer, hablante: string, inicioSeg: decimal, finSeg: decimal, textoRedactado: string }
+EvaluacionAceptadaDto { id: id, empresaId: id, estado: EstadoLlamada, seguimientoUrl: string }
+LlamadaDto { id: id, empresaId: id, campanaId: id, agenteId: id, rubricaId: id, versionRubrica: integer, duracionSeg: decimal, estado: EstadoLlamada, fechaLlamada: datetime, motivoFallo?: string }
+SegmentoDto { id: id, empresaId: id, orden: integer, hablante: string, inicioSeg: decimal, finSeg: decimal, textoRedactado: string }
 AccesoAudioDto { url: string, expiraEn: datetime }
-EvaluacionDto { id: id, llamadaId: id, estado: EstadoEvaluacion, revision: integer, modoIA: "Real" | "Simulado", modeloUsado: string, requiereRevision: boolean, puntajeTotal: decimal, criterios: ResultadoCriterioDto[] }
+EvaluacionDto { id: id, empresaId: id, llamadaId: id, estado: EstadoEvaluacion, revision: integer, modoIA: "Real" | "Simulado", modeloUsado: string, requiereRevision: boolean, puntajeTotal: decimal, criterios: ResultadoCriterioDto[] }
 ResultadoCriterioDto { criterioId: id, nombre: string, peso: decimal, puntajeIA: decimal, puntajeHumano?: decimal, puntajeVigente: decimal, justificacion: string, falloCritico: boolean, evidencias: EvidenciaDto[] }
 EvidenciaDto { segmentoId: id, citaTextual: string, inicioSeg: decimal, finSeg: decimal }
-DisputaDto { id: id, evaluacionId: id, estado: "Abierta" | "Resuelta", motivo: string, resolucion?: string, resueltaPorId?: id, creadaEn: datetime, resueltaEn?: datetime }
-ScorecardDto { agenteId: id, campanaId: id, periodo: string, llamadasEvaluadas: integer, llamadasConfirmadas: integer, llamadasElegibles: integer, muestraSuficiente: boolean, puntajePromedio?: decimal, tendencia?: decimal, promedioCampana?: decimal, criticosFallidos: integer, criterios: PromedioCriterioDto[] }
+DisputaDto { id: id, empresaId: id, evaluacionId: id, estado: "Abierta" | "Resuelta", motivo: string, resolucion?: string, resueltaPorId?: id, creadaEn: datetime, resueltaEn?: datetime }
+ScorecardDto { empresaId: id, agenteId: id, campanaId: id, periodo: string, llamadasEvaluadas: integer, llamadasConfirmadas: integer, llamadasElegibles: integer, muestraSuficiente: boolean, puntajePromedio?: decimal, tendencia?: decimal, promedioCampana?: decimal, criticosFallidos: integer, criterios: PromedioCriterioDto[] }
 PromedioCriterioDto { rubricaId: id, version: integer, criterioId: id, nombre: string, promedio: decimal, cantidad: integer }
-ReporteCampanaDto { campanaId: id, periodo: string, llamadasElegibles: integer, muestraSuficiente: boolean, promedio?: decimal, criticosFallidos: integer }
+ReporteCampanaDto { empresaId: id, campanaId: id, periodo: string, llamadasElegibles: integer, muestraSuficiente: boolean, promedio?: decimal, criticosFallidos: integer }
 ErrorDto { status: integer, codigo: string, mensaje: string, errores?: Map<string,string[]>, traceId: string }
 ```
 
@@ -543,6 +574,7 @@ Authorization: Bearer <token>
 ```json
 {
   "id": "c5d37117-82b7-4ab0-91cd-ea14d87b1039",
+  "empresaId": "5930dcbc-9116-431a-b7e4-06742f44f9a3",
   "estado": "EnCola",
   "seguimientoUrl": "/api/llamadas/c5d37117-82b7-4ab0-91cd-ea14d87b1039"
 }
