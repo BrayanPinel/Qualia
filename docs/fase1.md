@@ -338,36 +338,7 @@ Los 19 registros siguientes corresponden a las tablas de la imagen entregada. To
 
 La raíz Empresa se relaciona con cada tabla que incluye `empresa_id`. El diagrama detalla las demás referencias. Las restricciones de unicidad del MVP limitan a uno el número de trabajos, evaluaciones y cargos asociados a cada llamada.
 
-```mermaid
-erDiagram
-    Empresa ||--o{ Suscripcion : contrata
-    Empresa ||--o{ Usuario : registra
-    Empresa ||--o{ Campana : organiza
-    Administrador {
-        uuid id PK
-    }
-    Plan ||--o{ Suscripcion : plan_id
-    Suscripcion ||--o{ Periodo_consumo : suscripcion_id
-    Usuario ||--o{ Usuario_campana : usuario_id
-    Campana ||--o{ Usuario_campana : campana_id
-    Campana ||--o{ Rubrica : campana_id
-    Rubrica ||--o{ Criterio_rubrica : rubrica_id
-    Rubrica ||--o{ Llamada : rubrica_id
-    Usuario ||--o{ Llamada : agente_id
-    Llamada ||--o| Trabajo_procesamiento : llamada_id
-    Llamada ||--o| Consumo_llamada : llamada_id
-    Periodo_consumo ||--o{ Consumo_llamada : periodo_id
-    Llamada ||--o{ Segmento_transcripcion : llamada_id
-    Llamada ||--o| Evaluacion_IA : llamada_id
-    Evaluacion_IA ||--o{ Detalle_evaluacion : evaluacion_id
-    Criterio_rubrica ||--o{ Detalle_evaluacion : criterio_id
-    Detalle_evaluacion ||--o{ Evidencia_criterio : detalle_id
-    Segmento_transcripcion ||--o{ Evidencia_criterio : segmento_id
-    Evaluacion_IA ||--o{ Revision_humana : evaluacion_id
-    Usuario ||--o{ Revision_humana : supervisor_id
-    Revision_humana ||--o{ Criterio_revisado : revision_id
-    Detalle_evaluacion ||--o{ Criterio_revisado : detalle_id
-```
+![Diagrama de Base de Datos](diagrama_base_de_datos.jpeg)
 
 ### 6.4 Normalización, restricciones e índices propuestos
 
