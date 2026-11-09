@@ -7,7 +7,7 @@ Qualia es una plataforma web SaaS B2B dirigida a centros de contacto para gestio
 ---
 
 ## Datos Academicos
-* **Asignatura:** ISC-304 Programación Web
+* **Asignatura:** ISC-305 Programación Web
 * **Proyecto:** Plataforma SaaS Multi-empresa (Proyecto Final)
 * **Integrantes:** 
   * Brayan Pinel
@@ -34,7 +34,7 @@ Este proyecto respeta los requerimientos del _Zero-Cost Stack_ y las prácticas 
 
 ### DevOps & Despliegue Cloud
 * **Local:** Docker Multi-stage y Docker Compose efímero.
-* **Producción (Cloud gratuita):** Por definir
+* **Producción (Cloud gratuita):** Microsoft Azure
 
 ---
 
