@@ -27,7 +27,6 @@ La plataforma parte de grabaciones ficticias precargadas, las transcribe, enmasc
 El valor central es combinar automatización con control humano. **Una evaluación generada por IA no se convierte automáticamente en una calificación oficial.** El supervisor confirma o ajusta los resultados y sus cambios quedan registrados. El agente puede consultar sus evaluaciones y presentar una disputa. El sistema ofrece evidencia para apoyar la mejora del desempeño; no toma decisiones disciplinarias automáticas.
 
 Las evaluaciones validadas alimentan un scorecard individual con puntaje, resultados por criterio y seguimiento del agente. Las funciones de tendencia, comparación por campaña y disputas se habilitan según el plan. Solo se muestran promedios oficiales cuando existe una cantidad mínima de llamadas confirmadas, y las evaluaciones con disputas abiertas se excluyen temporalmente del cálculo.
-Las evaluaciones validadas alimentan un scorecard individual con puntaje, resultados por criterio y seguimiento del agente. Las funciones de tendencia, comparación por campaña y disputas se habilitan según el plan. Solo se muestran promedios oficiales cuando existe una cantidad mínima de llamadas confirmadas, y las evaluaciones con disputas abiertas se excluyen temporalmente del cálculo.
 
 El modelo comercial consiste en una suscripción mensual por empresa con minutos de audio incluidos y límites de uso. Los planes propuestos son Básico, Pro y Enterprise. El consumo por minuto permite relacionar el servicio ofrecido con el volumen de conversaciones procesadas. Para el proyecto académico, el cobro se simula y se utilizan audios ficticios. El modo de IA simulado permite demostrar el flujo completo sin depender de créditos de proveedores.
 
@@ -73,7 +72,6 @@ Se sigue la estructura introductoria del proyecto trabajado en clases: visión g
 7. Consulta de transcripción y reproducción del fragmento asociado a un criterio.
 8. Confirmación o ajuste humano, con registro de los cambios.
 9. Disputas y scorecards, respetando las funciones del plan.
-9. Disputas y scorecards, respetando las funciones del plan.
 10. Consulta de suscripción y consumo; bloqueo de nuevas evaluaciones cuando corresponda.
 11. Administración comercial por PlatformAdmin, sin acceso al contenido de llamadas.
 12. Modo simulado de IA y planificación de verificaciones de aislamiento.
@@ -82,7 +80,6 @@ Se sigue la estructura introductoria del proyecto trabajado en clases: visión g
 
 ### 2.2 Fuera del MVP
 
-Carga manual de audios, integración real con centrales telefónicas, webhooks de producción, carga masiva por SFTP, pagos reales, evaluación en tiempo real, soporte multilingüe, búsqueda semántica y decisiones disciplinarias automáticas.
 Carga manual de audios, integración real con centrales telefónicas, webhooks de producción, carga masiva por SFTP, pagos reales, evaluación en tiempo real, soporte multilingüe, búsqueda semántica, prioridad de procesamiento por plan, purga automática y retención diferenciada, y decisiones disciplinarias automáticas.
 
 ### 2.3 Actores y permisos
@@ -91,8 +88,6 @@ Carga manual de audios, integración real con centrales telefónicas, webhooks d
 |---|---|---|
 | PlatformAdmin | Consultar empresas, catálogo de planes y consumo; cambiar suscripciones mediante el flujo simulado | Sin acceso a audios, transcripciones ni evaluaciones individuales |
 | AdminEmpresa | Gestionar usuarios, campañas, rúbricas, asignaciones y suscripción; consultar resultados | Solo su empresa; no confirma evaluaciones por este rol |
-| Supervisor | Seleccionar llamadas precargadas, revisar evidencia, confirmar o ajustar y resolver disputas | Solo campañas asignadas |
-| Agente | Consultar sus llamadas, calificaciones y scorecard; abrir disputas | Solo información propia |
 | Supervisor | Seleccionar llamadas precargadas, revisar evidencia, confirmar o ajustar y resolver disputas | Solo campañas asignadas |
 | Agente | Consultar sus llamadas, calificaciones y scorecard; abrir disputas | Solo información propia |
 | Auditor | Consultar reportes agregados | Solo su empresa; sin audio ni scorecards individuales |
@@ -104,8 +99,6 @@ Para el MVP se adopta la restricción más específica del documento base para A
 | Plan propuesto | Minutos mensuales | Supervisores | Rúbricas activas | Funciones |
 |---|---:|---:|---:|---|
 | Básico | 1,000 | 2 | 1 | Evaluación y scorecard básico |
-| Pro | 5,000 | 10 | Sin límite | Básico más tendencia, comparación y disputas |
-| Enterprise | 20,000 | Sin límite | Sin límite | Pro más prioridad de procesamiento y retención extendida |
 | Pro | 5,000 | 10 | Sin límite | Básico más tendencia, comparación y disputas |
 | Enterprise | 20,000 | Sin límite | Sin límite | Funciones Pro con mayor cuota y sin límite de supervisores |
 
@@ -150,7 +143,6 @@ El backend consulta el estado vigente y los límites antes de iniciar una evalua
 | EP-03 | Campañas y rúbricas | Campañas, asignaciones y versiones de evaluación |
 | EP-04 | Motor de evaluación | Selección de llamadas, cola, transcripción y evaluación asistida |
 | EP-05 | Revisión humana | Evidencia, confirmación, ajustes y disputas |
-| EP-06 | Desempeño individual | Scorecard y resultados por campaña |
 | EP-06 | Desempeño individual | Scorecard y resultados por campaña |
 
 ---
@@ -257,8 +249,6 @@ El backend consulta el estado vigente y los límites antes de iniciar una evalua
 
 **HU-10 — Desempeño del equipo · P1**  
 *Como* Supervisor, *quiero* consultar el desempeño de mi equipo, *para* dar seguimiento.
-**HU-10 — Desempeño del equipo · P1**  
-*Como* Supervisor, *quiero* consultar el desempeño de mi equipo, *para* dar seguimiento.
 
 - Solo consulta agentes de campañas asignadas y funciones permitidas por el plan.
 
@@ -357,7 +347,6 @@ La raíz Empresa se relaciona con cada tabla que incluye `empresa_id`. El diagra
 
 ![Diagrama de Base de Datos](diagrama_base_de_datos.jpg)
 
-
 ### 6.4 Normalización, restricciones e índices requeridos
 
 - **1FN.** Cada segmento, evidencia y criterio revisado tiene su propia fila.
@@ -366,21 +355,6 @@ La raíz Empresa se relaciona con cada tabla que incluye `empresa_id`. El diagra
 - **Unicidad por empresa.** Definir claves únicas para correo normalizado, versión por campaña, criterio por evaluación, orden de segmento por llamada y ajuste de un detalle por revisión. Permitir una sola rúbrica activa por campaña y un solo trabajo, evaluación y consumo por llamada.
 - **Integridad.** Validar que la rúbrica del criterio coincida con la de la llamada, que la evidencia provenga de esa llamada y que el detalle revisado corresponda a la evaluación de la revisión. Verificar pesos positivos que sumen 100 al publicar, notas entre 0 y 100 e intervalos de audio dentro de la duración registrada.
 - **Índices de consulta.** Llamada(empresa_id, estado, rubrica_id), Revision_humana(empresa_id, evaluacion_id, fecha_revision) y Trabajo_procesamiento(estado, proximo_intento).
-
-### 6.5 Datos adicionales requeridos por las historias vigentes
-
-El siguiente complemento distingue lo que muestra el dibujo de lo que requieren el MVP y sus contratos. Estas son ampliaciones propuestas para incorporar al ERD antes de implementar las historias correspondientes.
-
-| Función | Ampliación propuesta |
-|---|---|
-| Credenciales y concurrencia | Agregar `password_hash text` a Usuario y Administrador si la identidad se gestiona localmente. Añadir `revision int` a Evaluacion_IA para detectar ajustes concurrentes. |
-| Plan y cuota | Añadir a Plan los límites de supervisores y rúbricas y los días de retención. Asociar las funciones mediante Funcion_plan(plan_id, codigo_funcion), PK en ambos campos. Añadir permite_excedente y gracia_hasta a Suscripcion. |
-| Reservas y reintentos | En Consumo_llamada agregar minutos_reservados y estado. Al encolar, reservar duración/60 contra el saldo del periodo bajo bloqueo transaccional. Al completar, pasar la reserva a minutos facturables una sola vez. Ante fallo definitivo, liberar la reserva. Acumular el costo técnico por llamada. |
-| Reglas de evaluación | Añadir umbral_cumplimiento a Criterio_rubrica y minimo_muestra a Empresa. Para evidencia corregida, vincular el criterio revisado, segmento y cita en Evidencia_revision, separada de la propuesta original. |
-| Disputas | Disputa(empresa_id, id, evaluacion_id, motivo, estado, resolucion, resuelta_por_id, creada_en, resuelta_en). Aplicar FK por empresa y una sola disputa abierta por evaluación. |
-| Auditoría | Registrar accesos y cambios empresariales en Auditoria(empresa_id, id, usuario_id, accion, entidad, entidad_id, antes, despues, fecha). Registrar cambios comerciales del administrador en Auditoria_plataforma(id, administrador_id, empresa_objetivo_id, accion, antes, despues, fecha). |
-
-Los identificadores de estas ampliaciones también son UUID. Las tablas empresariales propuestas siguen las reglas de aislamiento de 6.1. Un trabajo reintentado conserva la misma llamada y el mismo registro de consumo.
 
 ### 6.5 Reglas de persistencia y correspondencia con los contratos
 
@@ -401,7 +375,6 @@ Los datos necesarios para las historias vigentes quedan integrados en 6.2; no so
 ### 7.1 Convenciones
 
 - Prefijo `/api`; JSON en `camelCase`.
-- La API obtiene `empresaId` del JWT validado y lo aplica a las consultas y escrituras empresariales. Cada búsqueda por ID comprueba también la empresa y los permisos del usuario. Un recurso de otra empresa devuelve 404. En las rutas de administración global, PlatformAdmin indica la empresa objetivo en la ruta.
 - La API obtiene `empresaId` del JWT validado y lo aplica a las consultas y escrituras empresariales. Cada búsqueda por ID comprueba también la empresa y los permisos del usuario. Un recurso de otra empresa devuelve 404. En las rutas de administración global, PlatformAdmin indica la empresa objetivo en la ruta.
 - Fechas de instante en ISO 8601 UTC; periodo de scorecard como `YYYY-MM`.
 - Listados paginados: `pagina` desde 1 y `tamanoPagina` de 1 a 100; predeterminado 20.
@@ -425,7 +398,6 @@ Los datos necesarios para las historias vigentes quedan integrados en 6.2; no so
 | GET /api/consumo?periodo=YYYY-MM | AdminEmpresa | Periodo | 200 ConsumoDto |
 | POST /api/suscripcion/pago-simulado | AdminEmpresa | PagoSimuladoDto | 200 SuscripcionDto |
 | GET /api/plataforma/empresas | PlatformAdmin | Paginación | 200 PaginaDto<EmpresaComercialDto> |
-| PUT /api/plataforma/empresas/{empresaId}/suscripcion | PlatformAdmin | CambiarSuscripcionDto | 200 SuscripcionDto |
 | PUT /api/plataforma/empresas/{empresaId}/suscripcion | PlatformAdmin | CambiarSuscripcionDto | 200 SuscripcionDto |
 
 ### 7.3 Endpoints de campañas y rúbricas
@@ -513,7 +485,6 @@ ResolverDisputaDto {
 ```
 
 **Validaciones del contrato:** nombres de 3 a 100 caracteres; código de empresa de 3 a 40 caracteres alfanuméricos o guiones; email válido hasta 254; contraseña de 12 a 128 caracteres; textos de motivos y justificaciones de 10 a 2,000 caracteres; rúbricas de 1 a 30 criterios. Una publicación exige suma de pesos igual a 100. Los límites son decisiones de diseño propuestas para concretar la fase 1.
-**Validaciones del contrato:** nombres de 3 a 100 caracteres; código de empresa de 3 a 40 caracteres alfanuméricos o guiones; email válido hasta 254; contraseña de 12 a 128 caracteres; textos de motivos y justificaciones de 10 a 2,000 caracteres; rúbricas de 1 a 30 criterios. Una publicación exige suma de pesos igual a 100. Los límites son decisiones de diseño propuestas para concretar la fase 1.
 
 `EmpresaRegistradaDto.usuarioAdministradorId` identifica al Usuario de la empresa con rol AdminEmpresa. `SesionPlataformaDto.administradorId` identifica al Administrador global; son identidades distintas.
 
@@ -538,33 +509,20 @@ SesionPlataformaDto { accessToken: string, tokenType: "Bearer", expiraEn: dateti
 UsuarioDto { id: id, empresaId: id, nombre: string, email: string, rol: RolEmpresa, activo: boolean }
 SuscripcionDto { id: id, empresaId: id, planId: id, estado: EstadoSuscripcion, fechaVencimiento: datetime, permiteExcedente: boolean }
 ConsumoDto { empresaId: id, periodo: string, minutosContratados: decimal, minutosReservados: decimal, minutosFacturables: decimal, minutosDisponibles: decimal, minutosExcedentes: decimal }
-EmpresaComercialDto { empresaId: id, codigo: string, nombre: string, estado: string, suscripcion?: SuscripcionDto, consumo?: ConsumoDto }
-CampanaDto { id: id, empresaId: id, nombre: string, activa: boolean, rubricaActivaId?: id }
-RubricaDto { id: id, empresaId: id, campanaId: id, nombre: string, version: integer, estado: EstadoRubrica, criterios: CriterioDto[] }
-UsuarioDto { id: id, empresaId: id, nombre: string, email: string, rol: RolEmpresa, activo: boolean }
-SuscripcionDto { id: id, empresaId: id, planId: id, estado: EstadoSuscripcion, fechaVencimiento: datetime, permiteExcedente: boolean }
-ConsumoDto { empresaId: id, periodo: string, minutosContratados: decimal, minutosReservados: decimal, minutosFacturables: decimal, minutosDisponibles: decimal, minutosExcedentes: decimal }
 EmpresaComercialDto { empresaId: id, codigo: string, nombre: string, estado: EstadoEmpresa, suscripcion?: SuscripcionDto, consumo?: ConsumoDto }
 CampanaDto { id: id, empresaId: id, nombre: string, activa: boolean, rubricaActivaId?: id }
 RubricaDto { id: id, empresaId: id, campanaId: id, nombre: string, version: integer, estado: EstadoRubrica, criterios: CriterioDto[] }
 CriterioDto { id: id, nombre: string, descripcion: string, peso: decimal, esCritico: boolean, umbralCumplimiento: decimal }
-EvaluacionAceptadaDto { id: id, empresaId: id, estado: EstadoLlamada, seguimientoUrl: string }
-LlamadaDto { id: id, empresaId: id, campanaId: id, agenteId: id, rubricaId: id, versionRubrica: integer, duracionSeg: decimal, estado: EstadoLlamada, fechaLlamada: datetime, motivoFallo?: string }
-SegmentoDto { id: id, empresaId: id, orden: integer, hablante: string, inicioSeg: decimal, finSeg: decimal, textoRedactado: string }
 EvaluacionAceptadaDto { llamadaId: id, empresaId: id, estado: EstadoLlamada, seguimientoUrl: string }
 LlamadaDto { id: id, empresaId: id, campanaId: id, agenteId: id, rubricaId: id, versionRubrica: integer, duracionSeg: decimal, estado: EstadoLlamada, fechaLlamada: datetime, motivoFallo?: string }
 SegmentoDto { id: id, empresaId: id, orden: integer, hablante: string, inicioSeg: decimal, finSeg: decimal, textoRedactado: string }
 AccesoAudioDto { url: string, expiraEn: datetime }
 EvaluacionDto { id: id, empresaId: id, llamadaId: id, estado: EstadoEvaluacion, revision: integer, modoIA: "Real" | "Simulado", modeloUsado: string, requiereRevision: boolean, puntajeTotal: decimal, criterios: ResultadoCriterioDto[] }
-EvaluacionDto { id: id, empresaId: id, llamadaId: id, estado: EstadoEvaluacion, revision: integer, modoIA: "Real" | "Simulado", modeloUsado: string, requiereRevision: boolean, puntajeTotal: decimal, criterios: ResultadoCriterioDto[] }
 ResultadoCriterioDto { criterioId: id, nombre: string, peso: decimal, puntajeIA: decimal, puntajeHumano?: decimal, puntajeVigente: decimal, justificacion: string, falloCritico: boolean, evidencias: EvidenciaDto[] }
 EvidenciaDto { segmentoId: id, citaTextual: string, inicioSeg: decimal, finSeg: decimal }
 DisputaDto { id: id, empresaId: id, evaluacionId: id, estado: "Abierta" | "Resuelta", motivo: string, resolucion?: string, resueltaPorId?: id, creadaEn: datetime, resueltaEn?: datetime }
 ScorecardDto { empresaId: id, agenteId: id, campanaId: id, periodo: string, llamadasEvaluadas: integer, llamadasConfirmadas: integer, llamadasElegibles: integer, muestraSuficiente: boolean, puntajePromedio?: decimal, tendencia?: decimal, promedioCampana?: decimal, criticosFallidos: integer, criterios: PromedioCriterioDto[] }
-DisputaDto { id: id, empresaId: id, evaluacionId: id, estado: "Abierta" | "Resuelta", motivo: string, resolucion?: string, resueltaPorId?: id, creadaEn: datetime, resueltaEn?: datetime }
-ScorecardDto { empresaId: id, agenteId: id, campanaId: id, periodo: string, llamadasEvaluadas: integer, llamadasConfirmadas: integer, llamadasElegibles: integer, muestraSuficiente: boolean, puntajePromedio?: decimal, tendencia?: decimal, promedioCampana?: decimal, criticosFallidos: integer, criterios: PromedioCriterioDto[] }
 PromedioCriterioDto { rubricaId: id, version: integer, criterioId: id, nombre: string, promedio: decimal, cantidad: integer }
-ReporteCampanaDto { empresaId: id, campanaId: id, periodo: string, llamadasElegibles: integer, muestraSuficiente: boolean, promedio?: decimal, criticosFallidos: integer }
 ReporteCampanaDto { empresaId: id, campanaId: id, periodo: string, llamadasElegibles: integer, muestraSuficiente: boolean, promedio?: decimal, criticosFallidos: integer }
 ErrorDto { status: integer, codigo: string, mensaje: string, errores?: Map<string,string[]>, traceId: string }
 ```
@@ -636,8 +594,6 @@ Authorization: Bearer <token>
 
 ```json
 {
-  "id": "c5d37117-82b7-4ab0-91cd-ea14d87b1039",
-  "empresaId": "5930dcbc-9116-431a-b7e4-06742f44f9a3",
   "llamadaId": "c5d37117-82b7-4ab0-91cd-ea14d87b1039",
   "empresaId": "5930dcbc-9116-431a-b7e4-06742f44f9a3",
   "estado": "EnCola",
