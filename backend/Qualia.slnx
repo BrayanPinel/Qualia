@@ -1,0 +1,7 @@
+<Solution>
+  <Project Path="Qualia.API/Qualia.API.csproj" />
+  <Project Path="Qualia.Application/Qualia.Application.csproj" />
+  <Project Path="Qualia.Domain/Qualia.Domain.csproj" />
+  <Project Path="Qualia.Infrastructure/Qualia.Infrastructure.csproj" />
+  <Project Path="Qualia.Tests/Qualia.Tests.csproj" />
+</Solution>
