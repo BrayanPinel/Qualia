@@ -48,4 +48,4 @@ El proyecto se divide en dos aplicaciones principales separadas físicamente:
 ├── backend/           # Solución .NET bajo Clean Architecture
 ├── frontend/          # Aplicación React/Vite bajo Vertical Slicing
 ├── docs/              # Documentación, diagramas ERD y contratos de interfaz
-└── docker-compose.yml # Orquestación local para desarrollo
+└── infra/             # Docker para la orquestación local para desarrollo
