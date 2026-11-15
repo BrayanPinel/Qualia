@@ -1,6 +1,9 @@
-@Qualia.API_HostAddress = http://localhost:5008
+@host = http://localhost:5008
 
-GET {{Qualia.API_HostAddress}}/weatherforecast/
+### OpenAPI (solo entorno Development)
+GET {{host}}/openapi/v1.json
 Accept: application/json
 
-###
+### Scalar UI (solo entorno Development)
+GET {{host}}/scalar/v1
+Accept: text/html
