@@ -1,48 +1,53 @@
-
 using DotNetEnv;
-
-
-Env.TraversePath().Load();
+using Qualia.Application;
+using Qualia.Infrastructure;
+using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Carga .env (ignorado por Git): primero el del proyecto API y, si no existe,
+// el que se encuentre en el directorio actual o en sus padres.
+var rutaEnvApi = Path.Combine(builder.Environment.ContentRootPath, ".env");
+if (File.Exists(rutaEnvApi))
+{
+    Env.Load(rutaEnvApi);
+}
+else
+{
+    Env.TraversePath().Load();
+}
 
-// Add services to the container.
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
+// DotNetEnv escribe variables de proceso; como el builder ya leyó el entorno
+// al construirse, se vuelve a registrar el proveedor para que la configuración
+// vea los valores recién cargados.
+builder.Configuration.AddEnvironmentVariables();
+
+builder.Services.AddControllers();
 builder.Services.AddOpenApi();
+
+builder.Services.AddApplication();
+builder.Services.AddInfrastructure(builder.Configuration);
+
+
+builder.Services.AddAuthentication();
+builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
+    app.MapScalarApiReference();
 }
 
 app.UseHttpsRedirection();
 
-var summaries = new[]
-{
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
+app.UseAuthentication();
+app.UseAuthorization();
 
-app.MapGet("/weatherforecast", () =>
-{
-    var forecast =  Enumerable.Range(1, 5).Select(index =>
-        new WeatherForecast
-        (
-            DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-            Random.Shared.Next(-20, 55),
-            summaries[Random.Shared.Next(summaries.Length)]
-        ))
-        .ToArray();
-    return forecast;
-})
-.WithName("GetWeatherForecast");
+app.MapControllers();
 
 app.Run();
 
-record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-}
+// Necesario para que WebApplicationFactory<Program> pueda iniciar la API en pruebas.
+public partial class Program { }
