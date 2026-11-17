@@ -1,0 +1,76 @@
+using Qualia.Domain.Common;
+
+namespace Qualia.Domain.Suscripciones;
+
+/// <summary>
+/// Auditoría de cambios comerciales hechos por PlatformAdmin (tabla global
+/// <c>auditoria_plataforma</c>, HU-07). No concede acceso a contenido de llamadas.
+/// <c>antes</c>/<c>despues</c> son JSON (jsonb) y nunca contienen contraseñas,
+/// hashes, tokens ni secretos.
+/// </summary>
+public sealed class AuditoriaPlataforma
+{
+    public const int LongitudMaximaAccion = 100;
+
+    // Constructor para EF Core.
+    private AuditoriaPlataforma()
+    {
+    }
+
+    public Guid Id { get; private set; }
+
+    public Guid AdministradorId { get; private set; }
+
+    public Guid EmpresaObjetivoId { get; private set; }
+
+    public string Accion { get; private set; } = string.Empty;
+
+    /// <summary>Estado previo serializado como JSON (jsonb NULL).</summary>
+    public string? Antes { get; private set; }
+
+    /// <summary>Estado posterior serializado como JSON (jsonb NULL).</summary>
+    public string? Despues { get; private set; }
+
+    public DateTime Fecha { get; private set; }
+
+    public static AuditoriaPlataforma Registrar(
+        Guid administradorId,
+        Guid empresaObjetivoId,
+        string accion,
+        string? antesJson,
+        string? despuesJson,
+        DateTime fechaUtc)
+    {
+        if (administradorId == Guid.Empty)
+        {
+            throw new ArgumentException("El administrador es obligatorio.", nameof(administradorId));
+        }
+
+        if (empresaObjetivoId == Guid.Empty)
+        {
+            throw new ArgumentException("La empresa objetivo es obligatoria.", nameof(empresaObjetivoId));
+        }
+
+        ArgumentException.ThrowIfNullOrWhiteSpace(accion);
+        var accionNormalizada = accion.Trim();
+        if (accionNormalizada.Length > LongitudMaximaAccion)
+        {
+            throw new ArgumentException(
+                $"La acción admite como máximo {LongitudMaximaAccion} caracteres.",
+                nameof(accion));
+        }
+
+        var fechaValidada = FechasUtc.Exigir(fechaUtc, nameof(fechaUtc));
+
+        return new AuditoriaPlataforma
+        {
+            Id = Guid.CreateVersion7(),
+            AdministradorId = administradorId,
+            EmpresaObjetivoId = empresaObjetivoId,
+            Accion = accionNormalizada,
+            Antes = antesJson,
+            Despues = despuesJson,
+            Fecha = fechaValidada,
+        };
+    }
+}
