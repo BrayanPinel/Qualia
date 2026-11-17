@@ -1,6 +1,6 @@
 using System.Collections.Concurrent;
-using Qualia.Application.Comun.Contratos;
-using Qualia.Application.Comun.Errores;
+using Qualia.Application.Common.Interfaces;
+using Qualia.Application.Common.Errores;
 using Qualia.Application.Features.Procesamiento;
 using Qualia.Infrastructure.Procesamiento;
 

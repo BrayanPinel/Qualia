@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
-using Qualia.Application.Comun.Errores;
-using Qualia.Application.Comun.Persistencia;
-using Qualia.Application.Comun.Seguridad;
+using Qualia.Application.Common.Errores;
+using Qualia.Application.Common.Interfaces;
+using Qualia.Application.Common.Seguridad;
 using Qualia.Domain.Entidades;
 using Qualia.Domain.Enums;
 

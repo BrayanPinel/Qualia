@@ -1,0 +1,15 @@
+<Project>
+
+  <!--
+    Propiedades comunes a todos los proyectos de la solución.
+    No se fija TargetFramework aquí para que cada proyecto lo declare explícitamente.
+    El objetivo es .NET 10 (ver backend/global.json).
+  -->
+  <PropertyGroup>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+
+</Project>

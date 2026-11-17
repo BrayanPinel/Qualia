@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Qualia.Application.Comun.Errores;
-using Qualia.Application.Comun.Paginacion;
+using Qualia.Application.Common.Errores;
+using Qualia.Application.Common.Models;
 using Qualia.Application.Features.Llamadas;
 using Qualia.Application.Features.Llamadas.Dtos;
 

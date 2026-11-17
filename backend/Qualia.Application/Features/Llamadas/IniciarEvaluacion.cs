@@ -1,9 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using Qualia.Application.Comun.Contratos;
-using Qualia.Application.Comun.Errores;
-using Qualia.Application.Comun.Persistencia;
-using Qualia.Application.Comun.Seguridad;
+using Qualia.Application.Common.Interfaces;
+using Qualia.Application.Common.Errores;
+using Qualia.Application.Common.Seguridad;
 using Qualia.Application.Features.Llamadas.Dtos;
 using Qualia.Application.Features.Procesamiento;
 using Qualia.Domain.Entidades;

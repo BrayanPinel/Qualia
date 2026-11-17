@@ -1,6 +1,6 @@
 using System.Diagnostics;
-using Qualia.Application.Comun.Errores;
-using Qualia.Domain.Comun;
+using Qualia.Application.Common.Errores;
+using Qualia.Domain.Common;
 
 namespace Qualia.API.Middleware;
 

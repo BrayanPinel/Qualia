@@ -1,8 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Qualia.Application.Comun.Contratos;
-using Qualia.Application.Comun.Persistencia;
+using Qualia.Application.Common.Interfaces;
 using Qualia.Domain.Entidades;
 using Qualia.Domain.Enums;
 

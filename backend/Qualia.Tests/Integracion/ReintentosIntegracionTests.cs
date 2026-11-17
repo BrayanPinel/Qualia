@@ -5,9 +5,9 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Qualia.Application.Features.Llamadas.Dtos;
 using Qualia.Application.Features.Procesamiento;
 using Qualia.Domain.Enums;
-using Qualia.Infrastructure.Persistencia;
+using Qualia.Infrastructure.Persistence;
 using Qualia.Tests.Integracion.Infraestructura;
-using Norte = Qualia.Infrastructure.Persistencia.Semillas.DatosDemo.Norte;
+using Norte = Qualia.Infrastructure.Persistence.Semillas.DatosDemo.Norte;
 
 namespace Qualia.Tests.Integracion;
 

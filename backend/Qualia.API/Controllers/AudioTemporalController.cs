@@ -1,8 +1,8 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Qualia.Application.Comun.Persistencia;
-using Qualia.Application.Comun.Seguridad;
+using Qualia.Application.Common.Interfaces;
+using Qualia.Application.Common.Seguridad;
 using Qualia.Application.Features.Llamadas;
 
 namespace Qualia.API.Controllers;

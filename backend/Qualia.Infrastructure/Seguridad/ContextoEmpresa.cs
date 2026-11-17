@@ -1,4 +1,4 @@
-using Qualia.Application.Comun.Seguridad;
+using Qualia.Application.Common.Seguridad;
 
 namespace Qualia.Infrastructure.Seguridad;
 

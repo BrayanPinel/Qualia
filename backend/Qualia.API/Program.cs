@@ -1,17 +1,19 @@
 using System.Text.Json.Serialization;
-using DotNetEnv;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Mvc;
+using Qualia.API.Configuracion;
 using Qualia.API.Middleware;
 using Qualia.API.Seguridad;
 using Qualia.Application;
-using Qualia.Application.Comun.Seguridad;
+using Qualia.Application.Common.Seguridad;
 using Qualia.Infrastructure;
-using Qualia.Infrastructure.Persistencia;
+using Qualia.Infrastructure.Persistence;
 using Scalar.AspNetCore;
 
-// Variables de entorno desde backend/Qualia.API/.env .
-// NoClobber: si la variable ya existe en el entorno real (Docker, Render, CI), esa tiene prioridad sobre el .env.
-Env.NoClobber().TraversePath().Load();
+// Variables de entorno desde backend/Qualia.API/.env (ignorado por Git).
+// Se cargan ANTES de crear el builder y sin sobrescribir (NoClobber): una variable que ya
+// existe en el entorno real (Docker, CI, pruebas) tiene prioridad sobre el archivo.
+ArchivoEnv.Cargar();
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,7 +25,7 @@ builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<IUsuarioActual, UsuarioActualHttp>();
 
-// Autenticación. PROVISIONAL: DE PRUEBA EN LO QUE SE CONECTA CON LA PARTE A
+// Autenticación. PROVISIONAL hasta integrar el JWT del Rol A (identidad y seguridad).
 var modoDemo = builder.Environment.IsDevelopment() && builder.Configuration.GetValue<bool>("Autenticacion:ModoDemo");
 if (modoDemo)
 {
@@ -40,10 +42,16 @@ builder.Services.AddAuthorization();
 builder.Services.AddControllers()
     .AddJsonOptions(o =>
     {
-        // Enumeraciones como texto ("EnCola", "EvaluadaPorIA"...), como en el contrato.
+        // Enumeraciones como texto ("EnCola", "Borrador"...), como en el contrato.
         o.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+        // Campos desconocidos de entrada se rechazan (fase1 §7.1).
         o.JsonSerializerOptions.UnmappedMemberHandling = JsonUnmappedMemberHandling.Disallow;
     });
+
+// Errores de enlace de modelo (JSON mal formado, campos desconocidos, tipos inválidos)
+// con el mismo formato ErrorDto que el middleware global, en lugar de ProblemDetails.
+builder.Services.Configure<ApiBehaviorOptions>(o =>
+    o.InvalidModelStateResponseFactory = RespuestaModeloInvalido.Crear);
 
 builder.Services.AddOpenApi();
 

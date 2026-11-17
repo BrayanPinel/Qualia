@@ -1,36 +1,47 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Qualia.Application.Comun.Contratos;
-using Qualia.Application.Comun.Persistencia;
-using Qualia.Application.Comun.Seguridad;
+using Qualia.Application.Common.Interfaces;
+using Qualia.Application.Common.Seguridad;
 using Qualia.Application.Features.Llamadas;
 using Qualia.Application.Features.Procesamiento;
 using Qualia.Infrastructure.Audio;
-using Qualia.Infrastructure.Persistencia;
-using Qualia.Infrastructure.Persistencia.Semillas;
+using Qualia.Infrastructure.Persistence;
+using Qualia.Infrastructure.Persistence.Semillas;
 using Qualia.Infrastructure.Procesamiento;
 using Qualia.Infrastructure.Provisional;
 using Qualia.Infrastructure.Seguridad;
 
 namespace Qualia.Infrastructure;
 
+/// <summary>
+/// Composición de infraestructura. La cadena de conexión se valida al
+/// resolver el DbContext, no al arrancar la API, para que el arranque
+/// funcione sin una base de datos levantada.
+/// </summary>
 public static class DependencyInjection
 {
+    public const string NombreCadenaConexion = "PostgresConnection";
+
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
-        var cadenaConexion = configuration.GetConnectionString("DefaultConnection");
-        if (string.IsNullOrWhiteSpace(cadenaConexion))
-        {
-            throw new InvalidOperationException(
-                "Falta la cadena de conexión ConnectionStrings__DefaultConnection (backend/Qualia.API/.env).");
-        }
-
         // --- Persistencia y aislamiento multiempresa ---
         services.AddScoped<IContextoEmpresa, ContextoEmpresa>();
-        services.AddDbContext<QualiaDbContext>(opciones => opciones
-            .UseNpgsql(cadenaConexion, npgsql => npgsql.MigrationsHistoryTable("__ef_migrations_history", QualiaDbContext.Esquema))
-            .UseSnakeCaseNamingConvention());
+        services.AddDbContext<QualiaDbContext>(opciones =>
+        {
+            var cadenaConexion = configuration.GetConnectionString(NombreCadenaConexion);
+            if (string.IsNullOrWhiteSpace(cadenaConexion))
+            {
+                throw new InvalidOperationException(
+                    $"Falta la cadena de conexión 'ConnectionStrings:{NombreCadenaConexion}' (backend/Qualia.API/.env).");
+            }
+
+            opciones
+                .UseNpgsql(cadenaConexion, npgsql => npgsql
+                    .MigrationsAssembly(typeof(QualiaDbContext).Assembly.FullName)
+                    .MigrationsHistoryTable("__ef_migrations_history", QualiaDbContext.Esquema))
+                .UseSnakeCaseNamingConvention();
+        });
         services.AddScoped<IQualiaDbContext>(sp => sp.GetRequiredService<QualiaDbContext>());
         services.AddScoped<SembradorDatosDemo>();
 
