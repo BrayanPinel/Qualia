@@ -1,8 +1,11 @@
 using FluentValidation;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Qualia.Application.Common.Interfaces;
+using Qualia.Application.Features.Campanas;
 using Qualia.Application.Features.Llamadas;
 using Qualia.Application.Features.Procesamiento;
+using Qualia.Application.Features.Revision;
 
 namespace Qualia.Application;
 
@@ -27,6 +30,14 @@ public static class DependencyInjection
         services.AddScoped<IniciarEvaluacion>();
         services.AddScoped<ProcesadorTrabajo>();
         services.AddSingleton<EjecutorProcesamiento>();
+
+        // --- Rol B: campañas, rúbricas y revisión humana ---
+        services.AddScoped<GestionCampanas>();
+        services.AddScoped<GestionRubricas>();
+        services.AddScoped<ServicioRevision>();
+        services.AddScoped<IRevisionEvaluacion>(sp => sp.GetRequiredService<ServicioRevision>()); // contrato B → A
+        services.AddScoped<IConsultaRevisionVigente, ConsultaRevisionVigente>();                  // contrato B → D/C
+        services.AddScoped<RevisionEvaluaciones>();
 
         return services;
     }

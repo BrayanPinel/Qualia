@@ -50,9 +50,21 @@ public sealed class RegistroAuditoriaProvisional(ILogger<RegistroAuditoriaProvis
     }
 }
 
-/// <summary>Reemplazar por la implementación del Rol B (Revision_humana / Criterio_revisado / Evidencia_revision).</summary>
-public sealed class ConsultaRevisionVigenteProvisional : IConsultaRevisionVigente
+/// <summary>
+/// Reemplazar por la implementación del Rol C (IConsultaPlanService de feature/suscriptions).
+/// Mientras tanto NO aplica límites de plan: admite cualquier total y lo deja en el log.
+/// </summary>
+public sealed class ConsultaPlanProvisional(ILogger<ConsultaPlanProvisional> logger) : IConsultaPlanService
 {
-    public Task<AjusteVigente?> ObtenerAjusteVigenteAsync(Guid empresaId, Guid evaluacionId, CancellationToken cancellationToken) =>
-        Task.FromResult<AjusteVigente?>(null);
+    public Task<bool> AdmiteSupervisoresAsync(Guid empresaId, int totalResultante, CancellationToken cancellationToken = default)
+    {
+        logger.LogWarning("[PROVISIONAL Rol C] Límite de supervisores NO verificado ({Total}) para la empresa {EmpresaId}", totalResultante, empresaId);
+        return Task.FromResult(true);
+    }
+
+    public Task<bool> AdmiteRubricasActivasAsync(Guid empresaId, int totalResultante, CancellationToken cancellationToken = default)
+    {
+        logger.LogWarning("[PROVISIONAL Rol C] Límite de rúbricas activas NO verificado ({Total}) para la empresa {EmpresaId}", totalResultante, empresaId);
+        return Task.FromResult(true);
+    }
 }
