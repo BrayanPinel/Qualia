@@ -1,6 +1,86 @@
 @Qualia.API_HostAddress = http://localhost:5008
 
-GET {{Qualia.API_HostAddress}}/weatherforecast/
-Accept: application/json
+###############################################################################
+# ROL D — LLAMADAS Y PROCESAMIENTO
+# Datos precargados en desarrollo (Qualia.Infrastructure/Persistencia/Semillas/DatosDemo.cs).
+# Autenticación PROVISIONAL: cabecera X-Usuario-Demo con el id del usuario.
+# Cuando el Rol A integre el login, reemplazar por: Authorization: Bearer {{token}}
+###############################################################################
 
-###
+# --- Usuarios de demostración ---
+# Empresa Norte
+@supervisora = 10000000-0000-0000-0001-000000000002
+@supervisorSinCampana = 10000000-0000-0000-0001-000000000003
+@adminNorte = 10000000-0000-0000-0001-000000000001
+@agenteAndres = 10000000-0000-0000-0001-000000000004
+@auditor = 10000000-0000-0000-0001-000000000006
+# Empresa Sur
+@supervisorSur = 20000000-0000-0000-0001-000000000002
+
+# --- Llamadas de demostración ---
+@llamada1 = 10000000-0000-0000-0005-000000000001
+@llamada2 = 10000000-0000-0000-0005-000000000002
+@llamadaRubricaBorrador = 10000000-0000-0000-0005-000000000099
+
+### 1. Supervisora: llamadas disponibles de sus campañas
+GET {{Qualia.API_HostAddress}}/api/llamadas?estado=Disponible&pagina=1&tamanoPagina=20
+X-Usuario-Demo: {{supervisora}}
+
+### 2. Iniciar evaluación (202 Accepted + Location de seguimiento)
+POST {{Qualia.API_HostAddress}}/api/llamadas/{{llamada1}}/evaluacion
+X-Usuario-Demo: {{supervisora}}
+
+### 3. Seguimiento del estado (EnCola → Transcribiendo → Transcrita → Evaluando → EvaluadaPorIA)
+GET {{Qualia.API_HostAddress}}/api/llamadas/{{llamada1}}
+X-Usuario-Demo: {{supervisora}}
+
+### 4. Transcripción enmascarada
+GET {{Qualia.API_HostAddress}}/api/llamadas/{{llamada1}}/transcripcion
+X-Usuario-Demo: {{supervisora}}
+
+### 5. Evaluación propuesta por IA con evidencia por criterio
+GET {{Qualia.API_HostAddress}}/api/llamadas/{{llamada1}}/evaluacion
+X-Usuario-Demo: {{supervisora}}
+
+### 6. URL temporal y firmada del audio (abrir la "url" de la respuesta en el navegador)
+GET {{Qualia.API_HostAddress}}/api/llamadas/{{llamada1}}/audio
+X-Usuario-Demo: {{supervisora}}
+
+### 7. El agente propietario ve solo sus llamadas
+GET {{Qualia.API_HostAddress}}/api/llamadas
+X-Usuario-Demo: {{agenteAndres}}
+
+###############################################################################
+# Casos de error esperados
+###############################################################################
+
+### 409 EVALUACION_YA_INICIADA (repetir el paso 2)
+POST {{Qualia.API_HostAddress}}/api/llamadas/{{llamada1}}/evaluacion
+X-Usuario-Demo: {{supervisora}}
+
+### 409 RUBRICA_SIN_PUBLICAR
+POST {{Qualia.API_HostAddress}}/api/llamadas/{{llamadaRubricaBorrador}}/evaluacion
+X-Usuario-Demo: {{supervisora}}
+
+### 403 CAMPANA_NO_ASIGNADA (supervisor sin la campaña)
+POST {{Qualia.API_HostAddress}}/api/llamadas/{{llamada2}}/evaluacion
+X-Usuario-Demo: {{supervisorSinCampana}}
+
+### 403 ROL_NO_AUTORIZADO (un agente no inicia evaluaciones)
+POST {{Qualia.API_HostAddress}}/api/llamadas/{{llamada2}}/evaluacion
+X-Usuario-Demo: {{agenteAndres}}
+
+### 403 Auditor sin acceso al contenido de llamadas
+GET {{Qualia.API_HostAddress}}/api/llamadas
+X-Usuario-Demo: {{auditor}}
+
+### 404 Aislamiento: la empresa Sur no ve llamadas de Norte
+GET {{Qualia.API_HostAddress}}/api/llamadas/{{llamada1}}
+X-Usuario-Demo: {{supervisorSur}}
+
+### 400 VALIDACION (tamaño de página y estado inválidos)
+GET {{Qualia.API_HostAddress}}/api/llamadas?tamanoPagina=500&estado=Inventado
+X-Usuario-Demo: {{adminNorte}}
+
+### 401 Sin sesión
+GET {{Qualia.API_HostAddress}}/api/llamadas

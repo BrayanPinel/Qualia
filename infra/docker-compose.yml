@@ -1,18 +1,22 @@
 # infra/docker-compose.yml  (PostgreSQL para desarrollo local)
+# compartiría contenedores/volúmenes con cualquier otro proyecto que también tenga una carpeta infra/.
+name: qualia
+
 services:
   db-qualia:
     image: postgres:16-alpine
     container_name: postgres-qualia
     env_file:
-      - ../.env
+      - .env # infra/.env (relativo a este archivo)
     ports:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      test: [ "CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}" ]
       interval: 5s
       retries: 10
 
 volumes:
   postgres_data:
+    name: qualia_postgres_data

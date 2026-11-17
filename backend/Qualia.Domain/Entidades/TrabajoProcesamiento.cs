@@ -1,0 +1,82 @@
+using Qualia.Domain.Comun;
+using Qualia.Domain.Enums;
+
+namespace Qualia.Domain.Entidades;
+
+/// <summary>
+/// Trabajo asíncrono que procesa una llamada (máximo uno por llamada).
+/// Pendiente → EnProceso → (ReintentoPendiente → EnProceso)* → Completado | Fallido.
+/// Mientras está EnProceso, <see cref="ProximoIntento"/> actúa como fecha de expiración
+/// del bloqueo: si el proceso se cae, el trabajo vuelve a poder reclamarse después de esa fecha.
+/// </summary>
+public class TrabajoProcesamiento : IEntidadEmpresa
+{
+    public Guid EmpresaId { get; set; }
+    public Guid Id { get; set; } = Guid.CreateVersion7();
+    public Guid LlamadaId { get; set; }
+    public EstadoTrabajo Estado { get; set; } = EstadoTrabajo.Pendiente;
+    public int Intentos { get; set; }
+    public DateTime? ProximoIntento { get; set; }
+
+    /// <summary>Último error ya saneado (sin datos internos); se expone como motivoFallo.</summary>
+    public string? UltimoError { get; set; }
+
+    public Llamada? Llamada { get; set; }
+
+    public static TrabajoProcesamiento Crear(Guid empresaId, Guid llamadaId) => new()
+    {
+        EmpresaId = empresaId,
+        LlamadaId = llamadaId,
+        Estado = EstadoTrabajo.Pendiente,
+        Intentos = 0,
+    };
+
+    public bool EstaTerminado => Estado is EstadoTrabajo.Completado or EstadoTrabajo.Fallido;
+
+    public void Completar()
+    {
+        AsegurarEnProceso();
+        Estado = EstadoTrabajo.Completado;
+        ProximoIntento = null;
+    }
+
+    /// <summary>
+    /// Registra un error recuperable. Si ya se alcanzó el máximo de intentos, el trabajo
+    /// falla definitivamente. Devuelve true cuando el fallo es definitivo.
+    /// </summary>
+    public bool RegistrarFallo(string errorSaneado, int maximoIntentos, DateTime ahoraUtc, TimeSpan esperaBase)
+    {
+        AsegurarEnProceso();
+
+        if (Intentos >= maximoIntentos)
+        {
+            FallarDefinitivamente(errorSaneado);
+            return true;
+        }
+
+        // Espera exponencial: base, 2×base, 4×base...
+        var factor = Math.Pow(2, Math.Max(Intentos - 1, 0));
+        Estado = EstadoTrabajo.ReintentoPendiente;
+        UltimoError = errorSaneado;
+        ProximoIntento = ahoraUtc + TimeSpan.FromTicks((long)(esperaBase.Ticks * factor));
+        return false;
+    }
+
+    public void FallarDefinitivamente(string errorSaneado)
+    {
+        AsegurarEnProceso();
+        Estado = EstadoTrabajo.Fallido;
+        UltimoError = errorSaneado;
+        ProximoIntento = null;
+    }
+
+    private void AsegurarEnProceso()
+    {
+        if (Estado != EstadoTrabajo.EnProceso)
+        {
+            throw new ReglaDominioException(
+                "TRANSICION_INVALIDA",
+                $"El trabajo debe estar EnProceso para cambiar de estado (estado actual: {Estado}).");
+        }
+    }
+}
