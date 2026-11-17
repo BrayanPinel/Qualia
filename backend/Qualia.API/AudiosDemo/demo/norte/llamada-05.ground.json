@@ -1,0 +1,100 @@
+{
+  "archivo": "demo/norte/llamada-05.wav",
+  "guion": "guiones/norte-llamada-05.json",
+  "descripcion": "El cliente habla primero; el agente no se presenta y da una solución vaga. Sí verifica identidad y se despide.",
+  "generadoCon": "Deepgram Aura-2 TTS",
+  "frecuenciaMuestreo": 8000,
+  "duracionSeg": 57.19,
+  "actores": {
+    "Agente": {
+      "nombre": "Andrés",
+      "voz": "aura-2-javier-es"
+    },
+    "Cliente": {
+      "nombre": "Ernesto",
+      "voz": "aura-2-valerio-es"
+    }
+  },
+  "segmentos": [
+    {
+      "orden": 1,
+      "actor": "Cliente",
+      "voz": "aura-2-valerio-es",
+      "inicioSeg": 0.4,
+      "finSeg": 4.56,
+      "texto": "¿Aló? ¿Aló? ¿Me escucha?"
+    },
+    {
+      "orden": 2,
+      "actor": "Agente",
+      "voz": "aura-2-javier-es",
+      "inicioSeg": 5.01,
+      "finSeg": 6.93,
+      "texto": "Sí, diga."
+    },
+    {
+      "orden": 3,
+      "actor": "Cliente",
+      "voz": "aura-2-valerio-es",
+      "inicioSeg": 7.38,
+      "finSeg": 14.82,
+      "texto": "Mire, el técnico vino ayer y el televisor sigue sin señal en varios canales."
+    },
+    {
+      "orden": 4,
+      "actor": "Agente",
+      "voz": "aura-2-javier-es",
+      "inicioSeg": 15.27,
+      "finSeg": 18.67,
+      "texto": "Necesito su número de identidad para revisar la cuenta."
+    },
+    {
+      "orden": 5,
+      "actor": "Cliente",
+      "voz": "aura-2-valerio-es",
+      "inicioSeg": 19.12,
+      "finSeg": 28.48,
+      "texto": "Es 1501-1978-00987."
+    },
+    {
+      "orden": 6,
+      "actor": "Agente",
+      "voz": "aura-2-javier-es",
+      "inicioSeg": 28.93,
+      "finSeg": 37.05,
+      "texto": "Ya, está verificado. Pues no sé, a veces es la antena. Pruebe más tarde a ver si se arregla."
+    },
+    {
+      "orden": 7,
+      "actor": "Cliente",
+      "voz": "aura-2-valerio-es",
+      "inicioSeg": 37.5,
+      "finSeg": 42.14,
+      "texto": "¿Más tarde? Ya llevo tres días así. ¿No pueden mandar a alguien otra vez?"
+    },
+    {
+      "orden": 8,
+      "actor": "Agente",
+      "voz": "aura-2-javier-es",
+      "inicioSeg": 42.59,
+      "finSeg": 48.91,
+      "texto": "Puede ser, pero primero espere un par de días. Si sigue, vuelva a llamar."
+    },
+    {
+      "orden": 9,
+      "actor": "Cliente",
+      "voz": "aura-2-valerio-es",
+      "inicioSeg": 49.36,
+      "finSeg": 51.04,
+      "texto": "Bueno, qué remedio."
+    },
+    {
+      "orden": 10,
+      "actor": "Agente",
+      "voz": "aura-2-javier-es",
+      "inicioSeg": 51.49,
+      "finSeg": 56.69,
+      "texto": "Gracias por su llamada, me despido. Que tenga buen día."
+    }
+  ]
+}

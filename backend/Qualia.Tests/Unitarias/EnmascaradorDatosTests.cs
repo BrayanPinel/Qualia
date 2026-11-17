@@ -13,6 +13,12 @@ public class EnmascaradorDatosTests
     [InlineData("pagué con 4111-1111-1111-1111", "pagué con [TARJETA]")]
     [InlineData("llámeme al 9876-5432", "llámeme al [TELEFONO]")]
     [InlineData("llámeme al +504 9876 5432", "llámeme al [TELEFONO]")]
+    // Formas en que Deepgram entrega lo dictado:
+    [InlineData("Claro, es 0 8 0 1 1 9 9 5 4 4 3 2 1.", "Claro, es [NUMERO].")]
+    [InlineData("al correo Gabriela punto Mejía arroba Example punto com o", "al correo [CORREO] o")]
+    [InlineData("es 0801 1995 44321", "es [IDENTIDAD]")]
+    // Cantidades normales no se enmascaran:
+    [InlineData("el plan de 300 megas por 400 lempiras", "el plan de 300 megas por 400 lempiras")]
     public void Enmascara_datos_sensibles(string original, string esperado)
     {
         Assert.Equal(esperado, _enmascarador.Enmascarar(original));

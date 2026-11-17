@@ -54,6 +54,7 @@ public sealed record CriterioParaEvaluar(
 public sealed record SegmentoParaEvaluar(Guid SegmentoId, int Orden, string Hablante, string Texto);
 
 public sealed record SolicitudEvaluacion(
+    Guid EmpresaId,
     Guid LlamadaId,
     IReadOnlyList<CriterioParaEvaluar> Criterios,
     IReadOnlyList<SegmentoParaEvaluar> Segmentos);

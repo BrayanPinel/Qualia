@@ -1,0 +1,100 @@
+{
+  "archivo": "demo/norte/llamada-01.wav",
+  "guion": "guiones/norte-llamada-01.json",
+  "descripcion": "Llamada ejemplar: saludo, verificación de identidad, resolución de cobro duplicado y cierre cordial.",
+  "generadoCon": "Deepgram Aura-2 TTS",
+  "frecuenciaMuestreo": 8000,
+  "duracionSeg": 65.99,
+  "actores": {
+    "Agente": {
+      "nombre": "Andrés",
+      "voz": "aura-2-javier-es"
+    },
+    "Cliente": {
+      "nombre": "Mariela",
+      "voz": "aura-2-celeste-es"
+    }
+  },
+  "segmentos": [
+    {
+      "orden": 1,
+      "actor": "Agente",
+      "voz": "aura-2-javier-es",
+      "inicioSeg": 0.4,
+      "finSeg": 6.72,
+      "texto": "Buenos días, gracias por llamar a Servicios Norte, le saluda Andrés. ¿Con quién tengo el gusto?"
+    },
+    {
+      "orden": 2,
+      "actor": "Cliente",
+      "voz": "aura-2-celeste-es",
+      "inicioSeg": 7.17,
+      "finSeg": 12.97,
+      "texto": "Hola Andrés, habla Mariela Castillo. Llamo porque en mi factura de este mes aparece un cobro doble."
+    },
+    {
+      "orden": 3,
+      "actor": "Agente",
+      "voz": "aura-2-javier-es",
+      "inicioSeg": 13.42,
+      "finSeg": 22.34,
+      "texto": "Con gusto le ayudo, señora Castillo. Antes de revisar su cuenta necesito verificar su identidad. ¿Me confirma su número de identidad?"
+    },
+    {
+      "orden": 4,
+      "actor": "Cliente",
+      "voz": "aura-2-celeste-es",
+      "inicioSeg": 22.79,
+      "finSeg": 27.63,
+      "texto": "Sí, claro. Es 0801-1990-12345."
+    },
+    {
+      "orden": 5,
+      "actor": "Agente",
+      "voz": "aura-2-javier-es",
+      "inicioSeg": 28.08,
+      "finSeg": 36.84,
+      "texto": "Gracias, la verificación fue exitosa. Estoy revisando su cuenta y efectivamente veo dos cargos del mismo plan."
+    },
+    {
+      "orden": 6,
+      "actor": "Cliente",
+      "voz": "aura-2-celeste-es",
+      "inicioSeg": 37.29,
+      "finSeg": 40.33,
+      "texto": "Exacto, yo pagué una sola vez con mi tarjeta."
+    },
+    {
+      "orden": 7,
+      "actor": "Agente",
+      "voz": "aura-2-javier-es",
+      "inicioSeg": 40.78,
+      "finSeg": 52.82,
+      "texto": "Le explico la solución: voy a anular el cargo duplicado y el reembolso se reflejará en su próxima factura, en un plazo de cinco días hábiles."
+    },
+    {
+      "orden": 8,
+      "actor": "Cliente",
+      "voz": "aura-2-celeste-es",
+      "inicioSeg": 53.27,
+      "finSeg": 55.71,
+      "texto": "Perfecto, muchas gracias por la ayuda."
+    },
+    {
+      "orden": 9,
+      "actor": "Agente",
+      "voz": "aura-2-javier-es",
+      "inicioSeg": 56.16,
+      "finSeg": 63.24,
+      "texto": "¿Hay algo más en lo que pueda ayudarle? Le agradezco su llamada y me despido. Que tenga un excelente día."
+    },
+    {
+      "orden": 10,
+      "actor": "Cliente",
+      "voz": "aura-2-celeste-es",
+      "inicioSeg": 63.69,
+      "finSeg": 65.49,
+      "texto": "Igualmente, hasta luego."
+    }
+  ]
+}

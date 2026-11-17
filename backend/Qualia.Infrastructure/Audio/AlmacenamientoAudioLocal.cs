@@ -36,7 +36,7 @@ public sealed class AlmacenamientoAudioLocal(IOptions<OpcionesAudio> opciones, I
             return Task.FromResult<ContenidoAudio?>(null);
         }
 
-        return Task.FromResult<ContenidoAudio?>(new ContenidoAudio(GenerarWav(duracionSeg), "audio/wav"));
+        return Task.FromResult<ContenidoAudio?>(new ContenidoAudio(GenerarWav(duracionSeg), "audio/wav", EsSintetico: true));
     }
 
     private static string TipoContenido(string ruta) => Path.GetExtension(ruta).ToLowerInvariant() switch

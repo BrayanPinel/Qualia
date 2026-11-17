@@ -1,0 +1,92 @@
+{
+  "archivo": "demo/norte/llamada-06.wav",
+  "guion": "guiones/norte-llamada-06.json",
+  "descripcion": "Solicitud de cancelación con oferta de retención; atención completa y cierre cordial.",
+  "generadoCon": "Deepgram Aura-2 TTS",
+  "frecuenciaMuestreo": 8000,
+  "duracionSeg": 64.94,
+  "actores": {
+    "Agente": {
+      "nombre": "Alicia",
+      "voz": "aura-2-estrella-es"
+    },
+    "Cliente": {
+      "nombre": "Mauricio",
+      "voz": "aura-2-luciano-es"
+    }
+  },
+  "segmentos": [
+    {
+      "orden": 1,
+      "actor": "Agente",
+      "voz": "aura-2-estrella-es",
+      "inicioSeg": 0.4,
+      "finSeg": 8.28,
+      "texto": "Buenos días, gracias por llamar a Servicios Norte, mi nombre es Alicia. ¿En qué le puedo ayudar?"
+    },
+    {
+      "orden": 2,
+      "actor": "Cliente",
+      "voz": "aura-2-luciano-es",
+      "inicioSeg": 8.73,
+      "finSeg": 13.89,
+      "texto": "Buenos días. Quiero cancelar mi servicio de televisión, casi no lo uso."
+    },
+    {
+      "orden": 3,
+      "actor": "Agente",
+      "voz": "aura-2-estrella-es",
+      "inicioSeg": 14.34,
+      "finSeg": 21.94,
+      "texto": "Entiendo. Para gestionar la cancelación necesito verificar su identidad. ¿Me indica su número de identidad?"
+    },
+    {
+      "orden": 4,
+      "actor": "Cliente",
+      "voz": "aura-2-luciano-es",
+      "inicioSeg": 22.39,
+      "finSeg": 30.59,
+      "texto": "Sí, es 0801-1988-23456."
+    },
+    {
+      "orden": 5,
+      "actor": "Agente",
+      "voz": "aura-2-estrella-es",
+      "inicioSeg": 31.04,
+      "finSeg": 39.68,
+      "texto": "Gracias, ya verifiqué su identidad. Antes de cancelar, le puedo ofrecer tres meses al cincuenta por ciento de descuento."
+    },
+    {
+      "orden": 6,
+      "actor": "Cliente",
+      "voz": "aura-2-luciano-es",
+      "inicioSeg": 40.13,
+      "finSeg": 42.89,
+      "texto": "No, gracias, prefiero cancelarlo."
+    },
+    {
+      "orden": 7,
+      "actor": "Agente",
+      "voz": "aura-2-estrella-es",
+      "inicioSeg": 43.34,
+      "finSeg": 53.1,
+      "texto": "Respeto su decisión. La solución queda así: la cancelación se aplica al cierre de este mes y no tendrá cargos adicionales."
+    },
+    {
+      "orden": 8,
+      "actor": "Cliente",
+      "voz": "aura-2-luciano-es",
+      "inicioSeg": 53.55,
+      "finSeg": 55.67,
+      "texto": "Perfecto, eso era todo."
+    },
+    {
+      "orden": 9,
+      "actor": "Agente",
+      "voz": "aura-2-estrella-es",
+      "inicioSeg": 56.12,
+      "finSeg": 64.44,
+      "texto": "¿Hay algo más en lo que pueda ayudarle? Le agradezco su llamada y me despido. Que tenga un excelente día."
+    }
+  ]
+}

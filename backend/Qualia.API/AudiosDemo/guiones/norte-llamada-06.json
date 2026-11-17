@@ -1,0 +1,19 @@
+{
+  "archivo": "demo/norte/llamada-06.wav",
+  "descripcion": "Solicitud de cancelación con oferta de retención; atención completa y cierre cordial.",
+  "actores": {
+    "Agente": { "nombre": "Alicia", "voz": "aura-2-estrella-es" },
+    "Cliente": { "nombre": "Mauricio", "voz": "aura-2-luciano-es" }
+  },
+  "turnos": [
+    { "actor": "Agente", "texto": "Buenos días, gracias por llamar a Servicios Norte, mi nombre es Alicia. ¿En qué le puedo ayudar?" },
+    { "actor": "Cliente", "texto": "Buenos días. Quiero cancelar mi servicio de televisión, casi no lo uso." },
+    { "actor": "Agente", "texto": "Entiendo. Para gestionar la cancelación necesito verificar su identidad. ¿Me indica su número de identidad?" },
+    { "actor": "Cliente", "texto": "Sí, es 0801-1988-23456." },
+    { "actor": "Agente", "texto": "Gracias, ya verifiqué su identidad. Antes de cancelar, le puedo ofrecer tres meses al cincuenta por ciento de descuento." },
+    { "actor": "Cliente", "texto": "No, gracias, prefiero cancelarlo." },
+    { "actor": "Agente", "texto": "Respeto su decisión. La solución queda así: la cancelación se aplica al cierre de este mes y no tendrá cargos adicionales." },
+    { "actor": "Cliente", "texto": "Perfecto, eso era todo." },
+    { "actor": "Agente", "texto": "¿Hay algo más en lo que pueda ayudarle? Le agradezco su llamada y me despido. Que tenga un excelente día." }
+  ]
+}
