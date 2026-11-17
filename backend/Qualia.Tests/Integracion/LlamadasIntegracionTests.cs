@@ -2,16 +2,16 @@ using System.Net;
 using System.Net.Http.Headers;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using Qualia.Application.Comun.Errores;
-using Qualia.Application.Comun.Paginacion;
+using Qualia.Application.Common.Errores;
+using Qualia.Application.Common.Models;
 using Qualia.Application.Features.Llamadas.Dtos;
 using Qualia.Domain.Enums;
-using Qualia.Infrastructure.Persistencia;
-using Qualia.Infrastructure.Persistencia.Semillas;
+using Qualia.Infrastructure.Persistence;
+using Qualia.Infrastructure.Persistence.Semillas;
 using Qualia.Infrastructure.Procesamiento;
 using Qualia.Tests.Integracion.Infraestructura;
-using Norte = Qualia.Infrastructure.Persistencia.Semillas.DatosDemo.Norte;
-using Sur = Qualia.Infrastructure.Persistencia.Semillas.DatosDemo.Sur;
+using Norte = Qualia.Infrastructure.Persistence.Semillas.DatosDemo.Norte;
+using Sur = Qualia.Infrastructure.Persistence.Semillas.DatosDemo.Sur;
 
 namespace Qualia.Tests.Integracion;
 

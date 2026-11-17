@@ -3,8 +3,8 @@ using System.Text.Encodings.Web;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
-using Qualia.Application.Comun.Persistencia;
-using Qualia.Application.Comun.Seguridad;
+using Qualia.Application.Common.Interfaces;
+using Qualia.Application.Common.Seguridad;
 
 namespace Qualia.API.Seguridad;
 

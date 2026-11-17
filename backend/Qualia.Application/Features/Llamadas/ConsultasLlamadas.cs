@@ -1,10 +1,9 @@
 using System.Linq.Expressions;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
-using Qualia.Application.Comun.Contratos;
-using Qualia.Application.Comun.Errores;
-using Qualia.Application.Comun.Paginacion;
-using Qualia.Application.Comun.Persistencia;
+using Qualia.Application.Common.Interfaces;
+using Qualia.Application.Common.Errores;
+using Qualia.Application.Common.Models;
 using Qualia.Application.Features.Llamadas.Dtos;
 using Qualia.Domain.Entidades;
 using Qualia.Domain.Enums;
@@ -141,9 +140,8 @@ public sealed class ConsultasLlamadas(
         var acceso = generadorUrlAudio.Generar(usuario.EmpresaId, llamadaId, urlBase);
 
         await auditoria.RegistrarAsync(
-            new EntradaAuditoria(usuario.EmpresaId, usuario.UsuarioId, "AccesoAudio", "Llamada", llamadaId,
-                Despues: new { acceso.ExpiraEn }),
-            ct);
+            usuario.EmpresaId, usuario.UsuarioId, "AccesoAudio", "Llamada", llamadaId,
+            despues: new { acceso.ExpiraEn }, cancellationToken: ct);
         await db.SaveChangesAsync(ct);
 
         return acceso;

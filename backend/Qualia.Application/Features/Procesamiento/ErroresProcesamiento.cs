@@ -1,4 +1,4 @@
-using Qualia.Domain.Comun;
+using Qualia.Domain.Common;
 
 namespace Qualia.Application.Features.Procesamiento;
 

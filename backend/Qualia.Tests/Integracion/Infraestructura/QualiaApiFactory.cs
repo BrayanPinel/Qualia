@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Qualia.API.Seguridad;
-using Qualia.Application.Comun.Contratos;
+using Qualia.Application.Common.Interfaces;
 using Qualia.Application.Features.Procesamiento;
 
 namespace Qualia.Tests.Integracion.Infraestructura;
@@ -33,7 +33,7 @@ public sealed class QualiaApiFactory(
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
         builder.UseEnvironment("Development");
-        builder.UseSetting("ConnectionStrings:DefaultConnection", postgres.CadenaConexion(baseDatos));
+        builder.UseSetting("ConnectionStrings:PostgresConnection", postgres.CadenaConexion(baseDatos));
         builder.UseSetting("Autenticacion:ModoDemo", "true");
         builder.UseSetting("BaseDatos:AplicarEsquemaAlIniciar", "true");
         builder.UseSetting("BaseDatos:SembrarDatosDemo", "true");

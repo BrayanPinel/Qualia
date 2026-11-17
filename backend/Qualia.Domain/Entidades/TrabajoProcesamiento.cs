@@ -1,4 +1,4 @@
-using Qualia.Domain.Comun;
+using Qualia.Domain.Common;
 using Qualia.Domain.Enums;
 
 namespace Qualia.Domain.Entidades;
