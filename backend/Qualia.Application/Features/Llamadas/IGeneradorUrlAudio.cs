@@ -21,4 +21,5 @@ public interface IAlmacenamientoAudio
     Task<ContenidoAudio?> AbrirAsync(string archivoRuta, decimal duracionSeg, CancellationToken cancellationToken);
 }
 
-public sealed record ContenidoAudio(Stream Contenido, string TipoContenido);
+/// <param name="EsSintetico">true si no existe la grabación y se generó un audio de relleno.</param>
+public sealed record ContenidoAudio(Stream Contenido, string TipoContenido, bool EsSintetico = false);

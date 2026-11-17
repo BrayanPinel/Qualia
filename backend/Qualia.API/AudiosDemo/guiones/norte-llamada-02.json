@@ -1,0 +1,19 @@
+{
+  "archivo": "demo/norte/llamada-02.wav",
+  "descripcion": "Buena atención técnica pero cierre abrupto: no ofrece ayuda adicional ni se despide.",
+  "actores": {
+    "Agente": { "nombre": "Alicia", "voz": "aura-2-estrella-es" },
+    "Cliente": { "nombre": "Roberto", "voz": "aura-2-aquila-es" }
+  },
+  "turnos": [
+    { "actor": "Agente", "texto": "Buenas tardes, gracias por comunicarse con Servicios Norte, le atiende Alicia. ¿En qué le puedo servir?" },
+    { "actor": "Cliente", "texto": "Buenas. Mi internet se desconecta varias veces al día desde el lunes." },
+    { "actor": "Agente", "texto": "Lamento el inconveniente. Para revisar su servicio necesito verificar su identidad, ¿me indica su número de identidad y su teléfono registrado?" },
+    { "actor": "Cliente", "texto": "Mi identidad es 0501-1985-67890 y el teléfono es 9876-5432." },
+    { "actor": "Agente", "texto": "Gracias, ya verifiqué sus datos. Veo que su módem tiene una señal muy baja." },
+    { "actor": "Cliente", "texto": "Ya lo reinicié varias veces y sigue igual." },
+    { "actor": "Agente", "texto": "Entiendo. La solución es programar una visita técnica para cambiar el módem. Queda agendada para mañana entre las ocho y las doce." },
+    { "actor": "Cliente", "texto": "Está bien, ahí estaré." },
+    { "actor": "Agente", "texto": "Listo, número de caso cuatro cinco siete." }
+  ]
+}

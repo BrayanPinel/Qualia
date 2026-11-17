@@ -54,7 +54,7 @@ public class SimulacionIATests
             new(Guid.NewGuid(), "Saludo y presentación", "El agente saluda y se presenta.", 50, false, 70),
             new(Guid.NewGuid(), "Verificación de identidad", "El agente verifica la identidad del cliente.", 50, true, 80),
         };
-        var solicitud = new SolicitudEvaluacion(llamada, criterios, segmentos);
+        var solicitud = new SolicitudEvaluacion(Empresa, llamada, criterios, segmentos);
         var evaluador = new EvaluadorIASimulado();
 
         var a = await evaluador.EvaluarAsync(solicitud, CancellationToken.None);

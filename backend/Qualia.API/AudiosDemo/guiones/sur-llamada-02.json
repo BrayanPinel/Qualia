@@ -1,0 +1,18 @@
+{
+  "archivo": "demo/sur/llamada-02.wav",
+  "descripcion": "Falla crítica: el agente habla de la deuda sin verificar al titular (contesta un familiar).",
+  "actores": {
+    "Agente": { "nombre": "Adrián", "voz": "aura-2-sirio-es" },
+    "Cliente": { "nombre": "Carmen", "voz": "aura-2-olivia-es" }
+  },
+  "turnos": [
+    { "actor": "Agente", "texto": "Buenas tardes, le saluda Adrián de Cobranzas Sur. Busco al señor Julio Paz." },
+    { "actor": "Cliente", "texto": "Él no está, habla su hermana. ¿De qué se trata?" },
+    { "actor": "Agente", "texto": "Mire, su hermano debe dos mil quinientos lempiras del préstamo y lleva dos meses sin pagar." },
+    { "actor": "Cliente", "texto": "¿En serio? No sabía nada de eso." },
+    { "actor": "Agente", "texto": "Sí. Dígale que si no paga esta semana lo vamos a reportar al buró de crédito." },
+    { "actor": "Cliente", "texto": "Bueno, yo le doy el mensaje." },
+    { "actor": "Agente", "texto": "Le propongo que pague al menos mil lempiras el viernes y el resto el próximo mes." },
+    { "actor": "Cliente", "texto": "Se lo diré. Adiós." }
+  ]
+}

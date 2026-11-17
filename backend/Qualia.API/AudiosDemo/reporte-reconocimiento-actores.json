@@ -1,0 +1,555 @@
+{
+  "generado": "2026-11-17T20:32:30.7235924Z",
+  "metodo": "Por cada 0.1 s con voz reconocida se compara el actor reconocido con el actor del ground data.",
+  "transcriptor": "Deepgram nova-2 (es, diarize=true)",
+  "reconocimientoActores": "Groq openai/gpt-oss-120b",
+  "promedioExactitudSoloDiarizacion": 0.8283,
+  "promedioExactitudDeepgramMasGroq": 0.9923,
+  "llamadas": [
+    {
+      "archivo": "demo/norte/llamada-01.wav",
+      "descripcion": "Llamada ejemplar: saludo, verificación de identidad, resolución de cobro duplicado y cierre cordial.",
+      "hablantesDetectadosPorDiarizacion": 2,
+      "exactitudSoloDiarizacion": 1,
+      "exactitudDeepgramMasGroq": 1,
+      "coberturaDeVoz": 0.8979,
+      "segmentosReconocidos": [
+        {
+          "Hablante": "Agente",
+          "InicioSeg": 0.72,
+          "FinSeg": 6.66
+        },
+        {
+          "Hablante": "Cliente",
+          "InicioSeg": 7.44,
+          "FinSeg": 12.82
+        },
+        {
+          "Hablante": "Agente",
+          "InicioSeg": 13.72,
+          "FinSeg": 22.22
+        },
+        {
+          "Hablante": "Cliente",
+          "InicioSeg": 23.08,
+          "FinSeg": 27.58
+        },
+        {
+          "Hablante": "Agente",
+          "InicioSeg": 28.61,
+          "FinSeg": 36.79
+        },
+        {
+          "Hablante": "Cliente",
+          "InicioSeg": 37.73,
+          "FinSeg": 40.23
+        },
+        {
+          "Hablante": "Agente",
+          "InicioSeg": 42.11,
+          "FinSeg": 52.54
+        },
+        {
+          "Hablante": "Cliente",
+          "InicioSeg": 53.89,
+          "FinSeg": 55.75
+        },
+        {
+          "Hablante": "Agente",
+          "InicioSeg": 56.45,
+          "FinSeg": 63.19
+        },
+        {
+          "Hablante": "Cliente",
+          "InicioSeg": 64.05,
+          "FinSeg": 65.51
+        }
+      ]
+    },
+    {
+      "archivo": "demo/norte/llamada-02.wav",
+      "descripcion": "Buena atención técnica pero cierre abrupto: no ofrece ayuda adicional ni se despide.",
+      "hablantesDetectadosPorDiarizacion": 2,
+      "exactitudSoloDiarizacion": 1,
+      "exactitudDeepgramMasGroq": 1,
+      "coberturaDeVoz": 0.8907,
+      "segmentosReconocidos": [
+        {
+          "Hablante": "Agente",
+          "InicioSeg": 1.20,
+          "FinSeg": 8.02
+        },
+        {
+          "Hablante": "Cliente",
+          "InicioSeg": 9.2,
+          "FinSeg": 12.98
+        },
+        {
+          "Hablante": "Agente",
+          "InicioSeg": 14.54,
+          "FinSeg": 23.44
+        },
+        {
+          "Hablante": "Cliente",
+          "InicioSeg": 24.62,
+          "FinSeg": 40.99
+        },
+        {
+          "Hablante": "Agente",
+          "InicioSeg": 41.98,
+          "FinSeg": 47.75
+        },
+        {
+          "Hablante": "Cliente",
+          "InicioSeg": 48.61,
+          "FinSeg": 51.60
+        },
+        {
+          "Hablante": "Agente",
+          "InicioSeg": 52.54,
+          "FinSeg": 61.47
+        },
+        {
+          "Hablante": "Cliente",
+          "InicioSeg": 62.57,
+          "FinSeg": 64.35
+        },
+        {
+          "Hablante": "Agente",
+          "InicioSeg": 66.09,
+          "FinSeg": 69.39
+        }
+      ]
+    },
+    {
+      "archivo": "demo/norte/llamada-03.wav",
+      "descripcion": "Falla crítica: el agente revisa la cuenta y da información sin verificar la identidad del cliente.",
+      "hablantesDetectadosPorDiarizacion": 2,
+      "exactitudSoloDiarizacion": 1,
+      "exactitudDeepgramMasGroq": 1,
+      "coberturaDeVoz": 0.8753,
+      "segmentosReconocidos": [
+        {
+          "Hablante": "Agente",
+          "InicioSeg": 0.80,
+          "FinSeg": 5.62
+        },
+        {
+          "Hablante": "Cliente",
+          "InicioSeg": 6.48,
+          "FinSeg": 12.02
+        },
+        {
+          "Hablante": "Agente",
+          "InicioSeg": 12.87,
+          "FinSeg": 17.04
+        },
+        {
+          "Hablante": "Cliente",
+          "InicioSeg": 17.82,
+          "FinSeg": 20.80
+        },
+        {
+          "Hablante": "Agente",
+          "InicioSeg": 22.30,
+          "FinSeg": 33.02
+        },
+        {
+          "Hablante": "Cliente",
+          "InicioSeg": 34.2,
+          "FinSeg": 36.54
+        },
+        {
+          "Hablante": "Agente",
+          "InicioSeg": 38.04,
+          "FinSeg": 43.72
+        },
+        {
+          "Hablante": "Cliente",
+          "InicioSeg": 44.50,
+          "FinSeg": 45.56
+        },
+        {
+          "Hablante": "Agente",
+          "InicioSeg": 46.90,
+          "FinSeg": 51.08
+        }
+      ]
+    },
+    {
+      "archivo": "demo/norte/llamada-04.wav",
+      "descripcion": "Dos voces femeninas (reto de diarización). Atención completa con cambio de plan; el cliente dicta teléfono y correo.",
+      "hablantesDetectadosPorDiarizacion": 1,
+      "exactitudSoloDiarizacion": 0.611,
+      "exactitudDeepgramMasGroq": 1,
+      "coberturaDeVoz": 0.89,
+      "segmentosReconocidos": [
+        {
+          "Hablante": "Agente",
+          "InicioSeg": 1.68,
+          "FinSeg": 8.02
+        },
+        {
+          "Hablante": "Cliente",
+          "InicioSeg": 8.96,
+          "FinSeg": 12.9
+        },
+        {
+          "Hablante": "Agente",
+          "InicioSeg": 14.80,
+          "FinSeg": 21.14
+        },
+        {
+          "Hablante": "Cliente",
+          "InicioSeg": 22.08,
+          "FinSeg": 29.63
+        },
+        {
+          "Hablante": "Agente",
+          "InicioSeg": 31.05,
+          "FinSeg": 40.11
+        },
+        {
+          "Hablante": "Cliente",
+          "InicioSeg": 40.78,
+          "FinSeg": 50.80
+        },
+        {
+          "Hablante": "Agente",
+          "InicioSeg": 51.82,
+          "FinSeg": 61.24
+        },
+        {
+          "Hablante": "Cliente",
+          "InicioSeg": 62.33,
+          "FinSeg": 64.03
+        },
+        {
+          "Hablante": "Agente",
+          "InicioSeg": 65.37,
+          "FinSeg": 71.87
+        }
+      ]
+    },
+    {
+      "archivo": "demo/norte/llamada-05.wav",
+      "descripcion": "El cliente habla primero; el agente no se presenta y da una solución vaga. Sí verifica identidad y se despide.",
+      "hablantesDetectadosPorDiarizacion": 1,
+      "exactitudSoloDiarizacion": 0.4928,
+      "exactitudDeepgramMasGroq": 0.9229,
+      "coberturaDeVoz": 0.7875,
+      "segmentosReconocidos": [
+        {
+          "Hablante": "Cliente",
+          "InicioSeg": 1.28,
+          "FinSeg": 4.5
+        },
+        {
+          "Hablante": "Agente",
+          "InicioSeg": 5.92,
+          "FinSeg": 6.74
+        },
+        {
+          "Hablante": "Cliente",
+          "InicioSeg": 8.24,
+          "FinSeg": 14.42
+        },
+        {
+          "Hablante": "Agente",
+          "InicioSeg": 15.86,
+          "FinSeg": 18.68
+        },
+        {
+          "Hablante": "Cliente",
+          "InicioSeg": 20.90,
+          "FinSeg": 29.15
+        },
+        {
+          "Hablante": "Agente",
+          "InicioSeg": 30.17,
+          "FinSeg": 30.91
+        },
+        {
+          "Hablante": "Cliente",
+          "InicioSeg": 31.85,
+          "FinSeg": 34.75
+        },
+        {
+          "Hablante": "Agente",
+          "InicioSeg": 35.13,
+          "FinSeg": 36.99
+        },
+        {
+          "Hablante": "Cliente",
+          "InicioSeg": 37.85,
+          "FinSeg": 42.19
+        },
+        {
+          "Hablante": "Agente",
+          "InicioSeg": 43.04,
+          "FinSeg": 48.82
+        },
+        {
+          "Hablante": "Cliente",
+          "InicioSeg": 49.84,
+          "FinSeg": 50.82
+        },
+        {
+          "Hablante": "Agente",
+          "InicioSeg": 52.71,
+          "FinSeg": 56.66
+        }
+      ]
+    },
+    {
+      "archivo": "demo/norte/llamada-06.wav",
+      "descripcion": "Solicitud de cancelación con oferta de retención; atención completa y cierre cordial.",
+      "hablantesDetectadosPorDiarizacion": 2,
+      "exactitudSoloDiarizacion": 1,
+      "exactitudDeepgramMasGroq": 1,
+      "coberturaDeVoz": 0.852,
+      "segmentosReconocidos": [
+        {
+          "Hablante": "Agente",
+          "InicioSeg": 1.60,
+          "FinSeg": 8.1
+        },
+        {
+          "Hablante": "Cliente",
+          "InicioSeg": 9.2,
+          "FinSeg": 13.86
+        },
+        {
+          "Hablante": "Agente",
+          "InicioSeg": 15.34,
+          "FinSeg": 21.76
+        },
+        {
+          "Hablante": "Cliente",
+          "InicioSeg": 23.34,
+          "FinSeg": 30.58
+        },
+        {
+          "Hablante": "Agente",
+          "InicioSeg": 31.76,
+          "FinSeg": 39.38
+        },
+        {
+          "Hablante": "Cliente",
+          "InicioSeg": 40.48,
+          "FinSeg": 42.5
+        },
+        {
+          "Hablante": "Agente",
+          "InicioSeg": 44.18,
+          "FinSeg": 52.76
+        },
+        {
+          "Hablante": "Cliente",
+          "InicioSeg": 54.32,
+          "FinSeg": 55.70
+        },
+        {
+          "Hablante": "Agente",
+          "InicioSeg": 57.20,
+          "FinSeg": 64.50
+        }
+      ]
+    },
+    {
+      "archivo": "demo/norte/llamada-99.wav",
+      "descripcion": "Llamada corta asociada a una rúbrica en borrador (no se puede evaluar; prueba de RUBRICA_SIN_PUBLICAR).",
+      "hablantesDetectadosPorDiarizacion": 1,
+      "exactitudSoloDiarizacion": 0.6605,
+      "exactitudDeepgramMasGroq": 1,
+      "coberturaDeVoz": 0.8552,
+      "segmentosReconocidos": [
+        {
+          "Hablante": "Agente",
+          "InicioSeg": 0.96,
+          "FinSeg": 4.42
+        },
+        {
+          "Hablante": "Cliente",
+          "InicioSeg": 5.52,
+          "FinSeg": 9.86
+        },
+        {
+          "Hablante": "Agente",
+          "InicioSeg": 10.96,
+          "FinSeg": 18.32
+        },
+        {
+          "Hablante": "Cliente",
+          "InicioSeg": 19.42,
+          "FinSeg": 21.04
+        },
+        {
+          "Hablante": "Agente",
+          "InicioSeg": 21.90,
+          "FinSeg": 24.16
+        }
+      ]
+    },
+    {
+      "archivo": "demo/sur/llamada-01.wav",
+      "descripcion": "Cobranza ejemplar: saludo, verificación del titular antes de hablar de la deuda y acuerdo de pago claro.",
+      "hablantesDetectadosPorDiarizacion": 2,
+      "exactitudSoloDiarizacion": 1,
+      "exactitudDeepgramMasGroq": 1,
+      "coberturaDeVoz": 0.9196,
+      "segmentosReconocidos": [
+        {
+          "Hablante": "Agente",
+          "InicioSeg": 0.72,
+          "FinSeg": 5.22
+        },
+        {
+          "Hablante": "Cliente",
+          "InicioSeg": 6.0,
+          "FinSeg": 7.14
+        },
+        {
+          "Hablante": "Agente",
+          "InicioSeg": 7.84,
+          "FinSeg": 13.94
+        },
+        {
+          "Hablante": "Cliente",
+          "InicioSeg": 15.04,
+          "FinSeg": 21.86
+        },
+        {
+          "Hablante": "Agente",
+          "InicioSeg": 22.72,
+          "FinSeg": 29.70
+        },
+        {
+          "Hablante": "Cliente",
+          "InicioSeg": 30.59,
+          "FinSeg": 33.09
+        },
+        {
+          "Hablante": "Agente",
+          "InicioSeg": 33.95,
+          "FinSeg": 42.69
+        },
+        {
+          "Hablante": "Cliente",
+          "InicioSeg": 43.40,
+          "FinSeg": 45.58
+        },
+        {
+          "Hablante": "Agente",
+          "InicioSeg": 46.44,
+          "FinSeg": 52.38
+        }
+      ]
+    },
+    {
+      "archivo": "demo/sur/llamada-02.wav",
+      "descripcion": "Falla crítica: el agente habla de la deuda sin verificar al titular (contesta un familiar).",
+      "hablantesDetectadosPorDiarizacion": 2,
+      "exactitudSoloDiarizacion": 1,
+      "exactitudDeepgramMasGroq": 1,
+      "coberturaDeVoz": 0.8872,
+      "segmentosReconocidos": [
+        {
+          "Hablante": "Agente",
+          "InicioSeg": 0.64,
+          "FinSeg": 5.94
+        },
+        {
+          "Hablante": "Cliente",
+          "InicioSeg": 6.80,
+          "FinSeg": 9.86
+        },
+        {
+          "Hablante": "Agente",
+          "InicioSeg": 10.8,
+          "FinSeg": 16.10
+        },
+        {
+          "Hablante": "Cliente",
+          "InicioSeg": 16.48,
+          "FinSeg": 19.62
+        },
+        {
+          "Hablante": "Agente",
+          "InicioSeg": 20.56,
+          "FinSeg": 24.58
+        },
+        {
+          "Hablante": "Cliente",
+          "InicioSeg": 25.52,
+          "FinSeg": 27.29
+        },
+        {
+          "Hablante": "Agente",
+          "InicioSeg": 28.14,
+          "FinSeg": 34.08
+        },
+        {
+          "Hablante": "Cliente",
+          "InicioSeg": 34.94,
+          "FinSeg": 36.72
+        }
+      ]
+    },
+    {
+      "archivo": "demo/sur/llamada-03.wav",
+      "descripcion": "Cliente molesto; el agente verifica y se presenta, pero no concreta ningún acuerdo de pago.",
+      "hablantesDetectadosPorDiarizacion": 1,
+      "exactitudSoloDiarizacion": 0.5185,
+      "exactitudDeepgramMasGroq": 1,
+      "coberturaDeVoz": 0.9048,
+      "segmentosReconocidos": [
+        {
+          "Hablante": "Agente",
+          "InicioSeg": 0.64,
+          "FinSeg": 6.02
+        },
+        {
+          "Hablante": "Cliente",
+          "InicioSeg": 7.12,
+          "FinSeg": 11.7
+        },
+        {
+          "Hablante": "Agente",
+          "InicioSeg": 12.66,
+          "FinSeg": 19.40
+        },
+        {
+          "Hablante": "Cliente",
+          "InicioSeg": 20.58,
+          "FinSeg": 31.74
+        },
+        {
+          "Hablante": "Agente",
+          "InicioSeg": 32.68,
+          "FinSeg": 36.14
+        },
+        {
+          "Hablante": "Cliente",
+          "InicioSeg": 37.16,
+          "FinSeg": 40.46
+        },
+        {
+          "Hablante": "Agente",
+          "InicioSeg": 40.82,
+          "FinSeg": 46.27
+        },
+        {
+          "Hablante": "Cliente",
+          "InicioSeg": 46.89,
+          "FinSeg": 47.71
+        },
+        {
+          "Hablante": "Agente",
+          "InicioSeg": 48.41,
+          "FinSeg": 50.04
+        }
+      ]
+    }
+  ]
+}

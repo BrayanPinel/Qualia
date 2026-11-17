@@ -1,0 +1,92 @@
+{
+  "archivo": "demo/norte/llamada-02.wav",
+  "guion": "guiones/norte-llamada-02.json",
+  "descripcion": "Buena atención técnica pero cierre abrupto: no ofrece ayuda adicional ni se despide.",
+  "generadoCon": "Deepgram Aura-2 TTS",
+  "frecuenciaMuestreo": 8000,
+  "duracionSeg": 70.02,
+  "actores": {
+    "Agente": {
+      "nombre": "Alicia",
+      "voz": "aura-2-estrella-es"
+    },
+    "Cliente": {
+      "nombre": "Roberto",
+      "voz": "aura-2-aquila-es"
+    }
+  },
+  "segmentos": [
+    {
+      "orden": 1,
+      "actor": "Agente",
+      "voz": "aura-2-estrella-es",
+      "inicioSeg": 0.4,
+      "finSeg": 8,
+      "texto": "Buenas tardes, gracias por comunicarse con Servicios Norte, le atiende Alicia. ¿En qué le puedo servir?"
+    },
+    {
+      "orden": 2,
+      "actor": "Cliente",
+      "voz": "aura-2-aquila-es",
+      "inicioSeg": 8.45,
+      "finSeg": 13.01,
+      "texto": "Buenas. Mi internet se desconecta varias veces al día desde el lunes."
+    },
+    {
+      "orden": 3,
+      "actor": "Agente",
+      "voz": "aura-2-estrella-es",
+      "inicioSeg": 13.46,
+      "finSeg": 23.86,
+      "texto": "Lamento el inconveniente. Para revisar su servicio necesito verificar su identidad, ¿me indica su número de identidad y su teléfono registrado?"
+    },
+    {
+      "orden": 4,
+      "actor": "Cliente",
+      "voz": "aura-2-aquila-es",
+      "inicioSeg": 24.31,
+      "finSeg": 40.99,
+      "texto": "Mi identidad es 0501-1985-67890 y el teléfono es 9876-5432."
+    },
+    {
+      "orden": 5,
+      "actor": "Agente",
+      "voz": "aura-2-estrella-es",
+      "inicioSeg": 41.44,
+      "finSeg": 47.88,
+      "texto": "Gracias, ya verifiqué sus datos. Veo que su módem tiene una señal muy baja."
+    },
+    {
+      "orden": 6,
+      "actor": "Cliente",
+      "voz": "aura-2-aquila-es",
+      "inicioSeg": 48.33,
+      "finSeg": 51.69,
+      "texto": "Ya lo reinicié varias veces y sigue igual."
+    },
+    {
+      "orden": 7,
+      "actor": "Agente",
+      "voz": "aura-2-estrella-es",
+      "inicioSeg": 52.14,
+      "finSeg": 61.5,
+      "texto": "Entiendo. La solución es programar una visita técnica para cambiar el módem. Queda agendada para mañana entre las ocho y las doce."
+    },
+    {
+      "orden": 8,
+      "actor": "Cliente",
+      "voz": "aura-2-aquila-es",
+      "inicioSeg": 61.95,
+      "finSeg": 64.43,
+      "texto": "Está bien, ahí estaré."
+    },
+    {
+      "orden": 9,
+      "actor": "Agente",
+      "voz": "aura-2-estrella-es",
+      "inicioSeg": 64.88,
+      "finSeg": 69.52,
+      "texto": "Listo, número de caso cuatro cinco siete."
+    }
+  ]
+}

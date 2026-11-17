@@ -1,0 +1,19 @@
+{
+  "archivo": "demo/sur/llamada-01.wav",
+  "descripcion": "Cobranza ejemplar: saludo, verificación del titular antes de hablar de la deuda y acuerdo de pago claro.",
+  "actores": {
+    "Agente": { "nombre": "Adrián", "voz": "aura-2-sirio-es" },
+    "Cliente": { "nombre": "Patricia", "voz": "aura-2-gloria-es" }
+  },
+  "turnos": [
+    { "actor": "Agente", "texto": "Buenos días, le saluda Adrián de Cobranzas Sur. ¿Hablo con la señora Patricia Rivera?" },
+    { "actor": "Cliente", "texto": "Sí, con ella habla." },
+    { "actor": "Agente", "texto": "Gracias. Por seguridad necesito verificar su identidad antes de continuar. ¿Me confirma su número de identidad?" },
+    { "actor": "Cliente", "texto": "Es 0801-1980-55555." },
+    { "actor": "Agente", "texto": "Gracias, señora Rivera, la verificación fue exitosa. Le llamo porque su tarjeta tiene un saldo vencido de tres mil lempiras." },
+    { "actor": "Cliente", "texto": "Sí, sé que me atrasé. Este mes se me complicó." },
+    { "actor": "Agente", "texto": "Lo entiendo. Le propongo un acuerdo de pago: tres cuotas de mil lempiras, los días quince de cada mes, sin intereses de mora." },
+    { "actor": "Cliente", "texto": "Me parece bien, acepto el acuerdo." },
+    { "actor": "Agente", "texto": "Perfecto, queda registrado. Le llegará la confirmación por mensaje. Gracias por su atención, que tenga buen día." }
+  ]
+}

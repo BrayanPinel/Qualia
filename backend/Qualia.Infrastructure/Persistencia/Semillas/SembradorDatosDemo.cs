@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Qualia.Domain.Entidades;
 using Qualia.Domain.Enums;
+using Qualia.Infrastructure.IA;
 
 namespace Qualia.Infrastructure.Persistencia.Semillas;
 
@@ -12,7 +13,11 @@ namespace Qualia.Infrastructure.Persistencia.Semillas;
 ///
 /// NOTA: los usuarios se crean sin contraseña utilizable ("demo-sin-credenciales");
 /// </summary>
-public sealed class SembradorDatosDemo(QualiaDbContext db, TimeProvider reloj, ILogger<SembradorDatosDemo> logger)
+public sealed class SembradorDatosDemo(
+    QualiaDbContext db,
+    TimeProvider reloj,
+    LectorGroundData groundData,
+    ILogger<SembradorDatosDemo> logger)
 {
     private const string HashNoUtilizable = "demo-sin-credenciales";
 
@@ -20,6 +25,7 @@ public sealed class SembradorDatosDemo(QualiaDbContext db, TimeProvider reloj, I
     {
         if (await db.Empresas.AnyAsync(e => e.Id == DatosDemo.Norte.Empresa, ct))
         {
+            await SincronizarDuracionesAsync(ct);
             return;
         }
 
@@ -30,6 +36,38 @@ public sealed class SembradorDatosDemo(QualiaDbContext db, TimeProvider reloj, I
 
         logger.LogInformation("Datos de demostración del módulo de llamadas cargados (empresas demo-norte y demo-sur)");
     }
+
+    /// <summary>
+    /// La duración registrada debe coincidir con la del audio.
+    /// Si los audios se regeneraron, actualiza las llamadas demo que aún no se han procesado.
+    /// </summary>
+    private async Task SincronizarDuracionesAsync(CancellationToken ct)
+    {
+        var demo = DatosDemo.Norte.Llamadas.Concat(DatosDemo.Sur.Llamadas).Append(DatosDemo.Norte.LlamadaRubricaBorrador).ToList();
+        var llamadas = await db.Llamadas.IgnoreQueryFilters()
+            .Where(l => demo.Contains(l.Id) && l.Estado == EstadoLlamada.Disponible)
+            .ToListAsync(ct);
+
+        var actualizadas = 0;
+        foreach (var llamada in llamadas)
+        {
+            var duracion = Duracion(llamada.ArchivoRuta, llamada.DuracionSeg);
+            if (duracion != llamada.DuracionSeg)
+            {
+                llamada.DuracionSeg = duracion;
+                actualizadas++;
+            }
+        }
+
+        if (actualizadas > 0)
+        {
+            await db.SaveChangesAsync(ct);
+            logger.LogInformation("Duración de {Cantidad} llamada(s) demo sincronizada con su audio", actualizadas);
+        }
+    }
+
+    /// <summary>Duración real del audio según su ground data; si no existe, la de respaldo.</summary>
+    private decimal Duracion(string archivoRuta, decimal respaldo) => groundData.Leer(archivoRuta)?.DuracionSeg ?? respaldo;
 
     private void SembrarNorte(DateTime ahora)
     {
@@ -86,11 +124,11 @@ public sealed class SembradorDatosDemo(QualiaDbContext db, TimeProvider reloj, I
         {
             var agente = i % 2 == 0 ? DatosDemo.Norte.AgenteAndres : DatosDemo.Norte.AgenteAlicia;
             db.Llamadas.Add(Llamada(e, DatosDemo.Norte.Llamadas[i], DatosDemo.Norte.Rubrica, agente,
-                $"demo/norte/llamada-{i + 1:00}.wav", duraciones[i], ahora.AddDays(-(i + 1))));
+                $"demo/norte/llamada-{i + 1:00}.wav", Duracion($"demo/norte/llamada-{i + 1:00}.wav", duraciones[i]), ahora.AddDays(-(i + 1))));
         }
 
         db.Llamadas.Add(Llamada(e, DatosDemo.Norte.LlamadaRubricaBorrador, DatosDemo.Norte.RubricaBorrador,
-            DatosDemo.Norte.AgenteAndres, "demo/norte/llamada-99.wav", 60m, ahora.AddDays(-10)));
+            DatosDemo.Norte.AgenteAndres, "demo/norte/llamada-99.wav", Duracion("demo/norte/llamada-99.wav", 60m), ahora.AddDays(-10)));
     }
 
     private void SembrarSur(DateTime ahora)
@@ -128,7 +166,7 @@ public sealed class SembradorDatosDemo(QualiaDbContext db, TimeProvider reloj, I
         for (var i = 0; i < DatosDemo.Sur.Llamadas.Length; i++)
         {
             db.Llamadas.Add(Llamada(e, DatosDemo.Sur.Llamadas[i], DatosDemo.Sur.Rubrica, DatosDemo.Sur.Agente,
-                $"demo/sur/llamada-{i + 1:00}.wav", duraciones[i], ahora.AddDays(-(i + 1))));
+                $"demo/sur/llamada-{i + 1:00}.wav", Duracion($"demo/sur/llamada-{i + 1:00}.wav", duraciones[i]), ahora.AddDays(-(i + 1))));
         }
     }
 

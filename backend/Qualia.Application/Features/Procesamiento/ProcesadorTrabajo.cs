@@ -115,6 +115,7 @@ public sealed class ProcesadorTrabajo(
             }
 
             var solicitud = new SolicitudEvaluacion(
+                llamada.EmpresaId,
                 llamada.Id,
                 criterios.Select(c => new CriterioParaEvaluar(c.Id, c.Nombre, c.Descripcion, c.Peso, c.EsCritico, c.UmbralCumplimiento)).ToList(),
                 segmentos.Select(s => new SegmentoParaEvaluar(s.Id, s.Orden, s.Hablante, s.Texto)).ToList());

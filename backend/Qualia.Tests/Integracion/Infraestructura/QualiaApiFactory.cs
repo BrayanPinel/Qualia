@@ -41,6 +41,7 @@ public sealed class QualiaApiFactory(
         builder.UseSetting("Procesamiento:MaximoIntentos", maximoIntentos.ToString());
         builder.UseSetting("Procesamiento:EsperaBaseReintento", "00:00:00");
         builder.UseSetting("Audio:ClaveFirma", "clave-de-pruebas-de-integracion-qualia-2026");
+        builder.UseSetting("IA:Modo", "Simulado"); // Pruebas deterministas, sin red ni costo.
 
         builder.ConfigureTestServices(servicios =>
         {

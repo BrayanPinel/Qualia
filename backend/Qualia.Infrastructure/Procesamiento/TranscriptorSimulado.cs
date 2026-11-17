@@ -1,14 +1,16 @@
 using Qualia.Application.Features.Procesamiento;
+using Qualia.Infrastructure.IA;
 
 namespace Qualia.Infrastructure.Procesamiento;
 
 /// <summary>
-/// Transcriptor del modo Simulado: genera un diálogo plausible de centro de contacto,
-/// determinista para cada llamada (misma llamada ⇒ misma transcripción).
+/// Transcriptor del modo Simulado, determinista para cada llamada.
+/// Si la llamada tiene ground data, devuelve esa transcripción exacta (coincide con el audio).
+/// Si no, genera un diálogo plausible de centro de contacto.
 /// Incluye a propósito datos sensibles para demostrar el enmascarado.
-/// Un adaptador real (p. ej. Deepgram Nova-2, fase1.md 8.1) implementaría <see cref="ITranscriptor"/>.
+/// El adaptador real es <see cref="TranscriptorDeepgram"/>.
 /// </summary>
-public sealed class TranscriptorSimulado : ITranscriptor
+public sealed class TranscriptorSimulado(LectorGroundData? lectorGroundData = null) : ITranscriptor
 {
     public const string HablanteAgente = "Agente";
     public const string HablanteCliente = "Cliente";
@@ -37,6 +39,19 @@ public sealed class TranscriptorSimulado : ITranscriptor
 
     public Task<ResultadoTranscripcion> TranscribirAsync(SolicitudTranscripcion solicitud, CancellationToken cancellationToken)
     {
+        if (lectorGroundData?.Leer(solicitud.ArchivoRuta) is { } ground)
+        {
+            var desdeGround = ground.Segmentos
+                .OrderBy(s => s.InicioSeg)
+                .Select(s => new SegmentoTranscrito(
+                    s.Actor,
+                    Math.Min(s.InicioSeg, solicitud.DuracionSeg),
+                    Math.Min(s.FinSeg, solicitud.DuracionSeg),
+                    s.Texto))
+                .ToList();
+            return Task.FromResult(new ResultadoTranscripcion(desdeGround, desdeGround.Sum(s => s.Texto.Length) / 4, CostoEstimado: 0m));
+        }
+
         var aleatorio = new Random(SemillaDeterminista.Desde(solicitud.LlamadaId));
 
         var lineas = Guion
