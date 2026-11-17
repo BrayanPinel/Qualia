@@ -4,17 +4,15 @@ namespace Qualia.Application.Common.Interfaces;
 
 /// <summary>
 /// CONTRATO B → A (resolución de disputas con o sin cambio de notas).
-/// Lo implementa el Rol B (<c>ServicioRevision</c>) y lo usa el Rol A en
+/// Lo implementa el Rol B (ServicioRevision) y lo usa el Rol A en
 /// PUT /api/disputas/{id}/resolucion, sin duplicar el cálculo ni el control de concurrencia.
 ///
 /// Reglas para quien lo invoca:
-/// <list type="number">
-/// <item>Los métodos que escriben se ejecutan DENTRO de una transacción abierta por el llamador sobre el
-/// mismo <c>IQualiaDbContext</c> del scope: hacen SaveChanges, pero NO Commit.</item>
-/// <item>Comparan <c>revisionEsperada</c> con Evaluacion_IA.revision y la incrementan de forma atómica;
-/// si no coincide lanzan 409 <c>REVISION_DESACTUALIZADA</c>.</item>
-/// <item>Los errores de negocio se lanzan como <c>ExcepcionNegocio</c>.</item>
-/// </list>
+/// Los métodos que escriben se ejecutan DENTRO de una transacción abierta por el llamador sobre el
+/// mismo IQualiaDbContext del scope: hacen SaveChanges, pero NO Commit.
+/// Comparan revisionEsperada con Evaluacion_IA.revision y la incrementan de forma atómica;
+/// si no coincide lanzan 409 REVISION_DESACTUALIZADA.
+/// Los errores de negocio se lanzan como ExcepcionNegocio.
 /// </summary>
 public interface IRevisionEvaluacion
 {

@@ -8,7 +8,7 @@ using Qualia.Application.Features.Campanas.Dtos;
 namespace Qualia.API.Controllers;
 
 /// <summary>
-/// Campañas, asignaciones de usuarios y rúbricas de una campaña (Rol B).
+/// Campañas, asignaciones de usuarios y rúbricas de una campaña.
 /// El controlador solo traduce HTTP; permisos, reglas y persistencia están en Application.
 /// </summary>
 [ApiController]

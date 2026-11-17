@@ -27,7 +27,7 @@ public interface IQualiaDbContext
     DbSet<DetalleEvaluacion> DetallesEvaluacion { get; }
     DbSet<EvidenciaCriterio> EvidenciasCriterio { get; }
 
-    // --- revisión humana (Rol B) ---
+    // --- revisión humana ---
     DbSet<RevisionHumana> RevisionesHumanas { get; }
     DbSet<CriterioRevisado> CriteriosRevisados { get; }
     DbSet<EvidenciaRevision> EvidenciasRevision { get; }

@@ -9,8 +9,7 @@ namespace Qualia.Infrastructure.Procesamiento;
 /// Evaluador del modo Simulado: busca en la transcripción enmascarada el segmento del agente
 /// que mejor coincide con las palabras clave de cada criterio, cita un fragmento literal de él
 /// y asigna un puntaje determinista. Si no hay coincidencias, informa ausencia de evidencia.
-/// Un adaptador real (p. ej. Groq, fase1.md 8.2) implementaría <see cref="IEvaluadorIA"/>
-/// y su salida pasaría por la misma validación de evidencias.
+/// El adaptador real es EvaluadorGroq; ambos pasan por la misma validación de evidencias.
 /// </summary>
 public sealed class EvaluadorIASimulado : IEvaluadorIA
 {

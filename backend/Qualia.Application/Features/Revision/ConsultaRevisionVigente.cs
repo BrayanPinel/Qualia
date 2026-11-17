@@ -6,7 +6,7 @@ namespace Qualia.Application.Features.Revision;
 /// <summary>
 /// Implementación del Rol B del contrato B → D (y C) <see cref="IConsultaRevisionVigente"/>:
 /// el resultado humano vigente es el del ÚLTIMO AJUSTE COMPLETO (la revisión más reciente que tiene
-/// criterios revisados). Las confirmaciones posteriores no lo borran (fase1 §7.8).
+/// criterios revisados). Las confirmaciones posteriores no lo borran.
 /// </summary>
 public sealed class ConsultaRevisionVigente(IQualiaDbContext db) : IConsultaRevisionVigente
 {

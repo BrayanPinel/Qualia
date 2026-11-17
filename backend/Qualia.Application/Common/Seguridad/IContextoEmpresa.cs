@@ -3,10 +3,8 @@ namespace Qualia.Application.Common.Seguridad;
 /// <summary>
 /// Empresa con la que trabaja el DbContext en la unidad de trabajo actual.
 /// Los Global Query Filters usan <see cref="EmpresaIdActual"/>.
-/// <list type="bullet">
-/// <item>En una petición HTTP se toma del token del usuario.</item>
-/// <item>En el worker (sin HttpContext) se establece explícitamente desde el trabajo persistido.</item>
-/// </list>
+/// En una petición HTTP se toma del token del usuario.
+/// En el worker (sin HttpContext) se establece explícitamente desde el trabajo persistido.
 /// Si no hay empresa, los filtros no devuelven ninguna fila (falla cerrada).
 /// </summary>
 public interface IContextoEmpresa

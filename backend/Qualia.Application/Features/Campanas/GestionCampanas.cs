@@ -12,7 +12,7 @@ using Qualia.Domain.Enums;
 namespace Qualia.Application.Features.Campanas;
 
 /// <summary>
-/// Casos de uso de campañas y asignaciones (Rol B):
+/// Casos de uso de campañas y asignaciones:
 /// GET/POST/PUT /api/campanas y GET/PUT/DELETE /api/campanas/{id}/usuarios[/{usuarioId}].
 /// El filtro global ya limita a la empresa del token; aquí se aplican el rol y el alcance.
 /// </summary>
@@ -27,7 +27,7 @@ public sealed class GestionCampanas(
 {
     /// <summary>
     /// AdminEmpresa y Auditor: todas las campañas de su empresa. Supervisor: las asignadas.
-    /// Agente: las asignadas o aquellas donde conserva llamadas propias (fase1 §7.3).
+    /// Agente: las asignadas o aquellas donde conserva llamadas propias.
     /// </summary>
     public async Task<PaginaDto<CampanaDto>> ListarAsync(PaginacionDto paginacion, CancellationToken ct)
     {

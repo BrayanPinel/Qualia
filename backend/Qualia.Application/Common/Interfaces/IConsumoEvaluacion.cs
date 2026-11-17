@@ -3,16 +3,14 @@ namespace Qualia.Application.Common.Interfaces;
 /// <summary>
 /// CONTRATO D ↔ C (reserva y cierre de consumo).
 /// Lo expone el Rol C y lo consume el Rol D. Mientras C no lo implemente, se usa
-/// <c>ConsumoEvaluacionProvisional</c> (Infrastructure), que NO persiste nada.
+/// ConsumoEvaluacionProvisional (Infrastructure), que NO persiste nada.
 ///
 /// Reglas para la implementación:
-/// <list type="number">
-/// <item>Los tres métodos se invocan DENTRO de una transacción abierta por el llamador sobre el mismo
-/// <c>IQualiaDbContext</c> del scope. La implementación puede usar SaveChanges o SQL con bloqueo
-/// (SELECT ... FOR UPDATE), pero NO debe hacer Commit ni abrir otra transacción.</item>
-/// <item>Son idempotentes por (empresaId, llamadaId): un reintento no duplica reserva ni facturación.</item>
-/// <item>Los errores de negocio se lanzan como <c>ExcepcionNegocio</c>.</item>
-/// </list>
+/// Los tres métodos se invocan DENTRO de una transacción abierta por el llamador sobre el mismo
+/// IQualiaDbContext del scope. La implementación puede usar SaveChanges o SQL con bloqueo
+/// (SELECT ... FOR UPDATE), pero NO debe hacer Commit ni abrir otra transacción.
+/// Son idempotentes por (empresaId, llamadaId): un reintento no duplica reserva ni facturación.
+/// Los errores de negocio se lanzan como ExcepcionNegocio.
 /// </summary>
 public interface IConsumoEvaluacion
 {
@@ -22,7 +20,7 @@ public interface IConsumoEvaluacion
     /// </summary>
 
     /// <exception cref="Errores.ExcepcionNegocio">
-    /// 403 <c>SUSCRIPCION_NO_ACTIVA</c> (EnMora / Vencida) · 409 <c>CUOTA_AGOTADA</c>.
+    /// 403 SUSCRIPCION_NO_ACTIVA (EnMora / Vencida) · 409 CUOTA_AGOTADA.
     /// </exception>
     Task ReservarAsync(Guid empresaId, Guid llamadaId, decimal duracionSeg, CancellationToken cancellationToken);
 

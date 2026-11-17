@@ -21,7 +21,7 @@ public class ExcepcionNegocio(int status, string codigo, string mensaje, IDictio
     public static ExcepcionNegocio Conflicto(string codigo, string mensaje) => new(409, codigo, mensaje);
 }
 
-/// <summary>Formato uniforme de error (fase1.md 7.7).</summary>
+/// <summary>Formato uniforme de error</summary>
 public sealed record ErrorDto(
     int Status,
     string Codigo,

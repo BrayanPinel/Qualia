@@ -23,7 +23,7 @@ public static class DependencyInjection
 
         services.AddSingleton(TimeProvider.System);
 
-        // --- Rol D: llamadas y procesamiento ---
+        // --- llamadas y procesamiento ---
         services.Configure<OpcionesProcesamiento>(configuration.GetSection(OpcionesProcesamiento.Seccion));
         services.AddScoped<AlcanceLlamadas>();
         services.AddScoped<ConsultasLlamadas>();
@@ -31,7 +31,7 @@ public static class DependencyInjection
         services.AddScoped<ProcesadorTrabajo>();
         services.AddSingleton<EjecutorProcesamiento>();
 
-        // --- Rol B: campañas, rúbricas y revisión humana ---
+        // --- campañas, rúbricas y revisión humana ---
         services.AddScoped<GestionCampanas>();
         services.AddScoped<GestionRubricas>();
         services.AddScoped<ServicioRevision>();

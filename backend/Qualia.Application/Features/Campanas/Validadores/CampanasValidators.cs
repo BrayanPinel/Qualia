@@ -4,7 +4,7 @@ using Qualia.Domain.Entidades;
 
 namespace Qualia.Application.Features.Campanas.Validadores;
 
-// Límites del contrato (fase1 §7.6): nombres de 3 a 100 caracteres; rúbricas de 1 a 30 criterios;
+// Límites del contrato: nombres de 3 a 100 caracteres; rúbricas de 1 a 30 criterios;
 // pesos positivos; umbrales entre 0 y 100. La suma de 100 se exige al PUBLICAR, no al guardar el borrador.
 
 public sealed class GuardarCampanaValidator : AbstractValidator<GuardarCampanaDto>

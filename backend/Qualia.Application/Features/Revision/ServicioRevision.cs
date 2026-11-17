@@ -11,14 +11,12 @@ using Qualia.Domain.Servicios;
 namespace Qualia.Application.Features.Revision;
 
 /// <summary>
-/// Núcleo de la revisión humana (Rol B). Lo usan los endpoints de confirmación/ajuste y,
+/// Núcleo de la revisión humana. Lo usan los endpoints de confirmación/ajuste y,
 /// mediante <see cref="IRevisionEvaluacion"/>, la resolución de disputas del Rol A.
-/// <list type="bullet">
-/// <item>Nunca modifica Detalle_evaluacion ni Evidencia_criterio: los resultados de IA se conservan (RN-12).</item>
-/// <item>Control de concurrencia optimista sobre Evaluacion_IA.revision: UPDATE condicionado a
-/// <c>revision = revisionEsperada</c>; si no afecta filas, 409 REVISION_DESACTUALIZADA.</item>
-/// <item>Los métodos que escriben NO abren ni confirman transacciones: lo hace quien los invoca.</item>
-/// </list>
+/// Nunca modifica Detalle_evaluacion ni Evidencia_criterio: los resultados de IA se conservan (RN-12).
+/// Control de concurrencia optimista sobre Evaluacion_IA.revision: UPDATE condicionado a
+/// revision = revisionEsperada; si no afecta filas, 409 REVISION_DESACTUALIZADA.
+/// Los métodos que escriben NO abren ni confirman transacciones: lo hace quien los invoca.
 /// </summary>
 public sealed class ServicioRevision(
     IQualiaDbContext db,
@@ -62,7 +60,7 @@ public sealed class ServicioRevision(
 
     /// <summary>
     /// Confirmación (POST /api/evaluaciones/{id}/confirmar). Exige evaluación completa y sin evidencias
-    /// inválidas pendientes; la evidencia inválida se corrige con un ajuste completo (fase1 §7.6).
+    /// inválidas pendientes; la evidencia inválida se corrige con un ajuste completo.
     /// Una confirmación posterior a un ajuste NO borra el ajuste: el puntaje vigente sigue siendo el humano.
     /// </summary>
     internal async Task<int> ConfirmarAsync(ContextoRevision contexto, Guid supervisorId, int revisionEsperada, CancellationToken ct)

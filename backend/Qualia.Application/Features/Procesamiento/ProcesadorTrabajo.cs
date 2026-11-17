@@ -9,7 +9,7 @@ namespace Qualia.Application.Features.Procesamiento;
 
 /// <summary>
 /// Ejecuta UN intento de procesamiento de un trabajo ya reclamado (estado EnProceso).
-/// Debe ejecutarse en un scope cuyo <c>IContextoEmpresa</c> se estableció con la empresa del trabajo,
+/// Debe ejecutarse en un scope cuyo IContextoEmpresa se estableció con la empresa del trabajo,
 /// de modo que todas las consultas quedan filtradas por esa empresa.
 ///
 /// Fases idempotentes (un reintento retoma donde quedó, sin duplicar):

@@ -11,15 +11,13 @@ using Qualia.Domain.Enums;
 namespace Qualia.Application.Features.Campanas;
 
 /// <summary>
-/// Rúbricas versionadas (Rol B): GET/POST /api/campanas/{id}/rubricas, PUT /api/rubricas/{id}
+/// Rúbricas versionadas: GET/POST /api/campanas/{id}/rubricas, PUT /api/rubricas/{id}
 /// y POST /api/rubricas/{id}/publicar.
-/// <list type="bullet">
-/// <item>Cada POST crea una NUEVA versión en Borrador (versión = última de la campaña + 1).</item>
-/// <item>Solo un Borrador se edita; una versión publicada es inmutable (RN-04).</item>
-/// <item>Publicar exige pesos que sumen 100 y nombres sin duplicar (RN-05), retira la versión
-/// Activa anterior de la campaña y respeta el límite de rúbricas activas del plan.</item>
-/// <item>No hay borrado: las versiones usadas por llamadas se conservan (RN-07).</item>
-/// </list>
+/// Cada POST crea una NUEVA versión en Borrador (versión = última de la campaña + 1).
+/// Solo un Borrador se edita; una versión publicada es inmutable (RN-04).
+/// Publicar exige pesos que sumen 100 y nombres sin duplicar (RN-05), retira la versión
+/// Activa anterior de la campaña y respeta el límite de rúbricas activas del plan.
+/// No hay borrado: las versiones usadas por llamadas se conservan (RN-07).
 /// </summary>
 public sealed class GestionRubricas(
     IQualiaDbContext db,
