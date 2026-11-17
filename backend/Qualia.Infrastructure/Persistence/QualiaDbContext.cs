@@ -33,6 +33,10 @@ public sealed class QualiaDbContext(DbContextOptions<QualiaDbContext> options, I
     public DbSet<DetalleEvaluacion> DetallesEvaluacion => Set<DetalleEvaluacion>();
     public DbSet<EvidenciaCriterio> EvidenciasCriterio => Set<EvidenciaCriterio>();
 
+    public DbSet<RevisionHumana> RevisionesHumanas => Set<RevisionHumana>();
+    public DbSet<CriterioRevisado> CriteriosRevisados => Set<CriterioRevisado>();
+    public DbSet<EvidenciaRevision> EvidenciasRevision => Set<EvidenciaRevision>();
+
     public Task<IDbContextTransaction> BeginTransactionAsync(CancellationToken cancellationToken = default) =>
         Database.BeginTransactionAsync(cancellationToken);
 

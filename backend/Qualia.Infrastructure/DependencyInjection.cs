@@ -66,7 +66,7 @@ public static class DependencyInjection
         // --- Contratos con otros roles: PROVISIONALES hasta integrar sus módulos ---
         services.AddScoped<IConsumoEvaluacion, ConsumoEvaluacionProvisional>();          // Rol C
         services.AddScoped<IRegistroAuditoria, RegistroAuditoriaProvisional>();          // Rol A
-        services.AddScoped<IConsultaRevisionVigente, ConsultaRevisionVigenteProvisional>(); // Rol B
+        services.AddScoped<IConsultaPlanService, ConsultaPlanProvisional>();             // Rol C (límites del plan)
 
         return services;
     }
