@@ -1,0 +1,92 @@
+{
+  "archivo": "demo/norte/llamada-03.wav",
+  "guion": "guiones/norte-llamada-03.json",
+  "descripcion": "Falla crítica: el agente revisa la cuenta y da información sin verificar la identidad del cliente.",
+  "generadoCon": "Deepgram Aura-2 TTS",
+  "frecuenciaMuestreo": 8000,
+  "duracionSeg": 51.54,
+  "actores": {
+    "Agente": {
+      "nombre": "Andrés",
+      "voz": "aura-2-javier-es"
+    },
+    "Cliente": {
+      "nombre": "Lucía",
+      "voz": "aura-2-celeste-es"
+    }
+  },
+  "segmentos": [
+    {
+      "orden": 1,
+      "actor": "Agente",
+      "voz": "aura-2-javier-es",
+      "inicioSeg": 0.4,
+      "finSeg": 5.76,
+      "texto": "Buenos días, Servicios Norte, le saluda Andrés. ¿En qué le ayudo?"
+    },
+    {
+      "orden": 2,
+      "actor": "Cliente",
+      "voz": "aura-2-celeste-es",
+      "inicioSeg": 6.21,
+      "finSeg": 12.05,
+      "texto": "Hola, quiero saber cuánto debo y cuándo vence mi factura. La cuenta está a nombre de mi esposo."
+    },
+    {
+      "orden": 3,
+      "actor": "Agente",
+      "voz": "aura-2-javier-es",
+      "inicioSeg": 12.5,
+      "finSeg": 17.06,
+      "texto": "Claro, deme el número de cuenta y se lo consulto de una vez."
+    },
+    {
+      "orden": 4,
+      "actor": "Cliente",
+      "voz": "aura-2-celeste-es",
+      "inicioSeg": 17.51,
+      "finSeg": 20.91,
+      "texto": "Es la cuenta siete ocho dos uno cuatro."
+    },
+    {
+      "orden": 5,
+      "actor": "Agente",
+      "voz": "aura-2-javier-es",
+      "inicioSeg": 21.36,
+      "finSeg": 33.28,
+      "texto": "Listo, el saldo pendiente es de mil doscientos lempiras y vence el quince de este mes. También veo que su esposo tiene un plan de doscientos megas."
+    },
+    {
+      "orden": 6,
+      "actor": "Cliente",
+      "voz": "aura-2-celeste-es",
+      "inicioSeg": 33.73,
+      "finSeg": 36.93,
+      "texto": "Ah, perfecto. ¿Y puedo pagar por transferencia?"
+    },
+    {
+      "orden": 7,
+      "actor": "Agente",
+      "voz": "aura-2-javier-es",
+      "inicioSeg": 37.38,
+      "finSeg": 43.74,
+      "texto": "Sí, puede pagar por transferencia o en cualquier agencia bancaria con el número de cuenta."
+    },
+    {
+      "orden": 8,
+      "actor": "Cliente",
+      "voz": "aura-2-celeste-es",
+      "inicioSeg": 44.19,
+      "finSeg": 45.79,
+      "texto": "Muy bien, gracias."
+    },
+    {
+      "orden": 9,
+      "actor": "Agente",
+      "voz": "aura-2-javier-es",
+      "inicioSeg": 46.24,
+      "finSeg": 51.04,
+      "texto": "¿Necesita ayuda con algo más? Gracias por llamar, que tenga buen día."
+    }
+  ]
+}

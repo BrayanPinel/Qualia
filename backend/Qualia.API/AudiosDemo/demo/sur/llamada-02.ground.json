@@ -1,0 +1,84 @@
+{
+  "archivo": "demo/sur/llamada-02.wav",
+  "guion": "guiones/sur-llamada-02.json",
+  "descripcion": "Falla crítica: el agente habla de la deuda sin verificar al titular (contesta un familiar).",
+  "generadoCon": "Deepgram Aura-2 TTS",
+  "frecuenciaMuestreo": 8000,
+  "duracionSeg": 37.37,
+  "actores": {
+    "Agente": {
+      "nombre": "Adrián",
+      "voz": "aura-2-sirio-es"
+    },
+    "Cliente": {
+      "nombre": "Carmen",
+      "voz": "aura-2-olivia-es"
+    }
+  },
+  "segmentos": [
+    {
+      "orden": 1,
+      "actor": "Agente",
+      "voz": "aura-2-sirio-es",
+      "inicioSeg": 0.4,
+      "finSeg": 5.88,
+      "texto": "Buenas tardes, le saluda Adrián de Cobranzas Sur. Busco al señor Julio Paz."
+    },
+    {
+      "orden": 2,
+      "actor": "Cliente",
+      "voz": "aura-2-olivia-es",
+      "inicioSeg": 6.33,
+      "finSeg": 10.09,
+      "texto": "Él no está, habla su hermana. ¿De qué se trata?"
+    },
+    {
+      "orden": 3,
+      "actor": "Agente",
+      "voz": "aura-2-sirio-es",
+      "inicioSeg": 10.54,
+      "finSeg": 16.18,
+      "texto": "Mire, su hermano debe dos mil quinientos lempiras del préstamo y lleva dos meses sin pagar."
+    },
+    {
+      "orden": 4,
+      "actor": "Cliente",
+      "voz": "aura-2-olivia-es",
+      "inicioSeg": 16.63,
+      "finSeg": 19.79,
+      "texto": "¿En serio? No sabía nada de eso."
+    },
+    {
+      "orden": 5,
+      "actor": "Agente",
+      "voz": "aura-2-sirio-es",
+      "inicioSeg": 20.24,
+      "finSeg": 24.56,
+      "texto": "Sí. Dígale que si no paga esta semana lo vamos a reportar al buró de crédito."
+    },
+    {
+      "orden": 6,
+      "actor": "Cliente",
+      "voz": "aura-2-olivia-es",
+      "inicioSeg": 25.01,
+      "finSeg": 27.49,
+      "texto": "Bueno, yo le doy el mensaje."
+    },
+    {
+      "orden": 7,
+      "actor": "Agente",
+      "voz": "aura-2-sirio-es",
+      "inicioSeg": 27.94,
+      "finSeg": 33.98,
+      "texto": "Le propongo que pague al menos mil lempiras el viernes y el resto el próximo mes."
+    },
+    {
+      "orden": 8,
+      "actor": "Cliente",
+      "voz": "aura-2-olivia-es",
+      "inicioSeg": 34.43,
+      "finSeg": 36.87,
+      "texto": "Se lo diré. Adiós."
+    }
+  ]
+}

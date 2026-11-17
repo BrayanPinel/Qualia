@@ -121,3 +121,6 @@ QUALIA_CONTEXTO.md
 # Documentación generada por IA (solo local)
 # =========================
 docs-ia/
+
+# Respuestas crudas de los proveedores de IA (contienen transcripciones sin enmascarar)
+RespuestasIA/
