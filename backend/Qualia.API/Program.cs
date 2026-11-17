@@ -62,10 +62,18 @@ if (app.Environment.IsDevelopment())
     await InicializadorBaseDatos.InicializarAsync(app.Services, app.Configuration);
     app.MapOpenApi();
     app.MapScalarApiReference();
+
+    // La raíz abre la documentación interactiva.
+    app.MapGet("/", () => Results.Redirect("/scalar/v1")).ExcludeFromDescription();
 }
 
 app.UseMiddleware<ManejadorErroresMiddleware>();
-app.UseHttpsRedirection();
+
+// En desarrollo se usa el perfil http (sin puerto HTTPS); en la nube el proveedor termina el TLS.
+if (!app.Environment.IsDevelopment())
+{
+    app.UseHttpsRedirection();
+}
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
