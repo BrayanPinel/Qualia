@@ -10,12 +10,10 @@ namespace Qualia.Application.Features.Llamadas;
 /// <summary>
 /// Autorización por recurso de las llamadas. El filtro global ya limita
 /// a la empresa del token; aquí se agrega el alcance por rol:
-/// <list type="bullet">
-/// <item>AdminEmpresa: todas las llamadas de su empresa.</item>
-/// <item>Supervisor: llamadas de campañas a las que está asignado (campaña obtenida vía rúbrica).</item>
-/// <item>Agente: solo sus llamadas.</item>
-/// <item>Auditor / PlatformAdmin: sin acceso al contenido de llamadas (403).</item>
-/// </list>
+/// AdminEmpresa: todas las llamadas de su empresa.
+/// Supervisor: llamadas de campañas a las que está asignado (campaña obtenida vía rúbrica).
+/// Agente: solo sus llamadas.
+/// Auditor / PlatformAdmin: sin acceso al contenido de llamadas (403).
 /// </summary>
 public sealed class AlcanceLlamadas(IQualiaDbContext db, IUsuarioActual usuarioActual)
 {

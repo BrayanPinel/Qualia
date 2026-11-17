@@ -44,7 +44,7 @@ builder.Services.AddControllers()
     {
         // Enumeraciones como texto ("EnCola", "Borrador"...), como en el contrato.
         o.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
-        // Campos desconocidos de entrada se rechazan (fase1 §7.1).
+        // Campos desconocidos de entrada se rechazan.
         o.JsonSerializerOptions.UnmappedMemberHandling = JsonUnmappedMemberHandling.Disallow;
     });
 

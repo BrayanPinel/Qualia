@@ -2,7 +2,7 @@ using Qualia.Domain.Enums;
 
 namespace Qualia.Application.Features.Campanas.Dtos;
 
-// ---------------------------- Entrada (fase1 §7.6) ----------------------------
+// ---------------------------- Entrada ----------------------------
 // Las propiedades son anulables para que un campo ausente se informe como error de validación
 // en lugar de tomar un valor por defecto silencioso.
 
@@ -29,7 +29,7 @@ public sealed class CriterioEntradaDto
     public decimal? UmbralCumplimiento { get; set; }
 }
 
-// ---------------------------- Salida (fase1 §7.7) ----------------------------
+// ---------------------------- Salida ----------------------------
 
 public sealed record CampanaDto(Guid Id, Guid EmpresaId, string Nombre, bool Activa, Guid? RubricaActivaId);
 

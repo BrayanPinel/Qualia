@@ -3,10 +3,10 @@ using DotNetEnv;
 namespace Qualia.API.Configuracion;
 
 /// <summary>
-/// Localiza y carga el archivo <c>.env</c> del proyecto API.
+/// Localiza y carga el archivo .env del proyecto API.
 /// Busca, subiendo desde el directorio actual y desde la carpeta de los binarios,
-/// <c>.env</c>, <c>Qualia.API/.env</c> y <c>backend/Qualia.API/.env</c>. Así funciona igual con
-/// <c>dotnet run</c>, desde el IDE y desde las pruebas (WebApplicationFactory).
+/// .env, Qualia.API/.env y backend/Qualia.API/.env. Así funciona igual con
+/// dotnet run, desde el IDE y desde las pruebas (WebApplicationFactory).
 /// </summary>
 internal static class ArchivoEnv
 {

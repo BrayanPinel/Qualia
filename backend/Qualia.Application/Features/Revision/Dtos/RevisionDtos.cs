@@ -1,6 +1,6 @@
 namespace Qualia.Application.Features.Revision.Dtos;
 
-// DTOs de entrada de la revisión humana (fase1 §7.6). La salida es EvaluacionDto (módulo de llamadas).
+// DTOs de entrada de la revisión humana. La salida es EvaluacionDto (módulo de llamadas).
 
 /// <summary>ConfirmarEvaluacionDto { revisionEsperada }: declaración de revisión completa del supervisor.</summary>
 public sealed class ConfirmarEvaluacionDto

@@ -7,7 +7,7 @@ namespace Qualia.Infrastructure.Procesamiento;
 
 /// <summary>
 /// Servicio en segundo plano que procesa la cola de trabajos. Despierta con la señal
-/// de <c>IniciarEvaluacion</c> o por sondeo periódico (reintentos y bloqueos vencidos).
+/// de IniciarEvaluacion o por sondeo periódico (reintentos y bloqueos vencidos).
 /// </summary>
 public sealed class WorkerProcesamiento(
     EjecutorProcesamiento ejecutor,
