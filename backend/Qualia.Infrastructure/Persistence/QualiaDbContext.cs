@@ -1,76 +1,84 @@
-using System.Reflection;
+using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 using Qualia.Application.Common.Interfaces;
+using Qualia.Application.Common.Seguridad;
 using Qualia.Domain.Common;
+using Qualia.Domain.Entidades;
 using Qualia.Domain.Suscripciones;
 
 namespace Qualia.Infrastructure.Persistence;
 
-/// <summary>
-/// Contexto central de Qualia. Descubre configuraciones <see cref="IEntityTypeConfiguration{TEntity}"/>
-/// por ensamblado y aplica el filtro global multiempresa (falla cerrada cuando no hay empresa activa)
-/// a toda entidad que implemente <see cref="IEntidadEmpresa"/>.
-/// </summary>
-public sealed class QualiaDbContext : DbContext
+public sealed class QualiaDbContext(DbContextOptions<QualiaDbContext> options, IContextoEmpresa contextoEmpresa)
+    : DbContext(options), IQualiaDbContext
 {
-    private readonly IContextoEmpresa? _contextoEmpresa;
+    public const string Esquema = "qualia";
 
-    public QualiaDbContext(
-        DbContextOptions<QualiaDbContext> options,
-        IContextoEmpresa? contextoEmpresa = null)
-        : base(options)
-    {
-        _contextoEmpresa = contextoEmpresa;
-    }
+    /// <summary>
+    /// Empresa usada por los Global Query Filters. EF Core evalúa esta propiedad en cada consulta,
+    /// por lo que el mismo modelo sirve para todas las empresas.
+    /// </summary>
+    public Guid? EmpresaIdActual => contextoEmpresa.EmpresaIdActual;
 
+    public DbSet<Empresa> Empresas => Set<Empresa>();
+    public DbSet<Usuario> Usuarios => Set<Usuario>();
+    public DbSet<Campana> Campanas => Set<Campana>();
+    public DbSet<UsuarioCampana> UsuariosCampana => Set<UsuarioCampana>();
+    public DbSet<Rubrica> Rubricas => Set<Rubrica>();
+    public DbSet<CriterioRubrica> CriteriosRubrica => Set<CriterioRubrica>();
+
+    public DbSet<Llamada> Llamadas => Set<Llamada>();
+    public DbSet<TrabajoProcesamiento> TrabajosProcesamiento => Set<TrabajoProcesamiento>();
+    public DbSet<SegmentoTranscripcion> SegmentosTranscripcion => Set<SegmentoTranscripcion>();
+    public DbSet<EvaluacionIA> EvaluacionesIA => Set<EvaluacionIA>();
+    public DbSet<DetalleEvaluacion> DetallesEvaluacion => Set<DetalleEvaluacion>();
+    public DbSet<EvidenciaCriterio> EvidenciasCriterio => Set<EvidenciaCriterio>();
+
+    public DbSet<RevisionHumana> RevisionesHumanas => Set<RevisionHumana>();
+    public DbSet<CriterioRevisado> CriteriosRevisados => Set<CriterioRevisado>();
+    public DbSet<EvidenciaRevision> EvidenciasRevision => Set<EvidenciaRevision>();
+
+    // --- planes, suscripciones y consumo ---
     public DbSet<Plan> Planes => Set<Plan>();
-
     public DbSet<FuncionPlan> FuncionesPlan => Set<FuncionPlan>();
-
     public DbSet<Suscripcion> Suscripciones => Set<Suscripcion>();
-
     public DbSet<PeriodoConsumo> PeriodosConsumo => Set<PeriodoConsumo>();
-
     public DbSet<ConsumoLlamada> ConsumosLlamada => Set<ConsumoLlamada>();
-
     public DbSet<AuditoriaPlataforma> AuditoriasPlataforma => Set<AuditoriaPlataforma>();
 
-    private bool TieneEmpresaActual =>
-        _contextoEmpresa?.EmpresaId is { } empresaId && empresaId != Guid.Empty;
+    public Task<IDbContextTransaction> BeginTransactionAsync(CancellationToken cancellationToken = default) =>
+        Database.BeginTransactionAsync(cancellationToken);
 
-    private Guid EmpresaIdActual => _contextoEmpresa?.EmpresaId ?? Guid.Empty;
+    public void LimpiarSeguimiento() => ChangeTracker.Clear();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        base.OnModelCreating(modelBuilder);
-
-        // Cada rol agrega IEntityTypeConfiguration<T> en Persistence/Configurations.
+        modelBuilder.HasDefaultSchema(Esquema);
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(QualiaDbContext).Assembly);
-
-        AplicarFiltrosEmpresa(modelBuilder);
+        AplicarFiltrosPorEmpresa(modelBuilder);
     }
 
-    private void AplicarFiltrosEmpresa(ModelBuilder modelBuilder)
+    /// <summary>
+    /// Global Query Filter (HasQueryFilter) para TODAS las entidades que implementan IEntidadEmpresa:
+    /// e = e.EmpresaId == EmpresaIdActual. Sin empresa en el contexto no se devuelve ninguna fila.
+    /// Las entidades nuevas de cualquier rol quedan filtradas automáticamente al implementar la interfaz.
+    /// </summary>
+    private void AplicarFiltrosPorEmpresa(ModelBuilder modelBuilder)
     {
-        foreach (var entityType in modelBuilder.Model.GetEntityTypes())
+        foreach (var tipo in modelBuilder.Model.GetEntityTypes())
         {
-            if (!typeof(IEntidadEmpresa).IsAssignableFrom(entityType.ClrType))
+            if (!typeof(IEntidadEmpresa).IsAssignableFrom(tipo.ClrType) || tipo.BaseType is not null)
             {
                 continue;
             }
 
-            var metodo = typeof(QualiaDbContext)
-                .GetMethod(nameof(ConfigurarFiltroEmpresa), BindingFlags.Instance | BindingFlags.NonPublic)!
-                .MakeGenericMethod(entityType.ClrType);
+            var entidad = Expression.Parameter(tipo.ClrType, "e");
+            var empresaEntidad = Expression.Convert(
+                Expression.Property(entidad, nameof(IEntidadEmpresa.EmpresaId)), typeof(Guid?));
+            var empresaContexto = Expression.Property(Expression.Constant(this), nameof(EmpresaIdActual));
 
-            metodo.Invoke(this, [modelBuilder]);
+            var filtro = Expression.Lambda(Expression.Equal(empresaEntidad, empresaContexto), entidad);
+            modelBuilder.Entity(tipo.ClrType).HasQueryFilter(filtro);
         }
-    }
-
-    private void ConfigurarFiltroEmpresa<TEntidad>(ModelBuilder modelBuilder)
-        where TEntidad : class, IEntidadEmpresa
-    {
-        modelBuilder.Entity<TEntidad>().HasQueryFilter(e =>
-            TieneEmpresaActual && e.EmpresaId == EmpresaIdActual);
     }
 }

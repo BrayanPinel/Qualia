@@ -1,0 +1,19 @@
+{
+  "archivo": "demo/sur/llamada-03.wav",
+  "descripcion": "Cliente molesto; el agente verifica y se presenta, pero no concreta ningún acuerdo de pago.",
+  "actores": {
+    "Agente": { "nombre": "Adrián", "voz": "aura-2-sirio-es" },
+    "Cliente": { "nombre": "Óscar", "voz": "aura-2-aquila-es" }
+  },
+  "turnos": [
+    { "actor": "Agente", "texto": "Buenos días, le saluda Adrián de Cobranzas Sur. ¿Hablo con el señor Óscar Turcios?" },
+    { "actor": "Cliente", "texto": "Sí, ¿qué quieren ahora? Ya me han llamado tres veces esta semana." },
+    { "actor": "Agente", "texto": "Disculpe las molestias. Para continuar necesito verificar su identidad, ¿me confirma su número de identidad?" },
+    { "actor": "Cliente", "texto": "0801-1975-11223. Y no tengo dinero en este momento." },
+    { "actor": "Agente", "texto": "Gracias, está verificado. Tiene un saldo pendiente de cuatro mil lempiras." },
+    { "actor": "Cliente", "texto": "Ya lo sé. Cuando pueda pago, no me sigan llamando." },
+    { "actor": "Agente", "texto": "Entiendo. Entonces lo llamamos la otra semana a ver cómo está." },
+    { "actor": "Cliente", "texto": "Como quiera." },
+    { "actor": "Agente", "texto": "Muy bien, que tenga buen día." }
+  ]
+}

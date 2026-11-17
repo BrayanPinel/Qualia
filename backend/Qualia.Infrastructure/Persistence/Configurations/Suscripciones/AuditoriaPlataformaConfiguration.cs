@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Qualia.Domain.Entidades;
 using Qualia.Domain.Suscripciones;
 
 namespace Qualia.Infrastructure.Persistence.Configurations.Suscripciones;
@@ -42,7 +43,9 @@ public sealed class AuditoriaPlataformaConfiguration : IEntityTypeConfiguration<
             .HasColumnType("timestamptz")
             .IsRequired();
 
-        // TODO (Integración Rol A): agregar FKs a administrador(id) y empresa(id) cuando existan.
+        builder.HasOne<Empresa>().WithMany().HasForeignKey(a => a.EmpresaObjetivoId).OnDelete(DeleteBehavior.Restrict);
+
+        // TODO (Integración Rol A): agregar FK a administrador(id) cuando exista la entidad Administrador.
         builder.HasIndex(a => new { a.EmpresaObjetivoId, a.Fecha })
             .HasDatabaseName("ix_auditoria_plataforma_empresa_fecha");
 

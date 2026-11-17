@@ -1,0 +1,60 @@
+{
+  "archivo": "demo/norte/llamada-99.wav",
+  "guion": "guiones/norte-llamada-99.json",
+  "descripcion": "Llamada corta asociada a una rúbrica en borrador (no se puede evaluar; prueba de RUBRICA_SIN_PUBLICAR).",
+  "generadoCon": "Deepgram Aura-2 TTS",
+  "frecuenciaMuestreo": 8000,
+  "duracionSeg": 24.62,
+  "actores": {
+    "Agente": {
+      "nombre": "Andrés",
+      "voz": "aura-2-javier-es"
+    },
+    "Cliente": {
+      "nombre": "Sonia",
+      "voz": "aura-2-olivia-es"
+    }
+  },
+  "segmentos": [
+    {
+      "orden": 1,
+      "actor": "Agente",
+      "voz": "aura-2-javier-es",
+      "inicioSeg": 0.4,
+      "finSeg": 4.56,
+      "texto": "Buenas tardes, Servicios Norte, le saluda Andrés."
+    },
+    {
+      "orden": 2,
+      "actor": "Cliente",
+      "voz": "aura-2-olivia-es",
+      "inicioSeg": 5.01,
+      "finSeg": 10.09,
+      "texto": "Hola, solo quería confirmar el horario de atención de la agencia del centro."
+    },
+    {
+      "orden": 3,
+      "actor": "Agente",
+      "voz": "aura-2-javier-es",
+      "inicioSeg": 10.54,
+      "finSeg": 18.34,
+      "texto": "Con gusto. La agencia del centro atiende de lunes a sábado, de ocho de la mañana a seis de la tarde."
+    },
+    {
+      "orden": 4,
+      "actor": "Cliente",
+      "voz": "aura-2-olivia-es",
+      "inicioSeg": 18.79,
+      "finSeg": 20.95,
+      "texto": "Gracias, muy amable."
+    },
+    {
+      "orden": 5,
+      "actor": "Agente",
+      "voz": "aura-2-javier-es",
+      "inicioSeg": 21.4,
+      "finSeg": 24.12,
+      "texto": "A usted, que tenga buena tarde."
+    }
+  ]
+}

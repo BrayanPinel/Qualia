@@ -1,11 +1,9 @@
 namespace Qualia.Domain.Common;
 
 /// <summary>
-/// Marca una entidad propia de una empresa (tabla empresarial con <c>empresa_id</c>).
-/// <c>QualiaDbContext</c> aplica automáticamente el filtro global multiempresa
-/// a toda entidad que implemente esta interfaz (fase1 §6.1 y RN-01).
-/// Las entidades globales (Plan, Funcion_plan, Auditoria_plataforma,
-/// Empresa, Administrador) no la implementan.
+/// Marca las entidades que pertenecen a una empresa (tenant).
+/// La infraestructura aplica automáticamente un Global Query Filter por <see cref="EmpresaId"/>
+/// a todas las entidades que implementan esta interfaz.
 /// </summary>
 public interface IEntidadEmpresa
 {

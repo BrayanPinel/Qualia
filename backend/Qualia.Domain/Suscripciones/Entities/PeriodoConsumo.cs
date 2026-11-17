@@ -3,10 +3,10 @@ using Qualia.Domain.Common;
 namespace Qualia.Domain.Suscripciones;
 
 /// <summary>
-/// Periodo de consumo mensual (tabla empresarial <c>periodo_consumo</c>).
+/// Periodo de consumo mensual (tabla empresarial periodo_consumo).
 /// Existe a lo sumo un periodo por empresa y mes: todos terminan el primer día
-/// del mes siguiente, por eso se garantiza con UNIQUE <c>(empresa_id, fecha_fin)</c>.
-/// <c>minutos_contratados</c> se fija al abrirlo y no se recalcula (fase1 §7.8).
+/// del mes siguiente, por eso se garantiza con UNIQUE (empresa_id, fecha_fin).
+/// minutos_contratados se fija al abrirlo y no se recalcula.
 /// </summary>
 public sealed class PeriodoConsumo : IEntidadEmpresa
 {
@@ -64,7 +64,7 @@ public sealed class PeriodoConsumo : IEntidadEmpresa
 
     /// <summary>
     /// Sustituye los datos de plan del periodo del mes cuando aún no registra ningún
-    /// consumo de llamada, tras un cambio de plan aprobado (fase1 §7.8).
+    /// consumo de llamada, tras un cambio de plan aprobado.
     /// </summary>
     public void ReemplazarPlanEnPeriodoVacio(Suscripcion nuevaSuscripcion, decimal minutosContratados)
     {

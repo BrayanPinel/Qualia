@@ -1,0 +1,19 @@
+{
+  "archivo": "demo/norte/llamada-04.wav",
+  "descripcion": "Dos voces femeninas (reto de diarización). Atención completa con cambio de plan; el cliente dicta teléfono y correo.",
+  "actores": {
+    "Agente": { "nombre": "Alicia", "voz": "aura-2-estrella-es" },
+    "Cliente": { "nombre": "Gabriela", "voz": "aura-2-selena-es" }
+  },
+  "turnos": [
+    { "actor": "Agente", "texto": "Buenas tardes, gracias por llamar a Servicios Norte, le saluda Alicia. ¿Con quién tengo el gusto?" },
+    { "actor": "Cliente", "texto": "Hola, soy Gabriela Mejía. Quiero cambiarme a un plan con más velocidad." },
+    { "actor": "Agente", "texto": "Con todo gusto. Primero debo verificar su identidad, ¿me confirma su número de identidad, por favor?" },
+    { "actor": "Cliente", "texto": "Claro, es 0801-1995-44321." },
+    { "actor": "Agente", "texto": "Gracias, señora Mejía, sus datos están verificados. Tenemos el plan de trescientos megas por cuatrocientos lempiras adicionales al mes." },
+    { "actor": "Cliente", "texto": "Me interesa. Pueden enviarme el contrato al correo gabriela.mejia@example.com o llamarme al 3344-5566." },
+    { "actor": "Agente", "texto": "Perfecto. Le explico: el cambio de plan queda aplicado hoy y el contrato le llegará a su correo en los próximos minutos." },
+    { "actor": "Cliente", "texto": "Excelente, muchas gracias." },
+    { "actor": "Agente", "texto": "¿Le puedo ayudar en algo adicional? Le agradezco su preferencia y me despido. Que tenga una linda tarde." }
+  ]
+}

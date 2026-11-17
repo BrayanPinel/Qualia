@@ -1,0 +1,19 @@
+{
+  "archivo": "demo/norte/llamada-03.wav",
+  "descripcion": "Falla crítica: el agente revisa la cuenta y da información sin verificar la identidad del cliente.",
+  "actores": {
+    "Agente": { "nombre": "Andrés", "voz": "aura-2-javier-es" },
+    "Cliente": { "nombre": "Lucía", "voz": "aura-2-celeste-es" }
+  },
+  "turnos": [
+    { "actor": "Agente", "texto": "Buenos días, Servicios Norte, le saluda Andrés. ¿En qué le ayudo?" },
+    { "actor": "Cliente", "texto": "Hola, quiero saber cuánto debo y cuándo vence mi factura. La cuenta está a nombre de mi esposo." },
+    { "actor": "Agente", "texto": "Claro, deme el número de cuenta y se lo consulto de una vez." },
+    { "actor": "Cliente", "texto": "Es la cuenta siete ocho dos uno cuatro." },
+    { "actor": "Agente", "texto": "Listo, el saldo pendiente es de mil doscientos lempiras y vence el quince de este mes. También veo que su esposo tiene un plan de doscientos megas." },
+    { "actor": "Cliente", "texto": "Ah, perfecto. ¿Y puedo pagar por transferencia?" },
+    { "actor": "Agente", "texto": "Sí, puede pagar por transferencia o en cualquier agencia bancaria con el número de cuenta." },
+    { "actor": "Cliente", "texto": "Muy bien, gracias." },
+    { "actor": "Agente", "texto": "¿Necesita ayuda con algo más? Gracias por llamar, que tenga buen día." }
+  ]
+}

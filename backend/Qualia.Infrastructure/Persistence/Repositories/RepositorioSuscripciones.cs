@@ -72,7 +72,7 @@ public sealed class RepositorioSuscripciones : IRepositorioSuscripciones
             suscripcion = await _context.Suscripciones
                 .FromSqlInterpolated($"""
                     SELECT *
-                    FROM suscripcion
+                    FROM qualia.suscripcion
                     WHERE empresa_id = {empresaId}
                     ORDER BY CASE WHEN estado IN ('Prueba', 'Activa', 'EnMora') THEN 0 ELSE 1 END,
                              fecha_inicio DESC
@@ -128,7 +128,7 @@ public sealed class RepositorioSuscripciones : IRepositorioSuscripciones
             return await _context.PeriodosConsumo
                 .FromSqlInterpolated($"""
                     SELECT *
-                    FROM periodo_consumo
+                    FROM qualia.periodo_consumo
                     WHERE empresa_id = {empresaId}
                       AND fecha_fin = {finUtc}
                     LIMIT 1

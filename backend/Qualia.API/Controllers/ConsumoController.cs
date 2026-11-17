@@ -6,12 +6,13 @@ using Qualia.Application.Common.Interfaces;
 using Qualia.Application.Common.Resultados;
 using Qualia.Application.Features.Suscripciones.Comun;
 using Qualia.Application.Features.Suscripciones.Consumo.ConsultarConsumo;
+using Qualia.Application.Common.Errores;
 
 namespace Qualia.API.Controllers;
 
 /// <summary>
 /// Consulta de minutos contratados, reservados, facturables, disponibles y excedentes
-/// por periodo mensual UTC (<c>GET /api/consumo?periodo=YYYY-MM</c>, fase1 §7.2 y §7.8).
+/// por periodo mensual UTC (GET /api/consumo?periodo=YYYY-MM).
 /// </summary>
 [ApiController]
 [Route("api/consumo")]
@@ -19,14 +20,11 @@ namespace Qualia.API.Controllers;
 public sealed class ConsumoController : ControllerBase
 {
     private readonly ConsultarConsumoHandler _consultarConsumoHandler;
-    private readonly IContextoEmpresa _contextoEmpresa;
 
     public ConsumoController(
-        ConsultarConsumoHandler consultarConsumoHandler,
-        IContextoEmpresa contextoEmpresa)
+        ConsultarConsumoHandler consultarConsumoHandler)
     {
         _consultarConsumoHandler = consultarConsumoHandler;
-        _contextoEmpresa = contextoEmpresa;
     }
 
     [HttpGet]
@@ -38,7 +36,6 @@ public sealed class ConsumoController : ControllerBase
         [FromQuery] string? periodo,
         CancellationToken cancellationToken)
     {
-        this.SincronizarContextoEmpresaDesdeClaims(_contextoEmpresa);
         var resultado = await _consultarConsumoHandler.EjecutarAsync(
             new ConsultarConsumoQuery(periodo),
             cancellationToken);

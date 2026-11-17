@@ -1,10 +1,10 @@
 namespace Qualia.Application.Features.Suscripciones.Comun;
 
 /// <summary>
-/// SuscripcionDto (fase1 §7.7). <see cref="Estado"/> usa los valores de
+/// SuscripcionDto. <see cref="Estado"/> usa los valores de
 /// EstadoSuscripcion: Prueba, Activa, EnMora, Vencida.
 /// <see cref="PeriodoActual"/> es una ampliación aditiva y opcional: el periodo de
-/// consumo del mes UTC en curso, o <c>null</c> si aún no existe.
+/// consumo del mes UTC en curso, o null si aún no existe.
 /// </summary>
 public sealed record SuscripcionDto(
     Guid Id,

@@ -1,0 +1,20 @@
+{
+  "archivo": "demo/norte/llamada-01.wav",
+  "descripcion": "Llamada ejemplar: saludo, verificación de identidad, resolución de cobro duplicado y cierre cordial.",
+  "actores": {
+    "Agente": { "nombre": "Andrés", "voz": "aura-2-javier-es" },
+    "Cliente": { "nombre": "Mariela", "voz": "aura-2-celeste-es" }
+  },
+  "turnos": [
+    { "actor": "Agente", "texto": "Buenos días, gracias por llamar a Servicios Norte, le saluda Andrés. ¿Con quién tengo el gusto?" },
+    { "actor": "Cliente", "texto": "Hola Andrés, habla Mariela Castillo. Llamo porque en mi factura de este mes aparece un cobro doble." },
+    { "actor": "Agente", "texto": "Con gusto le ayudo, señora Castillo. Antes de revisar su cuenta necesito verificar su identidad. ¿Me confirma su número de identidad?" },
+    { "actor": "Cliente", "texto": "Sí, claro. Es 0801-1990-12345." },
+    { "actor": "Agente", "texto": "Gracias, la verificación fue exitosa. Estoy revisando su cuenta y efectivamente veo dos cargos del mismo plan." },
+    { "actor": "Cliente", "texto": "Exacto, yo pagué una sola vez con mi tarjeta." },
+    { "actor": "Agente", "texto": "Le explico la solución: voy a anular el cargo duplicado y el reembolso se reflejará en su próxima factura, en un plazo de cinco días hábiles." },
+    { "actor": "Cliente", "texto": "Perfecto, muchas gracias por la ayuda." },
+    { "actor": "Agente", "texto": "¿Hay algo más en lo que pueda ayudarle? Le agradezco su llamada y me despido. Que tenga un excelente día." },
+    { "actor": "Cliente", "texto": "Igualmente, hasta luego." }
+  ]
+}

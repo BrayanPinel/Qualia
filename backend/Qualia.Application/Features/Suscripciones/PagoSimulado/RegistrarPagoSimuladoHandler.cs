@@ -3,11 +3,12 @@ using Qualia.Application.Common.Interfaces;
 using Qualia.Application.Common.Resultados;
 using Qualia.Application.Features.Suscripciones.Comun;
 using Qualia.Domain.Suscripciones;
+using Qualia.Application.Common.Seguridad;
 
 namespace Qualia.Application.Features.Suscripciones.PagoSimulado;
 
 /// <summary>
-/// Caso de uso <c>POST /api/suscripcion/pago-simulado</c> (fase1 §7.2 y §7.8).
+/// Caso de uso POST /api/suscripcion/pago-simulado.
 /// </summary>
 public sealed class RegistrarPagoSimuladoHandler
 {
@@ -41,7 +42,7 @@ public sealed class RegistrarPagoSimuladoHandler
             return errorValidacion;
         }
 
-        if (_contextoEmpresa.EmpresaId is not { } empresaId || empresaId == Guid.Empty)
+        if (_contextoEmpresa.EmpresaIdActual is not { } empresaId || empresaId == Guid.Empty)
         {
             return ErroresSuscripcion.EmpresaNoIdentificada;
         }

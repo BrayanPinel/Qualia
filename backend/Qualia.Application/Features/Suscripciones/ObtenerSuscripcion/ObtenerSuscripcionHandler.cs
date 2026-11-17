@@ -2,11 +2,12 @@ using Qualia.Application.Common.Interfaces;
 using Qualia.Application.Common.Resultados;
 using Qualia.Application.Features.Suscripciones.Comun;
 using Qualia.Domain.Suscripciones;
+using Qualia.Application.Common.Seguridad;
 
 namespace Qualia.Application.Features.Suscripciones.ObtenerSuscripcion;
 
 /// <summary>
-/// Caso de uso <c>GET /api/suscripcion</c> (fase1 ).
+/// Caso de uso GET /api/suscripcion.
 /// Devuelve la suscripción vigente o, si no hay, la última vencida.
 /// </summary>
 public sealed class ObtenerSuscripcionHandler
@@ -27,7 +28,7 @@ public sealed class ObtenerSuscripcionHandler
 
     public async Task<Resultado<SuscripcionDto>> EjecutarAsync(CancellationToken cancellationToken = default)
     {
-        if (_contextoEmpresa.EmpresaId is not { } empresaId || empresaId == Guid.Empty)
+        if (_contextoEmpresa.EmpresaIdActual is not { } empresaId || empresaId == Guid.Empty)
         {
             return ErroresSuscripcion.EmpresaNoIdentificada;
         }

@@ -4,9 +4,9 @@ using Qualia.Domain.Common;
 namespace Qualia.Domain.Suscripciones;
 
 /// <summary>
-/// Mes calendario UTC usado para consumo y facturación (fase1 §7.8):
+/// Mes calendario UTC usado para consumo y facturación:
 /// desde el primer día a las 00:00 UTC (incluido) hasta el primer día del mes
-/// siguiente (excluido). Su representación textual es <c>YYYY-MM</c>.
+/// siguiente (excluido). Su representación textual es YYYY-MM.
 /// </summary>
 public readonly record struct PeriodoMensual
 {
@@ -46,7 +46,7 @@ public readonly record struct PeriodoMensual
         return Crear(instanteUtc.Year, instanteUtc.Month);
     }
 
-    /// <summary>Interpreta exactamente el formato <c>YYYY-MM</c>.</summary>
+    /// <summary>Interpreta exactamente el formato YYYY-MM.</summary>
     public static bool TryParse(string? texto, out PeriodoMensual periodo)
     {
         periodo = default;

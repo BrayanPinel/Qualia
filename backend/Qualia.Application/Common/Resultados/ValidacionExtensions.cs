@@ -6,7 +6,7 @@ namespace Qualia.Application.Common.Resultados;
 public static class ValidacionExtensions
 {
     /// <summary>
-    /// Ejecuta el validador de FluentValidation y devuelve <c>null</c> si es válido,
+    /// Ejecuta el validador de FluentValidation y devuelve null si es válido,
     /// o el <see cref="ErrorAplicacion"/> uniforme 400 si hay fallos.
     /// </summary>
     public static async Task<ErrorAplicacion?> ValidarAsync<T>(

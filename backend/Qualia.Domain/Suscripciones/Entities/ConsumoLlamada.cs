@@ -3,9 +3,9 @@ using Qualia.Domain.Common;
 namespace Qualia.Domain.Suscripciones;
 
 /// <summary>
-/// Consumo asociado a una llamada (tabla empresarial <c>consumo_llamada</c>).
-/// Cero o uno por llamada: UNIQUE <c>(empresa_id, llamada_id)</c>.
-/// Ciclo de vida (fase1 §6.5): nace <see cref="EstadoConsumo.Reservado"/>; al completar
+/// Consumo asociado a una llamada (tabla empresarial consumo_llamada).
+/// Cero o uno por llamada: UNIQUE (empresa_id, llamada_id).
+/// Ciclo de vida: nace <see cref="EstadoConsumo.Reservado"/>; al completar
 /// pasa a <see cref="EstadoConsumo.Facturado"/> y ante fallo definitivo a
 /// <see cref="EstadoConsumo.Liberado"/>. Los reintentos reutilizan el mismo registro.
 /// </summary>
@@ -43,7 +43,7 @@ public sealed class ConsumoLlamada : IEntidadEmpresa
     public PeriodoConsumo? Periodo { get; private set; }
 
     /// <summary>
-    /// <c>duracion_seg / 60</c> redondeado hacia arriba a dos decimales (fase1 §7.8).
+    /// duracion_seg / 60 redondeado hacia arriba a dos decimales.
     /// </summary>
     public static decimal CalcularMinutos(decimal duracionSeg)
     {

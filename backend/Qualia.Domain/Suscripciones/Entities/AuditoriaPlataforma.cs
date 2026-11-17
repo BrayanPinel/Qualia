@@ -4,8 +4,8 @@ namespace Qualia.Domain.Suscripciones;
 
 /// <summary>
 /// Auditoría de cambios comerciales hechos por PlatformAdmin (tabla global
-/// <c>auditoria_plataforma</c>, HU-07). No concede acceso a contenido de llamadas.
-/// <c>antes</c>/<c>despues</c> son JSON (jsonb) y nunca contienen contraseñas,
+/// auditoria_plataforma, HU-07). No concede acceso a contenido de llamadas.
+/// antes/despues son JSON (jsonb) y nunca contienen contraseñas,
 /// hashes, tokens ni secretos.
 /// </summary>
 public sealed class AuditoriaPlataforma

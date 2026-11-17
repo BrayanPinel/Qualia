@@ -1,8 +1,8 @@
 namespace Qualia.Domain.Suscripciones;
 
 /// <summary>
-/// Función habilitada por un plan (tabla global <c>funcion_plan</c>,
-/// PK compuesta <c>(plan_id, codigo_funcion)</c>). Ver <see cref="CodigosFuncionPlan"/>.
+/// Función habilitada por un plan (tabla global funcion_plan,
+/// PK compuesta (plan_id, codigo_funcion)). Ver <see cref="CodigosFuncionPlan"/>.
 /// </summary>
 public sealed class FuncionPlan
 {

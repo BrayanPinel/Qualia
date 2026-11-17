@@ -2,6 +2,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Qualia.Application;
 using Qualia.Application.Common.Interfaces;
 using Qualia.Application.Common.Models;
+using Qualia.Application.Common.Seguridad;
 using Qualia.Application.Features.Suscripciones.Comun;
 using Qualia.Application.Features.Suscripciones.Consumo.ConsultarConsumo;
 using Qualia.Application.Features.Suscripciones.ObtenerSuscripcion;
@@ -202,7 +203,9 @@ public sealed class SuscripcionesCasosUsoTests
 
     private sealed class ContextoEmpresaFijo(Guid? empresaId) : IContextoEmpresa
     {
-        public Guid? EmpresaId { get; } = empresaId;
+        public Guid? EmpresaIdActual { get; private set; } = empresaId;
+
+        public void Establecer(Guid id) => EmpresaIdActual = id;
     }
 
     private sealed class RegistroAuditoriaEnMemoria : IRegistroAuditoria

@@ -1,12 +1,10 @@
 namespace Qualia.Domain.Suscripciones;
 
 /// <summary>
-/// Saldo de un periodo de consumo (fase1 §7.8). Sean C los minutos contratados,
+/// Saldo de un periodo de consumo. Sean C los minutos contratados,
 /// R la suma de reservados y F la suma de facturables:
-/// <list type="bullet">
-/// <item><c>Disponibles = max(C - R - F, 0)</c></item>
-/// <item><c>Excedentes = max(F - C, 0)</c> (excedente ya facturado, sin reservas)</item>
-/// </list>
+/// Disponibles = max(C - R - F, 0)
+/// Excedentes = max(F - C, 0) (excedente ya facturado, sin reservas)
 /// </summary>
 public readonly record struct SaldoConsumo(
     decimal MinutosContratados,
@@ -22,7 +20,7 @@ public readonly record struct SaldoConsumo(
         Math.Max(MinutosFacturables - MinutosContratados, 0m);
 
     /// <summary>
-    /// Sin permiso de excedente una nueva reserva N exige <c>R + F + N &lt;= C</c>;
+    /// Sin permiso de excedente una nueva reserva N exige R + F + N &lt;= C;
     /// con permiso se admite superar la cuota.
     /// </summary>
     public bool AdmiteReserva(decimal minutosNuevos, bool permiteExcedente)

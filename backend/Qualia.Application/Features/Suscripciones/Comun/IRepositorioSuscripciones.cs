@@ -4,7 +4,7 @@ namespace Qualia.Application.Features.Suscripciones.Comun;
 
 /// <summary>
 /// Puerto de persistencia del módulo (implementado en Infrastructure sobre el
-/// <c>QualiaDbContext</c> del scope). Comparte la instancia del DbContext con el
+/// QualiaDbContext del scope). Comparte la instancia del DbContext con el
 /// resto de módulos de la misma petición, por lo que las operaciones de agregado
 /// participan en la unidad de trabajo del llamador.
 /// </summary>
@@ -32,19 +32,19 @@ public interface IRepositorioSuscripciones
         CancellationToken cancellationToken = default);
 
     /// <summary>
-    /// Bloquea (<c>SELECT … FOR UPDATE</c>) y devuelve con seguimiento la suscripción
+    /// Bloquea (SELECT … FOR UPDATE) y devuelve con seguimiento la suscripción
     /// actual de la empresa, con su plan. Requiere una transacción activa.
     /// </summary>
     Task<Suscripcion?> BloquearSuscripcionActualAsync(Guid empresaId, CancellationToken cancellationToken = default);
 
-    /// <summary>Periodo de consumo de la empresa para el mes indicado, o <c>null</c>.</summary>
+    /// <summary>Periodo de consumo de la empresa para el mes indicado, o null.</summary>
     Task<PeriodoConsumo?> ObtenerPeriodoAsync(
         Guid empresaId,
         PeriodoMensual mes,
         CancellationToken cancellationToken = default);
 
     /// <summary>
-    /// Bloquea (<c>SELECT … FOR UPDATE</c>) y devuelve con seguimiento el periodo de consumo
+    /// Bloquea (SELECT … FOR UPDATE) y devuelve con seguimiento el periodo de consumo
     /// del mes indicado. Requiere una transacción activa.
     /// </summary>
     Task<PeriodoConsumo?> ObtenerPeriodoConBloqueoAsync(
@@ -64,7 +64,7 @@ public interface IRepositorioSuscripciones
         Guid periodoId,
         CancellationToken cancellationToken = default);
 
-    /// <summary>Consumo registrado para la llamada indicada, con seguimiento, o <c>null</c>.</summary>
+    /// <summary>Consumo registrado para la llamada indicada, con seguimiento, o null.</summary>
     Task<ConsumoLlamada?> ObtenerConsumoLlamadaAsync(
         Guid empresaId,
         Guid llamadaId,

@@ -1,6 +1,6 @@
 namespace Qualia.Application.Features.Suscripciones.Comun;
 
-/// <summary>ConsumoDto (fase1 §7.7). <see cref="Periodo"/> con formato YYYY-MM.</summary>
+/// <summary>ConsumoDto. <see cref="Periodo"/> con formato YYYY-MM.</summary>
 public sealed record ConsumoDto(
     Guid EmpresaId,
     string Periodo,

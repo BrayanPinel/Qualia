@@ -1,0 +1,15 @@
+{
+  "archivo": "demo/norte/llamada-99.wav",
+  "descripcion": "Llamada corta asociada a una rúbrica en borrador (no se puede evaluar; prueba de RUBRICA_SIN_PUBLICAR).",
+  "actores": {
+    "Agente": { "nombre": "Andrés", "voz": "aura-2-javier-es" },
+    "Cliente": { "nombre": "Sonia", "voz": "aura-2-olivia-es" }
+  },
+  "turnos": [
+    { "actor": "Agente", "texto": "Buenas tardes, Servicios Norte, le saluda Andrés." },
+    { "actor": "Cliente", "texto": "Hola, solo quería confirmar el horario de atención de la agencia del centro." },
+    { "actor": "Agente", "texto": "Con gusto. La agencia del centro atiende de lunes a sábado, de ocho de la mañana a seis de la tarde." },
+    { "actor": "Cliente", "texto": "Gracias, muy amable." },
+    { "actor": "Agente", "texto": "A usted, que tenga buena tarde." }
+  ]
+}
