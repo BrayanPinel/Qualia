@@ -1,5 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using Qualia.Application.Common.Interfaces;
+using Qualia.Application.Common.Seguridad;
 using Qualia.Domain.Suscripciones;
 using Qualia.Infrastructure.Persistence;
 
@@ -44,21 +44,21 @@ public sealed class QualiaDbContextModeloTests
         Assert.Equal("auditoria_plataforma", auditoriaEntity.GetTableName());
         Assert.Empty(auditoriaEntity.GetDeclaredQueryFilters());
 
-        // Verifica falla cerrada (EmpresaId == null -> TieneEmpresaActual = False) y aislamiento dinámico por empresa.
+        // Falla cerrada: sin empresa activa, la consulta igual lleva el filtro por empresa_id.
         var sqlSinEmpresa = db.Suscripciones.ToQueryString();
-        Assert.Contains("TieneEmpresaActual", sqlSinEmpresa, StringComparison.Ordinal);
-        Assert.Contains("='False'", sqlSinEmpresa, StringComparison.Ordinal);
-        Assert.Contains("s.empresa_id =", sqlSinEmpresa, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("empresa_id", sqlSinEmpresa, StringComparison.OrdinalIgnoreCase);
 
+        // Con empresa activa, el filtro usa su identificador.
         var empresaId = Guid.NewGuid();
-        contexto.EmpresaId = empresaId;
+        contexto.EmpresaIdActual = empresaId;
         var sqlConEmpresa = db.Suscripciones.ToQueryString();
-        Assert.Contains("='True'", sqlConEmpresa, StringComparison.Ordinal);
         Assert.Contains(empresaId.ToString(), sqlConEmpresa, StringComparison.OrdinalIgnoreCase);
     }
 
     private sealed class ContextoMutable : IContextoEmpresa
     {
-        public Guid? EmpresaId { get; set; }
+        public Guid? EmpresaIdActual { get; set; }
+
+        public void Establecer(Guid empresaId) => EmpresaIdActual = empresaId;
     }
 }

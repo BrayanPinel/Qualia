@@ -1,9 +1,9 @@
 namespace Qualia.Domain.Suscripciones;
 
 /// <summary>
-/// Códigos de <c>Funcion_plan.codigo_funcion</c> (varchar(50)).
+/// Códigos de Funcion_plan.codigo_funcion (varchar(50)).
 /// Contrato compartido: los roles B y D deben usar estas constantes al consultar
-/// <c>IConsultaPlanService.TieneFuncionAsync</c> en lugar de literales.
+/// IConsultaPlanService.TieneFuncionAsync en lugar de literales.
 /// </summary>
 public static class CodigosFuncionPlan
 {

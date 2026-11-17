@@ -1,0 +1,92 @@
+{
+  "archivo": "demo/sur/llamada-01.wav",
+  "guion": "guiones/sur-llamada-01.json",
+  "descripcion": "Cobranza ejemplar: saludo, verificación del titular antes de hablar de la deuda y acuerdo de pago claro.",
+  "generadoCon": "Deepgram Aura-2 TTS",
+  "frecuenciaMuestreo": 8000,
+  "duracionSeg": 52.58,
+  "actores": {
+    "Agente": {
+      "nombre": "Adrián",
+      "voz": "aura-2-sirio-es"
+    },
+    "Cliente": {
+      "nombre": "Patricia",
+      "voz": "aura-2-gloria-es"
+    }
+  },
+  "segmentos": [
+    {
+      "orden": 1,
+      "actor": "Agente",
+      "voz": "aura-2-sirio-es",
+      "inicioSeg": 0.4,
+      "finSeg": 5.24,
+      "texto": "Buenos días, le saluda Adrián de Cobranzas Sur. ¿Hablo con la señora Patricia Rivera?"
+    },
+    {
+      "orden": 2,
+      "actor": "Cliente",
+      "voz": "aura-2-gloria-es",
+      "inicioSeg": 5.69,
+      "finSeg": 7.09,
+      "texto": "Sí, con ella habla."
+    },
+    {
+      "orden": 3,
+      "actor": "Agente",
+      "voz": "aura-2-sirio-es",
+      "inicioSeg": 7.54,
+      "finSeg": 14.06,
+      "texto": "Gracias. Por seguridad necesito verificar su identidad antes de continuar. ¿Me confirma su número de identidad?"
+    },
+    {
+      "orden": 4,
+      "actor": "Cliente",
+      "voz": "aura-2-gloria-es",
+      "inicioSeg": 14.51,
+      "finSeg": 21.99,
+      "texto": "Es 0801-1980-55555."
+    },
+    {
+      "orden": 5,
+      "actor": "Agente",
+      "voz": "aura-2-sirio-es",
+      "inicioSeg": 22.44,
+      "finSeg": 29.84,
+      "texto": "Gracias, señora Rivera, la verificación fue exitosa. Le llamo porque su tarjeta tiene un saldo vencido de tres mil lempiras."
+    },
+    {
+      "orden": 6,
+      "actor": "Cliente",
+      "voz": "aura-2-gloria-es",
+      "inicioSeg": 30.29,
+      "finSeg": 33.17,
+      "texto": "Sí, sé que me atrasé. Este mes se me complicó."
+    },
+    {
+      "orden": 7,
+      "actor": "Agente",
+      "voz": "aura-2-sirio-es",
+      "inicioSeg": 33.62,
+      "finSeg": 42.66,
+      "texto": "Lo entiendo. Le propongo un acuerdo de pago: tres cuotas de mil lempiras, los días quince de cada mes, sin intereses de mora."
+    },
+    {
+      "orden": 8,
+      "actor": "Cliente",
+      "voz": "aura-2-gloria-es",
+      "inicioSeg": 43.11,
+      "finSeg": 45.71,
+      "texto": "Me parece bien, acepto el acuerdo."
+    },
+    {
+      "orden": 9,
+      "actor": "Agente",
+      "voz": "aura-2-sirio-es",
+      "inicioSeg": 46.16,
+      "finSeg": 52.08,
+      "texto": "Perfecto, queda registrado. Le llegará la confirmación por mensaje. Gracias por su atención, que tenga buen día."
+    }
+  ]
+}

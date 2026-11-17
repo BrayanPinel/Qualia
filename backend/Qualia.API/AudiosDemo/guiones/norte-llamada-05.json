@@ -1,0 +1,20 @@
+{
+  "archivo": "demo/norte/llamada-05.wav",
+  "descripcion": "El cliente habla primero; el agente no se presenta y da una solución vaga. Sí verifica identidad y se despide.",
+  "actores": {
+    "Agente": { "nombre": "Andrés", "voz": "aura-2-javier-es" },
+    "Cliente": { "nombre": "Ernesto", "voz": "aura-2-valerio-es" }
+  },
+  "turnos": [
+    { "actor": "Cliente", "texto": "¿Aló? ¿Aló? ¿Me escucha?" },
+    { "actor": "Agente", "texto": "Sí, diga." },
+    { "actor": "Cliente", "texto": "Mire, el técnico vino ayer y el televisor sigue sin señal en varios canales." },
+    { "actor": "Agente", "texto": "Necesito su número de identidad para revisar la cuenta." },
+    { "actor": "Cliente", "texto": "Es 1501-1978-00987." },
+    { "actor": "Agente", "texto": "Ya, está verificado. Pues no sé, a veces es la antena. Pruebe más tarde a ver si se arregla." },
+    { "actor": "Cliente", "texto": "¿Más tarde? Ya llevo tres días así. ¿No pueden mandar a alguien otra vez?" },
+    { "actor": "Agente", "texto": "Puede ser, pero primero espere un par de días. Si sigue, vuelva a llamar." },
+    { "actor": "Cliente", "texto": "Bueno, qué remedio." },
+    { "actor": "Agente", "texto": "Gracias por su llamada, me despido. Que tenga buen día." }
+  ]
+}

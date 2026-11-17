@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Qualia.Domain.Entidades;
 using Qualia.Domain.Suscripciones;
 
 namespace Qualia.Infrastructure.Persistence.Configurations.Suscripciones;
@@ -70,7 +71,14 @@ public sealed class ConsumoLlamadaConfiguration : IEntityTypeConfiguration<Consu
             .HasMaxLength(ConsumoLlamada.LongitudMaximaEstado)
             .IsRequired();
 
-        // TODO (Integración Rol A/D): agregar FKs a empresa(id) y llamada(empresa_id, id) cuando existan.
+        builder.HasOne<Empresa>().WithMany().HasForeignKey(c => c.EmpresaId).OnDelete(DeleteBehavior.Restrict);
+
+        // Un consumo por llamada, de la misma empresa (UNIQUE empresa_id, llamada_id más abajo).
+        builder.HasOne<Llamada>().WithOne()
+            .HasForeignKey<ConsumoLlamada>(c => new { c.EmpresaId, c.LlamadaId })
+            .HasPrincipalKey<Llamada>(l => new { l.EmpresaId, l.Id })
+            .OnDelete(DeleteBehavior.Restrict);
+
         builder.HasOne(c => c.Periodo)
             .WithMany()
             .HasForeignKey(c => new { c.EmpresaId, c.PeriodoId })

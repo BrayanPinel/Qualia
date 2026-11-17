@@ -1,7 +1,7 @@
 namespace Qualia.Domain.Suscripciones;
 
 /// <summary>
-/// Estados de <see cref="Suscripcion"/> (fase1 §2.4 y §7.7). Se persisten como texto.
+/// Estados de <see cref="Suscripcion"/>. Se persisten como texto.
 /// </summary>
 public enum EstadoSuscripcion
 {

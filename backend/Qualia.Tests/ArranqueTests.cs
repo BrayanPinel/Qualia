@@ -21,7 +21,12 @@ public class ArranqueTests : IClassFixture<WebApplicationFactory<Program>>
     public async Task LaApiArrancaYExponeOpenApi()
     {
         using var client = _factory
-            .WithWebHostBuilder(builder => builder.UseEnvironment("Development"))
+            .WithWebHostBuilder(builder => builder
+                .UseEnvironment("Development")
+                // Sin base de datos: no se aplica el esquema, no se siembra ni se inicia el worker.
+                .UseSetting("BaseDatos:AplicarEsquemaAlIniciar", "false")
+                .UseSetting("BaseDatos:SembrarDatosDemo", "false")
+                .UseSetting("Procesamiento:WorkerHabilitado", "false"))
             .CreateClient();
 
         var response = await client.GetAsync("/openapi/v1.json");

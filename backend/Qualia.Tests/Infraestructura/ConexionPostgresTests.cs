@@ -12,7 +12,7 @@ namespace Qualia.Tests.Infraestructura;
 /// No crea entidades, no genera migraciones y no modifica el modelo de datos:
 /// solo comprueba que la API carga su configuración y que el contexto puede
 /// abrir una conexión.
-/// Requiere el contenedor de <c>infra/docker-compose.yml</c> en ejecución.
+/// Requiere el contenedor de infra/docker-compose.yml en ejecución.
 /// </summary>
 public sealed class ConexionPostgresTests
 {

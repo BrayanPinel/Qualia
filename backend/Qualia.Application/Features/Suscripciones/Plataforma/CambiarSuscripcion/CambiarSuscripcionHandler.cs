@@ -7,8 +7,8 @@ using Qualia.Domain.Suscripciones;
 namespace Qualia.Application.Features.Suscripciones.Plataforma.CambiarSuscripcion;
 
 /// <summary>
-/// Caso de uso <c>PUT /api/plataforma/empresas/{empresaId}/suscripcion</c> (fase1).
-/// Aplica la regla <c>CAMBIO_PLAN_PERIODO_EN_USO</c> y registra <see cref="AuditoriaPlataforma"/>.
+/// Caso de uso PUT /api/plataforma/empresas/{empresaId}/suscripcion.
+/// Aplica la regla CAMBIO_PLAN_PERIODO_EN_USO y registra <see cref="AuditoriaPlataforma"/>.
 /// </summary>
 public sealed class CambiarSuscripcionHandler
 {

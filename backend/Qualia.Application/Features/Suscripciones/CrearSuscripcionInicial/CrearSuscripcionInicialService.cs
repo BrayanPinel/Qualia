@@ -13,7 +13,7 @@ public sealed record CrearSuscripcionInicialRequest(
 
 /// <summary>
 /// Implementación de <see cref="ICrearSuscripcionInicial"/> para el registro transaccional
-/// de empresa (HU-01). No llama a <c>SaveChanges</c> de forma independiente para compartir
+/// de empresa (HU-01). No llama a SaveChanges de forma independiente para compartir
 /// la unidad de trabajo del llamador.
 /// </summary>
 public sealed class CrearSuscripcionInicialService : ICrearSuscripcionInicial

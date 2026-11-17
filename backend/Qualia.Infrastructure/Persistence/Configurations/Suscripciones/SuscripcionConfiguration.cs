@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Qualia.Domain.Entidades;
 using Qualia.Domain.Suscripciones;
 
 namespace Qualia.Infrastructure.Persistence.Configurations.Suscripciones;
@@ -60,7 +61,7 @@ public sealed class SuscripcionConfiguration : IEntityTypeConfiguration<Suscripc
             .HasColumnName("gracia_hasta")
             .HasColumnType("timestamptz");
 
-        // TODO (Integración Rol A): agregar FK empresa_id -> empresa(id) cuando exista la entidad Empresa.
+        builder.HasOne<Empresa>().WithMany().HasForeignKey(s => s.EmpresaId).OnDelete(DeleteBehavior.Restrict);
         builder.HasOne(s => s.Plan)
             .WithMany()
             .HasForeignKey(s => s.PlanId)

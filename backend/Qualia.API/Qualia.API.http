@@ -1,5 +1,4 @@
 @host = http://localhost:5008
-@tokenAdminEmpresa = reemplazar-con-jwt-admin-empresa
 @tokenPlatformAdmin = reemplazar-con-jwt-platform-admin
 @empresaId = 00000000-0000-0000-0000-000000000001
 @planProId = 10000000-0000-4000-8000-000000000002
@@ -12,23 +11,226 @@ Accept: application/json
 GET {{host}}/scalar/v1
 Accept: text/html
 
+###############################################################################
+# ROL D — LLAMADAS Y PROCESAMIENTO
+# Datos precargados en desarrollo (Qualia.Infrastructure/Persistence/Semillas/DatosDemo.cs).
+# Autenticación PROVISIONAL: cabecera X-Usuario-Demo con el id del usuario.
+# Cuando el Rol A integre el login, reemplazar por: Authorization: Bearer {{token}}
+###############################################################################
+
+# --- Usuarios de demostración ---
+# Empresa Norte
+@supervisora = 10000000-0000-0000-0001-000000000002
+@supervisorSinCampana = 10000000-0000-0000-0001-000000000003
+@adminNorte = 10000000-0000-0000-0001-000000000001
+@agenteAndres = 10000000-0000-0000-0001-000000000004
+@auditor = 10000000-0000-0000-0001-000000000006
+# Empresa Sur
+@supervisorSur = 20000000-0000-0000-0001-000000000002
+
+# --- Llamadas de demostración ---
+@llamada1 = 10000000-0000-0000-0005-000000000001
+@llamada2 = 10000000-0000-0000-0005-000000000002
+@llamadaRubricaBorrador = 10000000-0000-0000-0005-000000000099
+
+### 1. Supervisora: llamadas disponibles de sus campañas
+GET {{host}}/api/llamadas?estado=Disponible&pagina=1&tamanoPagina=20
+X-Usuario-Demo: {{supervisora}}
+
+### 2. Iniciar evaluación (202 Accepted + Location de seguimiento)
+POST {{host}}/api/llamadas/{{llamada1}}/evaluacion
+X-Usuario-Demo: {{supervisora}}
+
+### 3. Seguimiento del estado (EnCola → Transcribiendo → Transcrita → Evaluando → EvaluadaPorIA)
+GET {{host}}/api/llamadas/{{llamada1}}
+X-Usuario-Demo: {{supervisora}}
+
+### 4. Transcripción enmascarada
+GET {{host}}/api/llamadas/{{llamada1}}/transcripcion
+X-Usuario-Demo: {{supervisora}}
+
+### 5. Evaluación propuesta por IA con evidencia por criterio
+GET {{host}}/api/llamadas/{{llamada1}}/evaluacion
+X-Usuario-Demo: {{supervisora}}
+
+### 6. URL temporal y firmada del audio (abrir la "url" de la respuesta en el navegador)
+GET {{host}}/api/llamadas/{{llamada1}}/audio
+X-Usuario-Demo: {{supervisora}}
+
+### 7. El agente propietario ve solo sus llamadas
+GET {{host}}/api/llamadas
+X-Usuario-Demo: {{agenteAndres}}
+
+###############################################################################
+# Casos de error esperados
+###############################################################################
+
+### 409 EVALUACION_YA_INICIADA (repetir el paso 2)
+POST {{host}}/api/llamadas/{{llamada1}}/evaluacion
+X-Usuario-Demo: {{supervisora}}
+
+### 409 RUBRICA_SIN_PUBLICAR
+POST {{host}}/api/llamadas/{{llamadaRubricaBorrador}}/evaluacion
+X-Usuario-Demo: {{supervisora}}
+
+### 403 CAMPANA_NO_ASIGNADA (supervisor sin la campaña)
+POST {{host}}/api/llamadas/{{llamada2}}/evaluacion
+X-Usuario-Demo: {{supervisorSinCampana}}
+
+### 403 ROL_NO_AUTORIZADO (un agente no inicia evaluaciones)
+POST {{host}}/api/llamadas/{{llamada2}}/evaluacion
+X-Usuario-Demo: {{agenteAndres}}
+
+### 403 Auditor sin acceso al contenido de llamadas
+GET {{host}}/api/llamadas
+X-Usuario-Demo: {{auditor}}
+
+### 404 Aislamiento: la empresa Sur no ve llamadas de Norte
+GET {{host}}/api/llamadas/{{llamada1}}
+X-Usuario-Demo: {{supervisorSur}}
+
+### 400 VALIDACION (tamaño de página y estado inválidos)
+GET {{host}}/api/llamadas?tamanoPagina=500&estado=Inventado
+X-Usuario-Demo: {{adminNorte}}
+
+### 401 Sin sesión
+GET {{host}}/api/llamadas
+
+###############################################################################
+# ROL B — CAMPAÑAS, RÚBRICAS Y REVISIÓN HUMANA
+# Mismos usuarios demo y misma autenticación provisional (X-Usuario-Demo).
+###############################################################################
+
+@campanaNorte = 10000000-0000-0000-0002-000000000001
+@rubricaV1 = 10000000-0000-0000-0003-000000000001
+@rubricaV2Borrador = 10000000-0000-0000-0003-000000000002
+@campanaSur = 20000000-0000-0000-0002-000000000001
+
+### B1. Campañas visibles (AdminEmpresa/Auditor: todas; Supervisor/Agente: las asignadas)
+GET {{host}}/api/campanas?pagina=1&tamanoPagina=20
+X-Usuario-Demo: {{adminNorte}}
+
+### B2. Crear campaña (201)
+POST {{host}}/api/campanas
+X-Usuario-Demo: {{adminNorte}}
+Content-Type: application/json
+
+{ "nombre": "Retención de clientes", "activa": true }
+
+### B3. Actualizar campaña (204)
+PUT {{host}}/api/campanas/{{campanaNorte}}
+X-Usuario-Demo: {{adminNorte}}
+Content-Type: application/json
+
+{ "nombre": "Atención Hogar", "activa": true }
+
+### B4. Usuarios asignados a la campaña
+GET {{host}}/api/campanas/{{campanaNorte}}/usuarios
+X-Usuario-Demo: {{adminNorte}}
+
+### B5. Asignar al supervisor sin campaña (204, idempotente)
+PUT {{host}}/api/campanas/{{campanaNorte}}/usuarios/{{supervisorSinCampana}}
+X-Usuario-Demo: {{adminNorte}}
+
+### B6. Revocar la asignación (204, idempotente)
+DELETE {{host}}/api/campanas/{{campanaNorte}}/usuarios/{{supervisorSinCampana}}
+X-Usuario-Demo: {{adminNorte}}
+
+### B7. 409 ROL_NO_ASIGNABLE (un Auditor no se asigna a campañas)
+PUT {{host}}/api/campanas/{{campanaNorte}}/usuarios/{{auditor}}
+X-Usuario-Demo: {{adminNorte}}
+
+### B8. Versiones de rúbrica de la campaña (AdminEmpresa o Supervisor asignado)
+GET {{host}}/api/campanas/{{campanaNorte}}/rubricas
+X-Usuario-Demo: {{supervisora}}
+
+### B9. Nueva versión en Borrador (201; los pesos pueden no sumar 100 todavía)
+POST {{host}}/api/campanas/{{campanaNorte}}/rubricas
+X-Usuario-Demo: {{adminNorte}}
+Content-Type: application/json
+
+{
+  "nombre": "Calidad de atención",
+  "criterios": [
+    { "nombre": "Saludo y presentación", "descripcion": "El agente saluda y se presenta.", "peso": 20, "esCritico": false, "umbralCumplimiento": 70 },
+    { "nombre": "Verificación de identidad", "descripcion": "Verifica la identidad antes de revisar la cuenta.", "peso": 40, "esCritico": true, "umbralCumplimiento": 80 },
+    { "nombre": "Resolución de la consulta", "descripcion": "Explica una solución concreta.", "peso": 30, "esCritico": false, "umbralCumplimiento": 70 }
+  ]
+}
+
+### B10. Publicar con pesos que no suman 100 → 400 RUBRICA_INVALIDA (usar el id devuelto en B9)
+POST {{host}}/api/rubricas/REEMPLAZAR-ID-DE-B9/publicar
+X-Usuario-Demo: {{adminNorte}}
+
+### B11. Publicar la versión 2 (200): retira la v1; las llamadas existentes conservan la v1
+POST {{host}}/api/rubricas/{{rubricaV2Borrador}}/publicar
+X-Usuario-Demo: {{adminNorte}}
+
+### B12. Editar una versión publicada → 409 RUBRICA_PUBLICADA
+PUT {{host}}/api/rubricas/{{rubricaV1}}
+X-Usuario-Demo: {{adminNorte}}
+Content-Type: application/json
+
+{ "nombre": "Cambio", "criterios": [ { "nombre": "Saludo", "descripcion": "Saluda.", "peso": 100, "esCritico": false, "umbralCumplimiento": 70 } ] }
+
+### B13. Aislamiento: la campaña de Sur no existe para Norte → 404
+GET {{host}}/api/campanas/{{campanaSur}}/rubricas
+X-Usuario-Demo: {{adminNorte}}
+
+# --- Revisión humana: primero ejecutar 2 (iniciar evaluación) y 5 (consultar evaluación) de la sección del Rol D.
+# Copiar el "id" de la evaluación y su "revision" actual.
+@evaluacion = REEMPLAZAR-ID-DE-EVALUACION
+
+### B14. Confirmar (200; la revisión pasa de 1 a 2)
+POST {{host}}/api/evaluaciones/{{evaluacion}}/confirmar
+X-Usuario-Demo: {{supervisora}}
+Content-Type: application/json
+
+{ "revisionEsperada": 1 }
+
+### B15. Repetir con la misma revisión → 409 REVISION_DESACTUALIZADA
+POST {{host}}/api/evaluaciones/{{evaluacion}}/confirmar
+X-Usuario-Demo: {{supervisora}}
+Content-Type: application/json
+
+{ "revisionEsperada": 1 }
+
+### B16. Ajuste completo: todos los criterios, motivo, justificaciones y evidencias (lista vacía = sin evidencia)
+# criterioId: de la evaluación (B14/paso 5). segmentoId y citaTextual: de la transcripción (paso 4).
+PUT {{host}}/api/evaluaciones/{{evaluacion}}/ajuste
+X-Usuario-Demo: {{supervisora}}
+Content-Type: application/json
+
+{
+  "revisionEsperada": 2,
+  "motivo": "La verificación de identidad fue incompleta según la grabación.",
+  "criterios": [
+    { "criterioId": "REEMPLAZAR", "puntaje": 60, "justificacion": "Solo pidió el número de identidad.", "evidencias": [ { "segmentoId": "REEMPLAZAR", "citaTextual": "REEMPLAZAR con texto literal del segmento" } ] }
+  ]
+
+###############################################################################
+# ROL C — PLANES, SUSCRIPCIÓN Y CONSUMO
+# AdminEmpresa con la autenticación provisional (X-Usuario-Demo).
+# Las rutas de PlatformAdmin requieren el login del Rol A (token Bearer).
+###############################################################################
+
 ### Rol C (P0) — 1. Catálogo público de planes activos y sus funciones
 GET {{host}}/api/planes
 Accept: application/json
 
 ### Rol C (P0) — 2. Consultar suscripción vigente y periodo actual de la empresa autenticada
 GET {{host}}/api/suscripcion
-Authorization: Bearer {{tokenAdminEmpresa}}
+X-Usuario-Demo: {{adminNorte}}
 Accept: application/json
 
 ### Rol C (P0) — 3. Consultar consumo mensual (YYYY-MM)
 GET {{host}}/api/consumo?periodo=2026-11
-Authorization: Bearer {{tokenAdminEmpresa}}
+X-Usuario-Demo: {{adminNorte}}
 Accept: application/json
 
 ### Rol C (P0) — 4a. Pago simulado Aprobado (activa/renueva sin duplicar cuota en el mismo mes)
 POST {{host}}/api/suscripcion/pago-simulado
-Authorization: Bearer {{tokenAdminEmpresa}}
+X-Usuario-Demo: {{adminNorte}}
 Content-Type: application/json
 
 {
@@ -37,7 +239,7 @@ Content-Type: application/json
 
 ### Rol C (P0) — 4b. Pago simulado Rechazado (no acredita minutos y devuelve ErrorDto 409 PAGO_RECHAZADO)
 POST {{host}}/api/suscripcion/pago-simulado
-Authorization: Bearer {{tokenAdminEmpresa}}
+X-Usuario-Demo: {{adminNorte}}
 Content-Type: application/json
 
 {

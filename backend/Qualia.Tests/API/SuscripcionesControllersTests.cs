@@ -4,15 +4,16 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using Qualia.API.Controllers;
 using Qualia.Application;
+using Qualia.Application.Common.Errores;
 using Qualia.Application.Common.Interfaces;
 using Qualia.Application.Common.Resultados;
+using Qualia.Application.Common.Seguridad;
 using Qualia.Application.Features.Suscripciones.Comun;
 using Qualia.Application.Features.Suscripciones.Consumo.ConsultarConsumo;
 using Qualia.Application.Features.Suscripciones.ObtenerSuscripcion;
 using Qualia.Application.Features.Suscripciones.PagoSimulado;
 using Qualia.Application.Features.Suscripciones.Planes;
 using Qualia.Domain.Suscripciones;
-using Qualia.Infrastructure.Multitenancy;
 using Qualia.Infrastructure.Persistence.Seeders;
 
 namespace Qualia.Tests.API;
@@ -25,7 +26,7 @@ public sealed class SuscripcionesControllersTests
     public async Task EndpointsP0_PlanesSuscripcionConsumoYPagoSimulado_CumplenContrato()
     {
         var repo = new RepositorioMemoria();
-        var contextoAmbiente = new ContextoEmpresaAmbiente();
+        var contextoAmbiente = new ContextoEmpresaPrueba();
         var services = new ServiceCollection();
         services.AddSingleton<TimeProvider>(new RelojFijo(AhoraFijoUtc));
         services.AddApplication();
@@ -76,9 +77,9 @@ public sealed class SuscripcionesControllersTests
         Assert.Equal("Activa", suscripcionActiva.Estado);
 
         // 6. GET /api/consumo?periodo=2026-11 -> 200 ConsumoDto
+        contextoAmbiente.EmpresaIdActual = empresaA;
         var consumoControllerA = new ConsumoController(
-            provider.GetRequiredService<ConsultarConsumoHandler>(),
-            contextoAmbiente)
+            provider.GetRequiredService<ConsultarConsumoHandler>())
         {
             ControllerContext = CrearControllerContext(empresaA),
         };
@@ -92,14 +93,13 @@ public sealed class SuscripcionesControllersTests
 
     private static SuscripcionController CrearSuscripcionController(
         ServiceProvider provider,
-        ContextoEmpresaAmbiente contextoAmbiente,
+        ContextoEmpresaPrueba contextoAmbiente,
         Guid empresaId)
     {
-        contextoAmbiente.EstablecerEmpresa(null);
+        contextoAmbiente.EmpresaIdActual = empresaId;
         return new SuscripcionController(
             provider.GetRequiredService<ObtenerSuscripcionHandler>(),
-            provider.GetRequiredService<RegistrarPagoSimuladoHandler>(),
-            contextoAmbiente)
+            provider.GetRequiredService<RegistrarPagoSimuladoHandler>())
         {
             ControllerContext = CrearControllerContext(empresaId),
         };
@@ -207,5 +207,13 @@ public sealed class SuscripcionesControllersTests
             public Task ConfirmarAsync(CancellationToken cancellationToken = default) => Task.CompletedTask;
             public ValueTask DisposeAsync() => ValueTask.CompletedTask;
         }
+    }
+
+    /// <summary>Contexto de empresa de prueba: simula la empresa que IContextoEmpresa obtiene del token.</summary>
+    private sealed class ContextoEmpresaPrueba : IContextoEmpresa
+    {
+        public Guid? EmpresaIdActual { get; set; }
+
+        public void Establecer(Guid empresaId) => EmpresaIdActual = empresaId;
     }
 }

@@ -4,9 +4,8 @@ using Qualia.Domain.Suscripciones;
 namespace Qualia.Infrastructure.Persistence.Seeders;
 
 /// <summary>
-/// Seeder idempotente para el catálogo inicial de planes comerciales (<c>Básico</c>,
-/// <c>Pro</c>, <c>Enterprise</c>) y sus funciones (<c>funcion_plan</c>) conforme a
-/// <c>docs/fase1.md</c> §2.4.
+/// Seeder idempotente para el catálogo inicial de planes comerciales (Básico,
+/// Pro, Enterprise) y sus funciones (funcion_plan).
 /// Puede invocarse múltiples veces en el arranque o en pruebas de integración sin
 /// duplicar registros.
 /// </summary>

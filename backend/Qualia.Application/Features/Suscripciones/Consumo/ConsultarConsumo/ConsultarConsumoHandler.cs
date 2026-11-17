@@ -3,11 +3,12 @@ using Qualia.Application.Common.Interfaces;
 using Qualia.Application.Common.Resultados;
 using Qualia.Application.Features.Suscripciones.Comun;
 using Qualia.Domain.Suscripciones;
+using Qualia.Application.Common.Seguridad;
 
 namespace Qualia.Application.Features.Suscripciones.Consumo.ConsultarConsumo;
 
 /// <summary>
-/// Caso de uso <c>GET /api/consumo?periodo=YYYY-MM</c> (fase1 §7.2 y §7.8).
+/// Caso de uso GET /api/consumo?periodo=YYYY-MM.
 /// Un mes sin periodo devuelve cantidades en cero.
 /// </summary>
 public sealed class ConsultarConsumoHandler
@@ -39,7 +40,7 @@ public sealed class ConsultarConsumoHandler
             return errorValidacion;
         }
 
-        if (_contextoEmpresa.EmpresaId is not { } empresaId || empresaId == Guid.Empty)
+        if (_contextoEmpresa.EmpresaIdActual is not { } empresaId || empresaId == Guid.Empty)
         {
             return ErroresSuscripcion.EmpresaNoIdentificada;
         }

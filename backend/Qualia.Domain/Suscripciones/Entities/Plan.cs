@@ -1,8 +1,8 @@
 namespace Qualia.Domain.Suscripciones;
 
 /// <summary>
-/// Plan comercial (tabla global <c>plan</c>, sin <c>empresa_id</c>).
-/// Los límites <c>null</c> significan "sin límite" (fase1 §6.2).
+/// Plan comercial (tabla global plan, sin empresa_id).
+/// Los límites null significan "sin límite".
 /// </summary>
 public sealed class Plan
 {
@@ -76,10 +76,10 @@ public sealed class Plan
 
     public bool Activo { get; private set; }
 
-    /// <summary><c>null</c> = sin límite de supervisores.</summary>
+    /// <summary>null = sin límite de supervisores.</summary>
     public int? LimiteSupervisores { get; private set; }
 
-    /// <summary><c>null</c> = sin límite de rúbricas activas.</summary>
+    /// <summary>null = sin límite de rúbricas activas.</summary>
     public int? LimiteRubricas { get; private set; }
 
     /// <summary>Parámetro previsto para la futura política de retención (365 en el MVP).</summary>
@@ -100,7 +100,7 @@ public sealed class Plan
 
     /// <summary>
     /// Agrega la función si aún no existe. Devuelve la función creada
-    /// o <c>null</c> si el plan ya la tenía (operación idempotente).
+    /// o null si el plan ya la tenía (operación idempotente).
     /// </summary>
     public FuncionPlan? AgregarFuncion(string codigoFuncion)
     {

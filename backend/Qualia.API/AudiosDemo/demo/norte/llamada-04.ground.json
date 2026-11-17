@@ -1,0 +1,92 @@
+{
+  "archivo": "demo/norte/llamada-04.wav",
+  "guion": "guiones/norte-llamada-04.json",
+  "descripcion": "Dos voces femeninas (reto de diarización). Atención completa con cambio de plan; el cliente dicta teléfono y correo.",
+  "generadoCon": "Deepgram Aura-2 TTS",
+  "frecuenciaMuestreo": 8000,
+  "duracionSeg": 72.26,
+  "actores": {
+    "Agente": {
+      "nombre": "Alicia",
+      "voz": "aura-2-estrella-es"
+    },
+    "Cliente": {
+      "nombre": "Gabriela",
+      "voz": "aura-2-selena-es"
+    }
+  },
+  "segmentos": [
+    {
+      "orden": 1,
+      "actor": "Agente",
+      "voz": "aura-2-estrella-es",
+      "inicioSeg": 0.4,
+      "finSeg": 8.08,
+      "texto": "Buenas tardes, gracias por llamar a Servicios Norte, le saluda Alicia. ¿Con quién tengo el gusto?"
+    },
+    {
+      "orden": 2,
+      "actor": "Cliente",
+      "voz": "aura-2-selena-es",
+      "inicioSeg": 8.53,
+      "finSeg": 13.33,
+      "texto": "Hola, soy Gabriela Mejía. Quiero cambiarme a un plan con más velocidad."
+    },
+    {
+      "orden": 3,
+      "actor": "Agente",
+      "voz": "aura-2-estrella-es",
+      "inicioSeg": 13.78,
+      "finSeg": 21.14,
+      "texto": "Con todo gusto. Primero debo verificar su identidad, ¿me confirma su número de identidad, por favor?"
+    },
+    {
+      "orden": 4,
+      "actor": "Cliente",
+      "voz": "aura-2-selena-es",
+      "inicioSeg": 21.59,
+      "finSeg": 29.71,
+      "texto": "Claro, es 0801-1995-44321."
+    },
+    {
+      "orden": 5,
+      "actor": "Agente",
+      "voz": "aura-2-estrella-es",
+      "inicioSeg": 30.16,
+      "finSeg": 40.12,
+      "texto": "Gracias, señora Mejía, sus datos están verificados. Tenemos el plan de trescientos megas por cuatrocientos lempiras adicionales al mes."
+    },
+    {
+      "orden": 6,
+      "actor": "Cliente",
+      "voz": "aura-2-selena-es",
+      "inicioSeg": 40.57,
+      "finSeg": 50.73,
+      "texto": "Me interesa. Pueden enviarme el contrato al correo gabriela.mejia@example.com o llamarme al 3344-5566."
+    },
+    {
+      "orden": 7,
+      "actor": "Agente",
+      "voz": "aura-2-estrella-es",
+      "inicioSeg": 51.18,
+      "finSeg": 61.34,
+      "texto": "Perfecto. Le explico: el cambio de plan queda aplicado hoy y el contrato le llegará a su correo en los próximos minutos."
+    },
+    {
+      "orden": 8,
+      "actor": "Cliente",
+      "voz": "aura-2-selena-es",
+      "inicioSeg": 61.79,
+      "finSeg": 64.39,
+      "texto": "Excelente, muchas gracias."
+    },
+    {
+      "orden": 9,
+      "actor": "Agente",
+      "voz": "aura-2-estrella-es",
+      "inicioSeg": 64.84,
+      "finSeg": 71.76,
+      "texto": "¿Le puedo ayudar en algo adicional? Le agradezco su preferencia y me despido. Que tenga una linda tarde."
+    }
+  ]
+}

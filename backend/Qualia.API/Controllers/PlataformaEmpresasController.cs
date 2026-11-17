@@ -7,13 +7,14 @@ using Qualia.Application.Common.Resultados;
 using Qualia.Application.Features.Suscripciones.Comun;
 using Qualia.Application.Features.Suscripciones.Plataforma.CambiarSuscripcion;
 using Qualia.Application.Features.Suscripciones.Plataforma.ListarEmpresasComerciales;
+using Qualia.Application.Common.Errores;
 
 namespace Qualia.API.Controllers;
 
 /// <summary>
-/// Administración comercial global para <c>PlatformAdmin</c>, sin acceso al contenido
-/// de llamadas (<c>GET /api/plataforma/empresas</c> y
-/// <c>PUT /api/plataforma/empresas/{empresaId}/suscripcion</c>, fase1 §7.2 y HU-07).
+/// Administración comercial global para PlatformAdmin, sin acceso al contenido
+/// de llamadas (GET /api/plataforma/empresas y
+/// PUT /api/plataforma/empresas/{empresaId}/suscripcion, HU-07).
 /// </summary>
 [ApiController]
 [Route("api/plataforma/empresas")]
