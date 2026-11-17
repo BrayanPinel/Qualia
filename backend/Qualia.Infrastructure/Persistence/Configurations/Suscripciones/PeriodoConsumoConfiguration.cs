@@ -56,6 +56,9 @@ public sealed class PeriodoConsumoConfiguration : IEntityTypeConfiguration<Perio
             .HasPrincipalKey(s => new { s.EmpresaId, s.Id })
             .OnDelete(DeleteBehavior.Restrict);
 
+        builder.HasIndex(p => new { p.EmpresaId, p.SuscripcionId })
+            .HasDatabaseName("ix_periodo_consumo_empresa_suscripcion");
+
         builder.HasIndex(p => new { p.EmpresaId, p.FechaFin })
             .IsUnique()
             .HasDatabaseName("uq_periodo_consumo_empresa_fin");

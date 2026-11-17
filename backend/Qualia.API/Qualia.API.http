@@ -1,4 +1,8 @@
 @host = http://localhost:5008
+@tokenAdminEmpresa = reemplazar-con-jwt-admin-empresa
+@tokenPlatformAdmin = reemplazar-con-jwt-platform-admin
+@empresaId = 00000000-0000-0000-0000-000000000001
+@planProId = 10000000-0000-4000-8000-000000000002
 
 ### OpenAPI (solo entorno Development)
 GET {{host}}/openapi/v1.json
@@ -7,3 +11,53 @@ Accept: application/json
 ### Scalar UI (solo entorno Development)
 GET {{host}}/scalar/v1
 Accept: text/html
+
+### Rol C (P0) — 1. Catálogo público de planes activos y sus funciones
+GET {{host}}/api/planes
+Accept: application/json
+
+### Rol C (P0) — 2. Consultar suscripción vigente y periodo actual de la empresa autenticada
+GET {{host}}/api/suscripcion
+Authorization: Bearer {{tokenAdminEmpresa}}
+Accept: application/json
+
+### Rol C (P0) — 3. Consultar consumo mensual (YYYY-MM)
+GET {{host}}/api/consumo?periodo=2026-11
+Authorization: Bearer {{tokenAdminEmpresa}}
+Accept: application/json
+
+### Rol C (P0) — 4a. Pago simulado Aprobado (activa/renueva sin duplicar cuota en el mismo mes)
+POST {{host}}/api/suscripcion/pago-simulado
+Authorization: Bearer {{tokenAdminEmpresa}}
+Content-Type: application/json
+
+{
+  "resultado": "Aprobado"
+}
+
+### Rol C (P0) — 4b. Pago simulado Rechazado (no acredita minutos y devuelve ErrorDto 409 PAGO_RECHAZADO)
+POST {{host}}/api/suscripcion/pago-simulado
+Authorization: Bearer {{tokenAdminEmpresa}}
+Content-Type: application/json
+
+{
+  "resultado": "Rechazado"
+}
+
+### Rol C (P1) — 5. Listar empresas y datos comerciales (PlatformAdmin)
+GET {{host}}/api/plataforma/empresas?pagina=1&tamanoPagina=20
+Authorization: Bearer {{tokenPlatformAdmin}}
+Accept: application/json
+
+### Rol C (P1) — 6. Cambiar suscripción de una empresa (PlatformAdmin)
+PUT {{host}}/api/plataforma/empresas/{{empresaId}}/suscripcion
+Authorization: Bearer {{tokenPlatformAdmin}}
+Content-Type: application/json
+
+{
+  "planId": "{{planProId}}",
+  "estado": "Activa",
+  "fechaVencimiento": "2026-12-01T00:00:00Z",
+  "permiteExcedente": true,
+  "motivo": "Actualización de plan aprobada desde administración de plataforma."
+}

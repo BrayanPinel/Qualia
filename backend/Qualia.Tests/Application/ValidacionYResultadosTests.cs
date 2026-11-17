@@ -21,12 +21,12 @@ public sealed class ValidacionYResultadosTests
         var sinValor = Resultado.Exito();
         Assert.True(sinValor.EsExitoso);
 
-        var error = ErrorAplicacion.PagoRequerido("PAGO_RECHAZADO", "Pago rechazado.");
+        var error = ErrorAplicacion.Conflicto("PAGO_RECHAZADO", "Pago rechazado.");
         Resultado resultadoFallo = error;
         Assert.False(resultadoFallo.EsExitoso);
 
         var dto = error.AErrorDto("trace-01");
-        Assert.Equal(402, dto.Status);
+        Assert.Equal(409, dto.Status);
         Assert.Equal("PAGO_RECHAZADO", dto.Codigo);
         Assert.Equal("trace-01", dto.TraceId);
     }

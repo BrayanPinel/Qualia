@@ -11,22 +11,6 @@ public sealed record CrearSuscripcionInicialRequest(
     Guid PlanId,
     DateTime FechaRegistroUtc);
 
-public sealed class CrearSuscripcionInicialValidator : AbstractValidator<CrearSuscripcionInicialRequest>
-{
-    public CrearSuscripcionInicialValidator()
-    {
-        RuleFor(x => x.EmpresaId)
-            .NotEmpty().WithMessage("La empresa es obligatoria.");
-
-        RuleFor(x => x.PlanId)
-            .NotEmpty().WithMessage("El plan es obligatorio.");
-
-        RuleFor(x => x.FechaRegistroUtc)
-            .Must(f => f.Kind == DateTimeKind.Utc)
-            .WithMessage("La fecha de registro debe expresarse en UTC.");
-    }
-}
-
 /// <summary>
 /// Implementación de <see cref="ICrearSuscripcionInicial"/> para el registro transaccional
 /// de empresa (HU-01). No llama a <c>SaveChanges</c> de forma independiente para compartir

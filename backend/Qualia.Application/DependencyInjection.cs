@@ -25,6 +25,8 @@ public static class DependencyInjection
         services.AddValidatorsFromAssembly(typeof(DependencyInjection).Assembly);
         services.TryAddSingleton(TimeProvider.System);
 
+        RegistrarSuscripciones(services);
+
         return services;
     }
 
@@ -33,21 +35,20 @@ public static class DependencyInjection
     /// Requiere que la capa de infraestructura registre <c>IRepositorioSuscripciones</c>
     /// y <c>IContextoEmpresa</c>.
     /// </summary>
-    public static IServiceCollection AddSuscripcionesApplication(this IServiceCollection services)
-    {
+    public static IServiceCollection AddSuscripcionesApplication(this IServiceCollection services) =>
         services.AddApplication();
 
-        services.AddScoped<ICrearSuscripcionInicial, CrearSuscripcionInicialService>();
-        services.AddScoped<IConsultaPlanService, ConsultaPlanService>();
-        services.AddScoped<IConsumoEvaluacion, ConsumoEvaluacionService>();
+    private static void RegistrarSuscripciones(IServiceCollection services)
+    {
+        services.TryAddScoped<ICrearSuscripcionInicial, CrearSuscripcionInicialService>();
+        services.TryAddScoped<IConsultaPlanService, ConsultaPlanService>();
+        services.TryAddScoped<IConsumoEvaluacion, ConsumoEvaluacionService>();
 
-        services.AddScoped<ListarPlanesHandler>();
-        services.AddScoped<ObtenerSuscripcionHandler>();
-        services.AddScoped<ConsultarConsumoHandler>();
-        services.AddScoped<RegistrarPagoSimuladoHandler>();
-        services.AddScoped<ListarEmpresasComercialesHandler>();
-        services.AddScoped<CambiarSuscripcionHandler>();
-
-        return services;
+        services.TryAddScoped<ListarPlanesHandler>();
+        services.TryAddScoped<ObtenerSuscripcionHandler>();
+        services.TryAddScoped<ConsultarConsumoHandler>();
+        services.TryAddScoped<RegistrarPagoSimuladoHandler>();
+        services.TryAddScoped<ListarEmpresasComercialesHandler>();
+        services.TryAddScoped<CambiarSuscripcionHandler>();
     }
 }

@@ -29,7 +29,7 @@ public static class ErroresSuscripcion
         CodigoSuscripcionNoActiva,
         "La suscripción de la empresa no permite iniciar nuevas evaluaciones.");
 
-    public static ErrorAplicacion PagoRechazado { get; } = ErrorAplicacion.PagoRequerido(
+    public static ErrorAplicacion PagoRechazado { get; } = ErrorAplicacion.Conflicto(
         CodigoPagoRechazado,
         "El pago simulado fue rechazado. No se acreditaron minutos ni se renovó la suscripción.");
 
