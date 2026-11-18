@@ -14,6 +14,8 @@ public interface IQualiaDbContext
     // --- Entidades base compartidas---
     DbSet<Empresa> Empresas { get; }
     DbSet<Usuario> Usuarios { get; }
+    DbSet<Administrador> Administradores { get; }
+    DbSet<Auditoria> Auditorias { get; }
     DbSet<Campana> Campanas { get; }
     DbSet<UsuarioCampana> UsuariosCampana { get; }
     DbSet<Rubrica> Rubricas { get; }
