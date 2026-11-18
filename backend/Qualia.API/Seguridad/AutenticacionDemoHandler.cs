@@ -9,8 +9,9 @@ using Qualia.Application.Common.Seguridad;
 namespace Qualia.API.Seguridad;
 
 /// <summary>
-/// ESQUEMA PROVISIONAL, SOLO DESARROLLO (Autenticacion:ModoDemo = true y entorno Development). (PARA PRUEBAS)
-/// TEMPORAL REMPLAZAR POR COMPAÑERO DE LA PARTE A
+/// Esquema auxiliar SOLO de desarrollo (Autenticacion:ModoDemo = true y entorno Development):
+/// identifica al usuario por la cabecera X-Usuario-Demo. Lo usan las pruebas de integración y los .http.
+/// Convive con JWT: <see cref="ConfiguracionAutenticacion"/> lo elige solo si llega esa cabecera.
 /// </summary>
 
 public sealed class AutenticacionDemoHandler(
