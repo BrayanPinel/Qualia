@@ -3,6 +3,8 @@ using System.Net.Http.Json;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Qualia.Application.Common.Errores;
+using Qualia.Application.Common.Models;
+using Qualia.Application.Features.Procesamiento;
 using Qualia.Application.Features.Llamadas.Dtos;
 using Qualia.Domain.Enums;
 using Qualia.Infrastructure.Persistence;
@@ -222,9 +224,17 @@ public sealed class RevisionHumanaIntegracionTests : IAsyncLifetime
             var db = scope.ServiceProvider.GetRequiredService<QualiaDbContext>();
             await db.EvaluacionesIA.IgnoreQueryFilters().Where(e => e.Id == propuesta.Id)
                 .ExecuteUpdateAsync(s => s.SetProperty(e => e.RequiereRevision, true));
+            var detalleId = await db.DetallesEvaluacion.IgnoreQueryFilters()
+                .Where(d => d.EvaluacionId == propuesta.Id).Select(d => d.Id).FirstAsync();
+            await db.DetallesEvaluacion.IgnoreQueryFilters().Where(d => d.Id == detalleId)
+                .ExecuteUpdateAsync(s => s.SetProperty(
+                    d => d.Observacion, $"Se descartaron 1 {ConstructorEvaluacion.MarcaEvidenciaDescartada}; requiere revisión humana."));
         }
 
         var supervisora = _api.ClienteComo(Norte.Supervisora);
+        var pendiente = await QualiaApiFactory.LeerAsync<EvaluacionDto>(await supervisora.GetAsync($"/api/llamadas/{llamadaId}/evaluacion"));
+        Assert.False(pendiente.Oficial);
+
         var confirmar = await supervisora.PostAsJsonAsync($"/api/evaluaciones/{propuesta.Id}/confirmar", new { revisionEsperada = 1 });
         Assert.Equal(HttpStatusCode.Conflict, confirmar.StatusCode);
         Assert.Equal("EVIDENCIA_INVALIDA", await CodigoAsync(confirmar));
@@ -249,6 +259,39 @@ public sealed class RevisionHumanaIntegracionTests : IAsyncLifetime
 
         Assert.Equal(HttpStatusCode.OK,
             (await supervisora.PostAsJsonAsync($"/api/evaluaciones/{propuesta.Id}/confirmar", new { revisionEsperada = 2 })).StatusCode);
+    }
+
+    [FactConDocker]
+    public async Task Nota_dudosa_de_la_IA_se_confirma_y_queda_oficial()
+    {
+        var llamadaId = Norte.Llamadas[4];
+        var propuesta = await EvaluarConIAAsync(llamadaId, Norte.Supervisora);
+
+        // Falla sin evidencia descartada (falta sin fragmento o nota cerca del umbral).
+        await using (var scope = _api.Services.CreateAsyncScope())
+        {
+            var db = scope.ServiceProvider.GetRequiredService<QualiaDbContext>();
+            await db.EvaluacionesIA.IgnoreQueryFilters().Where(e => e.Id == propuesta.Id)
+                .ExecuteUpdateAsync(s => s.SetProperty(e => e.RequiereRevision, true));
+            await db.DetallesEvaluacion.IgnoreQueryFilters().Where(d => d.EvaluacionId == propuesta.Id)
+                .ExecuteUpdateAsync(s => s.SetProperty(d => d.Observacion, "La nota está cerca del umbral de cumplimiento; requiere revisión humana."));
+        }
+
+        var supervisora = _api.ClienteComo(Norte.Supervisora);
+        var bandeja = await QualiaApiFactory.LeerAsync<PaginaDto<LlamadaDto>>(
+            await supervisora.GetAsync("/api/llamadas?requiereRevision=true"));
+        Assert.Contains(bandeja.Items, l => l.Id == llamadaId && l.RequiereRevision == true);
+
+        var confirmada = await QualiaApiFactory.LeerAsync<EvaluacionDto>(
+            await supervisora.PostAsJsonAsync($"/api/evaluaciones/{propuesta.Id}/confirmar", new { revisionEsperada = 1 }));
+
+        Assert.Equal(EstadoEvaluacion.ConfirmadaPorSupervisor, confirmada.Estado);
+        Assert.False(confirmada.RequiereRevision);
+        Assert.True(confirmada.Oficial);
+
+        var despues = await QualiaApiFactory.LeerAsync<PaginaDto<LlamadaDto>>(
+            await supervisora.GetAsync("/api/llamadas?requiereRevision=true"));
+        Assert.DoesNotContain(despues.Items, l => l.Id == llamadaId);
     }
 
     [FactConDocker]

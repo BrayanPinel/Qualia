@@ -125,13 +125,14 @@ public sealed class ProcesadorTrabajo(
             reportarUso(uso);
 
             var construida = ConstructorEvaluacion.Construir(
-                llamada.EmpresaId, llamada.Id, respuesta, criterios, segmentos, reloj.GetUtcNow().UtcDateTime);
+                llamada.EmpresaId, llamada.Id, respuesta, criterios, segmentos, reloj.GetUtcNow().UtcDateTime,
+                _opciones.MargenRevisionUmbral);
 
-            if (construida.EvidenciasDescartadas > 0)
+            if (construida.Evaluacion.RequiereRevision)
             {
                 logger.LogInformation(
-                    "Llamada {LlamadaId}: se descartaron {Cantidad} evidencias inválidas; requiere revisión humana",
-                    llamada.Id, construida.EvidenciasDescartadas);
+                    "Llamada {LlamadaId}: {Criterios} criterio(s) requieren revisión humana ({Descartadas} evidencia(s) descartada(s))",
+                    llamada.Id, construida.CriteriosEnRevision, construida.EvidenciasDescartadas);
             }
 
             nuevaEvaluacion = construida.Evaluacion;

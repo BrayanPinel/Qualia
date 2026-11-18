@@ -34,11 +34,18 @@ Accept: text/html
 @llamada2 = 10000000-0000-0000-0005-000000000002
 @llamadaRubricaBorrador = 10000000-0000-0000-0005-000000000099
 
-### 1. Supervisora: llamadas disponibles de sus campañas
-GET {{host}}/api/llamadas?estado=Disponible&pagina=1&tamanoPagina=20
+# La IA evalúa sola las llamadas precargadas al arrancar la API (Procesamiento:EvaluacionAutomatica).
+# Si la IA no detecta fallas, su nota es oficial; el supervisor solo revisa la bandeja (paso 1b).
+
+### 1. Supervisora: llamadas de sus campañas (requiereRevision indica si la IA tuvo una falla)
+GET {{host}}/api/llamadas?pagina=1&tamanoPagina=20
 X-Usuario-Demo: {{supervisora}}
 
-### 2. Iniciar evaluación (202 Accepted + Location de seguimiento)
+### 1b. Bandeja de revisión: solo las evaluaciones que la IA marcó con falla
+GET {{host}}/api/llamadas?requiereRevision=true
+X-Usuario-Demo: {{supervisora}}
+
+### 2. Inicio manual opcional (202; 409 EVALUACION_YA_INICIADA si ya se encoló sola)
 POST {{host}}/api/llamadas/{{llamada1}}/evaluacion
 X-Usuario-Demo: {{supervisora}}
 
@@ -50,12 +57,16 @@ X-Usuario-Demo: {{supervisora}}
 GET {{host}}/api/llamadas/{{llamada1}}/transcripcion
 X-Usuario-Demo: {{supervisora}}
 
-### 5. Evaluación propuesta por IA con evidencia por criterio
+### 5. Evaluación de la IA: oficial, cumple por criterio y fragmento de cada falta (texto, hablante, inicio/fin del audio)
 GET {{host}}/api/llamadas/{{llamada1}}/evaluacion
 X-Usuario-Demo: {{supervisora}}
 
 ### 6. URL temporal y firmada del audio (abrir la "url" de la respuesta en el navegador)
 GET {{host}}/api/llamadas/{{llamada1}}/audio
+X-Usuario-Demo: {{supervisora}}
+
+### 6b. Reintento de una llamada perdida (estado Fallida): 202; reutiliza su trabajo y su consumo
+POST {{host}}/api/llamadas/{{llamada1}}/evaluacion
 X-Usuario-Demo: {{supervisora}}
 
 ### 7. El agente propietario ve solo sus llamadas
@@ -508,3 +519,37 @@ Content-Type: application/json
   "resolucion": "Intento de resolver sin estar asignado a la campaña.",
   "revisionEsperada": 2
 }
+
+###############################################################################
+# DESEMPEÑO — SCORECARDS Y REPORTES
+# Cuentan las evaluaciones oficiales (IA sin fallas, confirmadas o ajustadas) sin disputa abierta.
+# periodo = YYYY-MM (por defecto, el mes en curso). Mínimo de muestra: Empresa.minimo_muestra (5).
+###############################################################################
+
+### D1. Scorecard propio del agente
+GET {{host}}/api/agentes/me/scorecard?campanaId={{campanaNorte}}
+X-Usuario-Demo: {{agenteAndres}}
+
+### D2. Scorecard de un agente (AdminEmpresa o Supervisor asignado)
+GET {{host}}/api/agentes/{{agenteAndres}}/scorecard?campanaId={{campanaNorte}}
+X-Usuario-Demo: {{supervisora}}
+
+### D3. Scorecards del equipo de la campaña (paginados por agente)
+GET {{host}}/api/campanas/{{campanaNorte}}/scorecards?pagina=1&tamanoPagina=20
+X-Usuario-Demo: {{supervisora}}
+
+### D4. Reporte agregado de la campaña (también para el Auditor)
+GET {{host}}/api/reportes/campanas/{{campanaNorte}}
+X-Usuario-Demo: {{auditor}}
+
+### D5. 403 CAMPANA_NO_ASIGNADA (supervisor sin la campaña)
+GET {{host}}/api/campanas/{{campanaNorte}}/scorecards
+X-Usuario-Demo: {{supervisorSinCampana}}
+
+### D6. 404 Aislamiento: la campaña de Sur no existe para Norte
+GET {{host}}/api/reportes/campanas/{{campanaSur}}
+X-Usuario-Demo: {{adminNorte}}
+
+### D7. 400 VALIDACION (periodo con formato inválido)
+GET {{host}}/api/reportes/campanas/{{campanaNorte}}?periodo=2026-13
+X-Usuario-Demo: {{adminNorte}}

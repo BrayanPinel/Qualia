@@ -70,18 +70,67 @@ public class ConstructorEvaluacionTests
     }
 
     [Fact]
-    public void Ausencia_de_evidencia_se_representa_explicitamente_sin_exigir_revision()
+    public void Criterio_cumplido_sin_evidencia_se_representa_explicitamente_sin_exigir_revision()
     {
         var respuesta = Respuesta(
-            new CriterioEvaluado(_saludo.Id, 40, "No saluda.", []),
-            new CriterioEvaluado(_identidad.Id, 85, "Verifica.", [new(_seg2.Id, "verificar su identidad")]));
+            new CriterioEvaluado(_saludo.Id, 90, "Saluda.", []),
+            new CriterioEvaluado(_identidad.Id, 95, "Verifica.", [new(_seg2.Id, "verificar su identidad")]));
 
         var resultado = Construir(respuesta);
 
         Assert.False(resultado.Evaluacion.RequiereRevision);
+        Assert.True(resultado.Evaluacion.EsOficial);
         var saludo = resultado.Evaluacion.Detalles.Single(d => d.CriterioId == _saludo.Id);
         Assert.Empty(saludo.Evidencias);
         Assert.Contains(ConstructorEvaluacion.NotaSinEvidencia, saludo.Observacion);
+    }
+
+    [Fact]
+    public void Falta_sin_fragmento_que_la_pruebe_exige_revision()
+    {
+        var respuesta = Respuesta(
+            new CriterioEvaluado(_saludo.Id, 40, "No saluda.", []),
+            new CriterioEvaluado(_identidad.Id, 95, "Verifica.", [new(_seg2.Id, "verificar su identidad")]));
+
+        var resultado = Construir(respuesta);
+
+        Assert.True(resultado.Evaluacion.RequiereRevision);
+        Assert.False(resultado.Evaluacion.EsOficial);
+        Assert.Equal(1, resultado.CriteriosEnRevision);
+        var saludo = resultado.Evaluacion.Detalles.Single(d => d.CriterioId == _saludo.Id);
+        Assert.Contains("falta sin citar el fragmento", saludo.Observacion);
+    }
+
+    [Fact]
+    public void Falta_con_fragmento_valido_es_oficial_y_conserva_el_fragmento()
+    {
+        var respuesta = Respuesta(
+            new CriterioEvaluado(_saludo.Id, 90, "Saluda.", [new(_seg1.Id, "gracias por llamar")]),
+            new CriterioEvaluado(_identidad.Id, 30, "Pide el número sin verificar.", [new(_seg2.Id, "me confirma su número")]));
+
+        var resultado = Construir(respuesta, margen: 5m);
+
+        Assert.False(resultado.Evaluacion.RequiereRevision);
+        Assert.True(resultado.Evaluacion.EsOficial);
+        var identidad = resultado.Evaluacion.Detalles.Single(d => d.CriterioId == _identidad.Id);
+        Assert.False(identidad.CumpleCriterio);
+        Assert.Equal(_seg2.Id, Assert.Single(identidad.Evidencias).SegmentoId);
+    }
+
+    [Theory]
+    [InlineData(76, true)]   // umbral 80: a 4 puntos, dudosa.
+    [InlineData(84, true)]
+    [InlineData(75, false)]  // a 5 puntos: fuera del margen.
+    [InlineData(95, false)]
+    public void Nota_cerca_del_umbral_exige_revision(double puntaje, bool esperado)
+    {
+        var respuesta = Respuesta(
+            new CriterioEvaluado(_saludo.Id, 90, "Saluda.", [new(_seg1.Id, "gracias por llamar")]),
+            new CriterioEvaluado(_identidad.Id, (decimal)puntaje, "Verifica.", [new(_seg2.Id, "verificar su identidad")]));
+
+        var resultado = Construir(respuesta, margen: 5m);
+
+        Assert.Equal(esperado, resultado.Evaluacion.RequiereRevision);
     }
 
     [Fact]
@@ -127,8 +176,8 @@ public class ConstructorEvaluacionTests
         Assert.Single(saludo.Evidencias);
     }
 
-    private ConstructorEvaluacion.Resultado Construir(ResultadoEvaluacionIA respuesta) =>
-        ConstructorEvaluacion.Construir(Empresa, Llamada, respuesta, [_saludo, _identidad], [_seg1, _seg2], Ahora);
+    private ConstructorEvaluacion.Resultado Construir(ResultadoEvaluacionIA respuesta, decimal margen = 0m) =>
+        ConstructorEvaluacion.Construir(Empresa, Llamada, respuesta, [_saludo, _identidad], [_seg1, _seg2], Ahora, margen);
 
     private static ResultadoEvaluacionIA Respuesta(params CriterioEvaluado[] criterios) =>
         new("modelo-prueba", ModoIA.Simulado, criterios, 10, 10, 0m);

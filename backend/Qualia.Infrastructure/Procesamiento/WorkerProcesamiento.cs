@@ -6,10 +6,12 @@ using Qualia.Application.Features.Procesamiento;
 namespace Qualia.Infrastructure.Procesamiento;
 
 /// <summary>
-/// Servicio en segundo plano que procesa la cola de trabajos. Despierta con la señal
-/// de IniciarEvaluacion o por sondeo periódico (reintentos y bloqueos vencidos).
+/// Servicio en segundo plano. En cada ciclo encola las llamadas nuevas (evaluación automática)
+/// y procesa la cola de trabajos. Despierta con la señal de IniciarEvaluacion o por sondeo
+/// periódico (llamadas nuevas, reintentos y bloqueos vencidos).
 /// </summary>
 public sealed class WorkerProcesamiento(
+    DespachadorEvaluacionAutomatica despachador,
     EjecutorProcesamiento ejecutor,
     ISenalProcesamiento senal,
     IOptions<OpcionesProcesamiento> opciones,
@@ -23,10 +25,11 @@ public sealed class WorkerProcesamiento(
         {
             try
             {
+                var encoladas = await despachador.EjecutarCicloAsync(stoppingToken);
                 var procesados = await ejecutor.EjecutarCicloAsync(stoppingToken);
-                if (procesados > 0)
+                if (encoladas > 0 || procesados > 0)
                 {
-                    continue; // Puede haber más trabajos en cola.
+                    continue; // Puede haber más llamadas o trabajos pendientes.
                 }
             }
             catch (OperationCanceledException) when (stoppingToken.IsCancellationRequested)

@@ -50,10 +50,10 @@ public sealed class GestionDisputas(
             throw ExcepcionNegocio.Prohibido(CodigoEvaluacionFueraDeAlcance, "Solo puede disputar sus propias evaluaciones.");
         }
 
-        if (evaluacion.Estado == EstadoEvaluacion.EvaluadaPorIA)
+        if (!evaluacion.EsOficial)
         {
             throw ExcepcionNegocio.Conflicto(CodigoEvaluacionNoOficial,
-                "Solo se puede disputar una evaluación confirmada o ajustada por el supervisor.");
+                "La evaluación está pendiente de revisión del supervisor; todavía no se puede disputar.");
         }
 
         if (!await plan.TieneFuncionAsync(agente.EmpresaId, CodigosFuncionPlan.Disputas, ct))

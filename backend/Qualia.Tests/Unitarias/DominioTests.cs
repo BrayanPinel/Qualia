@@ -84,4 +84,30 @@ public class DominioTests
         trabajo.Estado = EstadoTrabajo.EnProceso;
         trabajo.Intentos++;
     }
+
+    [Fact]
+    public void Un_trabajo_fallido_se_reinicia_y_los_demas_estados_no()
+    {
+        var trabajo = TrabajoProcesamiento.Crear(Guid.NewGuid(), Guid.NewGuid());
+        Assert.Throws<ReglaDominioException>(trabajo.Reiniciar);
+
+        trabajo.Estado = EstadoTrabajo.EnProceso;
+        trabajo.Intentos = 3;
+        trabajo.FallarDefinitivamente("error");
+        trabajo.Reiniciar();
+
+        Assert.Equal(EstadoTrabajo.Pendiente, trabajo.Estado);
+        Assert.Equal(0, trabajo.Intentos);
+        Assert.Null(trabajo.UltimoError);
+    }
+
+    [Fact]
+    public void Una_llamada_fallida_puede_volver_a_la_cola()
+    {
+        var llamada = new Llamada { Estado = EstadoLlamada.Fallida };
+
+        llamada.CambiarEstado(EstadoLlamada.EnCola);
+
+        Assert.Equal(EstadoLlamada.EnCola, llamada.Estado);
+    }
 }

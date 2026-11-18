@@ -24,13 +24,13 @@ Los centros de contacto necesitan evaluar la calidad de sus conversaciones para 
 
 La plataforma parte de grabaciones ficticias precargadas, las transcribe, enmascara datos sensibles en el texto y genera un borrador de evaluación mediante inteligencia artificial. La evaluación utiliza una rúbrica configurable y versionada por campaña. Cada criterio puede vincularse con un segmento de la transcripción y con el instante correspondiente del audio, lo que permite al supervisor revisar la evidencia sin escuchar nuevamente toda la conversación.
 
-El valor central es combinar automatización con control humano. **Una evaluación generada por IA no se convierte automáticamente en una calificación oficial.** El supervisor confirma o ajusta los resultados y sus cambios quedan registrados. El agente puede consultar sus evaluaciones y presentar una disputa. El sistema ofrece evidencia para apoyar la mejora del desempeño; no toma decisiones disciplinarias automáticas.
+El valor central es combinar automatización con control humano. **La IA califica automáticamente cada llamada precargada; si no detecta fallas en su propia evaluación, el resultado es la calificación oficial.** Cuando la IA marca una falla (evidencia inválida, una falta sin el fragmento que la pruebe o una nota cerca del umbral), la evaluación queda pendiente hasta que el supervisor la confirme o la ajuste, y sus cambios quedan registrados. El agente puede consultar sus evaluaciones y presentar una disputa. El sistema ofrece evidencia para apoyar la mejora del desempeño; no toma decisiones disciplinarias automáticas.
 
-Las evaluaciones validadas alimentan un scorecard individual con puntaje, resultados por criterio y seguimiento del agente. Las funciones de tendencia, comparación por campaña y disputas se habilitan según el plan. Solo se muestran promedios oficiales cuando existe una cantidad mínima de llamadas confirmadas, y las evaluaciones con disputas abiertas se excluyen temporalmente del cálculo.
+Las evaluaciones validadas alimentan un scorecard individual con puntaje, resultados por criterio y seguimiento del agente. Las funciones de tendencia, comparación por campaña y disputas se habilitan según el plan. Solo se muestran promedios oficiales cuando existe una cantidad mínima de llamadas con evaluación oficial, y las evaluaciones con disputas abiertas se excluyen temporalmente del cálculo.
 
 El modelo comercial consiste en una suscripción mensual por empresa con minutos de audio incluidos y límites de uso. Los planes propuestos son Básico, Pro y Enterprise. El consumo por minuto permite relacionar el servicio ofrecido con el volumen de conversaciones procesadas. Para el proyecto académico, el cobro se simula y se utilizan audios ficticios. El modo de IA simulado permite demostrar el flujo completo sin depender de créditos de proveedores.
 
-Qualia se diferencia por ofrecer evidencia verificable en audio, rúbricas propias por campaña, revisión humana obligatoria y separación de datos entre empresas. Su objetivo es ampliar la cobertura de revisión de las llamadas precargadas y reducir el trabajo repetitivo de los supervisores, manteniendo trazabilidad, acceso por roles y retroalimentación útil para cada agente.
+Qualia se diferencia por ofrecer evidencia verificable en audio, rúbricas propias por campaña, revisión humana cuando la IA marca una falla y separación de datos entre empresas. Su objetivo es ampliar la cobertura de revisión de las llamadas precargadas y reducir el trabajo repetitivo de los supervisores, manteniendo trazabilidad, acceso por roles y retroalimentación útil para cada agente.
 
 ### 1.2 Objetivo general
 
@@ -88,7 +88,7 @@ Carga manual de audios, integración real con centrales telefónicas, webhooks d
 |---|---|---|
 | PlatformAdmin | Consultar empresas, catálogo de planes y consumo; cambiar suscripciones mediante el flujo simulado | Sin acceso a audios, transcripciones ni evaluaciones individuales |
 | AdminEmpresa | Gestionar usuarios, campañas, rúbricas, asignaciones y suscripción; consultar resultados | Solo su empresa; no confirma evaluaciones por este rol |
-| Supervisor | Seleccionar llamadas precargadas, revisar evidencia, confirmar o ajustar y resolver disputas | Solo campañas asignadas |
+| Supervisor | Revisar las evaluaciones que la IA marcó con falla, escuchar el fragmento de cada falta, confirmar o ajustar y resolver disputas | Solo campañas asignadas |
 | Agente | Consultar sus llamadas, calificaciones y scorecard; abrir disputas | Solo información propia |
 | Auditor | Consultar reportes agregados | Solo su empresa; sin audio ni scorecards individuales |
 
@@ -127,9 +127,9 @@ El backend consulta el estado vigente y los límites antes de iniciar una evalua
 | RN-08 | El servidor calcula notas totales y consumo. El cliente no puede fijarlos. |
 | RN-09 | Una cita debe existir en un segmento de la misma llamada. Los tiempos provienen del segmento, nunca de la generación del LLM. |
 | RN-10 | La ausencia de evidencia se representa explícitamente. Una evaluación con evidencia inválida exige revisión humana antes de oficializarse. |
-| RN-11 | Solo las evaluaciones confirmadas o ajustadas, sin disputa abierta, cuentan en el promedio oficial. El mínimo se obtiene de Empresa.minimo_muestra, predeterminado en 5: por agente, campaña y periodo para el scorecard individual, y por campaña y periodo para el agregado. |
+| RN-11 | Solo las evaluaciones oficiales (calificadas por la IA sin fallas, confirmadas o ajustadas), sin disputa abierta, cuentan en el promedio oficial. El mínimo se obtiene de Empresa.minimo_muestra, predeterminado en 5: por agente, campaña y periodo para el scorecard individual, y por campaña y periodo para el agregado. |
 | RN-12 | Cada ajuste exige motivo; se conserva el resultado propuesto por IA y el resultado humano. |
-| RN-13 | El inicio de la evaluación reserva minutos de forma atómica; los reintentos del mismo trabajo no duplican la reserva ni el consumo facturable. |
+| RN-13 | El inicio de la evaluación reserva minutos de forma atómica; los reintentos del mismo trabajo no duplican la reserva ni el consumo facturable. Una llamada perdida (Fallida) puede volver a evaluarse: reutiliza su trabajo y su consumo, que pasa de Liberado a Reservado tras validar la cuota. |
 | RN-14 | Solo se usan audios ficticios en la demostración. La transcripción se enmascara antes de almacenarse y enviarse al evaluador. |
 
 ---
@@ -209,10 +209,11 @@ El backend consulta el estado vigente y los límites antes de iniciar una evalua
 ### EP-04: Motor de evaluación
 
 **HU-13 — Procesamiento asistido por IA · P0**  
-*Como* Supervisor, *quiero* recibir un borrador con evidencia, *para* concentrarme en la revisión.
+*Como* Supervisor, *quiero* que la IA califique sola cada llamada con evidencia, *para* revisar solo los casos con falla.
 
-- Se transcribe, enmascara texto y evalúa con la versión fijada al ingresar la llamada.
-- Se validan notas, criterios, segmentos y citas. La evidencia inválida se marca para revisión.
+- Al ingresar una llamada con rúbrica publicada, se encola automáticamente; se transcribe, enmascara texto y evalúa con la versión fijada.
+- Se validan notas, criterios, segmentos y citas. La evaluación se marca para revisión si hubo evidencia inválida, si la IA marca una falta sin citar el fragmento o si una nota queda a menos del margen configurado (5 puntos por defecto) del umbral.
+- Si el agente no cumple un criterio, la evidencia es el fragmento donde cometió la falta.
 - Los fallos tienen reintentos limitados y motivo visible; el modo simulado produce resultados reproducibles y se identifica como tal.
 
 ### EP-05: Revisión humana
@@ -227,6 +228,7 @@ El backend consulta el estado vigente y los límites antes de iniciar una evalua
 **HU-04 — Confirmación o ajuste · P0**  
 *Como* Supervisor, *quiero* confirmar o corregir una evaluación, *para* conservar la decisión humana.
 
+- El supervisor consulta la bandeja `GET /api/llamadas?requiereRevision=true`; las evaluaciones sin falla ya son oficiales y no requieren acción.
 - La acción Confirmar constituye la declaración del supervisor de haber revisado todos los criterios; no se registra una marca de lectura por criterio. El servidor comprueba que la evaluación esté completa y que no conserve evidencias inválidas antes de oficializarla.
 - Un ajuste exige motivo y notas válidas; el total se recalcula en el servidor.
 - Se conserva el resultado de IA y se audita el cambio. Una revisión concurrente desactualizada devuelve 409.
@@ -363,7 +365,7 @@ Los datos necesarios para las historias vigentes quedan integrados en 6.2; no so
 - **Aislamiento.** Cada FK empresarial utiliza `(empresa_id, id_referenciado)` hacia la PK del padre; todos los `empresa_id` son FK a Empresa. Las FK deben implementarse en PostgreSQL, junto con filtros por empresa y autorización por recurso. No basta con mostrar las claves en el dibujo.
 - **Relaciones y nulabilidad.** Cada hijo con FK obligatoria tiene exactamente un padre; el padre puede tener cero o varios hijos. Trabajo_procesamiento, Evaluacion_IA y Consumo_llamada son excepciones: cada llamada tiene cero o uno de cada uno, mediante UNIQUE (`empresa_id`, `llamada_id`). Una auditoría puede no tener usuario cuando la acción la ejecuta el sistema; una disputa abierta no tiene supervisor resolutor.
 - **Unicidad.** Empresa.codigo y Administrador.correo son únicos globalmente. Se normalizan código y correos antes de guardar. Usuario tiene UNIQUE (`empresa_id`, `correo`); Rubrica, (`empresa_id`, `campana_id`, `version`); Detalle_evaluacion, (`empresa_id`, `evaluacion_id`, `criterio_id`); Segmento_transcripcion, (`empresa_id`, `llamada_id`, `orden`); Criterio_revisado, (`empresa_id`, `revision_id`, `detalle_id`). Índices únicos parciales permiten una rúbrica Activa por campaña, una suscripción vigente por empresa (estado Prueba, Activa o EnMora) y una disputa Abierta por evaluación. El cambio de plan cierra la suscripción anterior y crea la nueva en una transacción, sujeto a las restricciones del periodo descritas en 7.8; otros cambios comerciales no duplican la suscripción.
-- **Reservas.** Al encolar se reserva duración/60, redondeada hacia arriba a dos decimales según 7.8, contra el periodo bajo bloqueo transaccional. Consumo_llamada nace en Reservado; al completar pasa a Facturado, mueve los minutos reservados a facturables y deja la reserva en cero. Ante fallo definitivo pasa a Liberado y deja ambos importes en cero. Un reintento conserva el mismo consumo para evitar doble cobro; el costo técnico se acumula por llamada incluso si falla.
+- **Reservas.** Al encolar se reserva duración/60, redondeada hacia arriba a dos decimales según 7.8, contra el periodo bajo bloqueo transaccional. Consumo_llamada nace en Reservado; al completar pasa a Facturado, mueve los minutos reservados a facturables y deja la reserva en cero. Ante fallo definitivo pasa a Liberado y deja ambos importes en cero. Si el supervisor vuelve a evaluar la llamada perdida, el mismo registro vuelve a Reservado contra el periodo en curso. Un reintento conserva el mismo consumo para evitar doble cobro; el costo técnico se acumula por llamada incluso si falla.
 - **Concurrencia.** Evaluacion_IA.revision comienza en 1. Confirmar, ajustar o resolver una disputa compara `revisionEsperada` y aumenta la revisión atómicamente; una discrepancia devuelve 409. Los ajustes y sus evidencias se guardan en Revision_humana, Criterio_revisado y Evidencia_revision, preservando los resultados originales.
 - **Llamada y campaña.** La precarga asigna una rúbrica publicada e inmutable y un agente de su campaña. `campanaId` y `versionRubrica` se obtienen mediante Rubrica; no se añade una segunda FK de campaña a Llamada. Cambiar la rúbrica activa no modifica llamadas anteriores.
 - **Restricciones de valores.** Pesos positivos y suma 100 al publicar; umbrales y notas entre 0 y 100; minutos, tokens y costos no negativos; revisión y mínimo de muestra mayores que cero; límites de plan y retención positivos cuando correspondan. `gracia_hasta`, si existe, no precede al vencimiento. Validar estados con CHECK y aplicar las transiciones en la capa de aplicación.
@@ -421,7 +423,7 @@ En `GET /api/campanas`, AdminEmpresa y Auditor reciben las campañas de su empre
 
 | Método y ruta | Acceso | Entrada | Salida exitosa |
 |---|---|---|---|
-| POST /api/llamadas/{id}/evaluacion | Supervisor asignado | UUID de la llamada en la ruta, sin cuerpo | 202 EvaluacionAceptadaDto |
+| POST /api/llamadas/{id}/evaluacion | Supervisor asignado | UUID de la llamada en la ruta, sin cuerpo; acepta llamadas Disponible o Fallida (reintento) | 202 EvaluacionAceptadaDto |
 | GET /api/llamadas | AdminEmpresa; Supervisor asignado; Agente propietario | Paginación y filtros opcionales de campaña, agente y estado | 200 PaginaDto<LlamadaDto> |
 | GET /api/llamadas/{id} | Mismos permisos de lectura | Sin cuerpo | 200 LlamadaDto |
 | GET /api/llamadas/{id}/transcripcion | Mismos permisos de lectura | Sin cuerpo | 200 SegmentoDto[] |
@@ -514,12 +516,12 @@ CampanaDto { id: id, empresaId: id, nombre: string, activa: boolean, rubricaActi
 RubricaDto { id: id, empresaId: id, campanaId: id, nombre: string, version: integer, estado: EstadoRubrica, criterios: CriterioDto[] }
 CriterioDto { id: id, nombre: string, descripcion: string, peso: decimal, esCritico: boolean, umbralCumplimiento: decimal }
 EvaluacionAceptadaDto { llamadaId: id, empresaId: id, estado: EstadoLlamada, seguimientoUrl: string }
-LlamadaDto { id: id, empresaId: id, campanaId: id, agenteId: id, rubricaId: id, versionRubrica: integer, duracionSeg: decimal, estado: EstadoLlamada, fechaLlamada: datetime, motivoFallo?: string }
+LlamadaDto { id: id, empresaId: id, campanaId: id, agenteId: id, rubricaId: id, versionRubrica: integer, duracionSeg: decimal, estado: EstadoLlamada, fechaLlamada: datetime, motivoFallo?: string, requiereRevision?: boolean }
 SegmentoDto { id: id, empresaId: id, orden: integer, hablante: string, inicioSeg: decimal, finSeg: decimal, textoRedactado: string }
 AccesoAudioDto { url: string, expiraEn: datetime }
-EvaluacionDto { id: id, empresaId: id, llamadaId: id, estado: EstadoEvaluacion, revision: integer, modoIA: "Real" | "Simulado", modeloUsado: string, requiereRevision: boolean, puntajeTotal: decimal, criterios: ResultadoCriterioDto[] }
-ResultadoCriterioDto { criterioId: id, nombre: string, peso: decimal, puntajeIA: decimal, puntajeHumano?: decimal, puntajeVigente: decimal, justificacion: string, falloCritico: boolean, evidencias: EvidenciaDto[] }
-EvidenciaDto { segmentoId: id, citaTextual: string, inicioSeg: decimal, finSeg: decimal }
+EvaluacionDto { id: id, empresaId: id, llamadaId: id, estado: EstadoEvaluacion, revision: integer, modoIA: "Real" | "Simulado", modeloUsado: string, requiereRevision: boolean, oficial: boolean, puntajeTotal: decimal, criterios: ResultadoCriterioDto[] }
+ResultadoCriterioDto { criterioId: id, nombre: string, peso: decimal, puntajeIA: decimal, puntajeHumano?: decimal, puntajeVigente: decimal, umbralCumplimiento: decimal, cumple: boolean, justificacion: string, falloCritico: boolean, evidencias: EvidenciaDto[] }
+EvidenciaDto { segmentoId: id, citaTextual: string, inicioSeg: decimal, finSeg: decimal, hablante: string, textoSegmento: string }
 DisputaDto { id: id, empresaId: id, evaluacionId: id, estado: "Abierta" | "Resuelta", motivo: string, resolucion?: string, resueltaPorId?: id, creadaEn: datetime, resueltaEn?: datetime }
 ScorecardDto { empresaId: id, agenteId: id, campanaId: id, periodo: string, llamadasEvaluadas: integer, llamadasConfirmadas: integer, llamadasElegibles: integer, muestraSuficiente: boolean, puntajePromedio?: decimal, tendencia?: decimal, promedioCampana?: decimal, criticosFallidos: integer, criterios: PromedioCriterioDto[] }
 PromedioCriterioDto { rubricaId: id, version: integer, criterioId: id, nombre: string, promedio: decimal, cantidad: integer }
@@ -543,9 +545,9 @@ Los campos calculados pueden aparecer en DTOs sin almacenarse redundantemente en
 | EstadoLlamada | Disponible, EnCola, Transcribiendo, Transcrita, Evaluando, EvaluadaPorIA, Fallida |
 | EstadoEvaluacion | EvaluadaPorIA, ConfirmadaPorSupervisor, AjustadaPorSupervisor |
 
-Empresa.estado utiliza EstadoEmpresa; Trabajo_procesamiento.estado utiliza EstadoTrabajo y Consumo_llamada.estado utiliza EstadoConsumo. Un trabajo pasa de Pendiente a EnProceso; un error recuperable lo lleva a ReintentoPendiente y luego a EnProceso. Termina en Completado o Fallido. Una empresa Suspendida no permite operaciones empresariales; PlatformAdmin mantiene acceso a su administración comercial.
+Empresa.estado utiliza EstadoEmpresa; Trabajo_procesamiento.estado utiliza EstadoTrabajo y Consumo_llamada.estado utiliza EstadoConsumo. Un trabajo pasa de Pendiente a EnProceso; un error recuperable lo lleva a ReintentoPendiente y luego a EnProceso. Termina en Completado o Fallido. Un trabajo Fallido vuelve a Pendiente, con los intentos en cero, cuando el supervisor reintenta la llamada perdida. Una empresa Suspendida no permite operaciones empresariales; PlatformAdmin mantiene acceso a su administración comercial.
 
-La disputa tiene su propio estado, independiente del estado de revisión de Evaluacion. Así no se pierde la condición de confirmada o ajustada al abrir o resolver una disputa. La precarga guarda la llamada en `Disponible`. El supervisor inicia su evaluación para pasarla a `EnCola`.
+La disputa tiene su propio estado, independiente del estado de revisión de Evaluacion. Así no se pierde la condición de confirmada o ajustada al abrir o resolver una disputa. La precarga guarda la llamada en `Disponible`. El worker la pasa a `EnCola` automáticamente cuando su rúbrica está publicada; el supervisor puede adelantarla manualmente.
 
 ### 7.8 Reglas de periodos, consumo y resultados
 
@@ -569,8 +571,8 @@ Para el periodo consultado, sean `C` los minutos contratados, `R` la suma de min
 **Cálculo de desempeño.** Todos los contadores se filtran por la empresa, campaña, periodo y, para scorecards individuales, agente:
 
 - `llamadasEvaluadas`: llamadas con una evaluación generada, oficial o todavía pendiente de validación humana.
-- `llamadasConfirmadas`: llamadas con evaluación ConfirmadaPorSupervisor o AjustadaPorSupervisor, incluidas las que tengan disputa abierta.
-- `llamadasElegibles`: llamadas confirmadas o ajustadas sin disputa abierta.
+- `llamadasConfirmadas`: llamadas con evaluación oficial (ConfirmadaPorSupervisor, AjustadaPorSupervisor o EvaluadaPorIA con `requiereRevision = false`), incluidas las que tengan disputa abierta.
+- `llamadasElegibles`: llamadas con evaluación oficial sin disputa abierta.
 - `puntajeVigente`: puntaje humano del último ajuste completo, si existe; en otro caso, puntaje original. Una confirmación posterior no borra un ajuste existente. Los ajustes se serializan mediante la revisión de la evaluación.
 - `falloCritico = esCritico AND puntajeVigente < umbralCumplimiento`. Un criterio se cumple cuando su puntaje vigente es mayor o igual al umbral.
 - `puntajeTotal`: suma de `puntajeVigente × peso / 100`, redondeada a dos decimales al finalizar la suma.
@@ -583,7 +585,7 @@ Para el periodo consultado, sean `C` los minutos contratados, `R` la suma de min
 
 ### 7.9 Ejemplo del flujo principal
 
-El supervisor selecciona una llamada de `GET /api/llamadas?estado=Disponible` e inicia su evaluación con una petición sin cuerpo.
+El worker encola automáticamente las llamadas `Disponible` con rúbrica publicada. El supervisor también puede adelantar una llamada concreta con una petición sin cuerpo:
 
 ```http
 POST /api/llamadas/c5d37117-82b7-4ab0-91cd-ea14d87b1039/evaluacion

@@ -37,7 +37,8 @@ public sealed class ConsultasLlamadas(
         l.Trabajo != null
         && (l.Trabajo.Estado == EstadoTrabajo.Fallido || l.Trabajo.Estado == EstadoTrabajo.ReintentoPendiente)
             ? l.Trabajo.UltimoError
-            : null);
+            : null,
+        l.Evaluacion != null ? (bool?)l.Evaluacion.RequiereRevision : null);
 
     public async Task<PaginaDto<LlamadaDto>> ListarAsync(FiltroLlamadasDto filtro, CancellationToken ct)
     {
@@ -60,6 +61,11 @@ public sealed class ConsultasLlamadas(
         {
             var estado = Enum.Parse<EstadoLlamada>(filtro.Estado);
             consulta = consulta.Where(l => l.Estado == estado);
+        }
+
+        if (filtro.RequiereRevision is { } requiereRevision)
+        {
+            consulta = consulta.Where(l => l.Evaluacion != null && l.Evaluacion.RequiereRevision == requiereRevision);
         }
 
         var total = await consulta.CountAsync(ct);
@@ -129,6 +135,7 @@ public sealed class ConsultasLlamadas(
             evaluacion.ModoIA,
             evaluacion.ModeloUsado,
             evaluacion.RequiereRevision,
+            evaluacion.EsOficial,
             total,
             criterios);
     }
@@ -169,14 +176,19 @@ public sealed class ConsultasLlamadas(
             detalle.PuntajeCriterio,
             humano?.Puntaje,
             vigente,
+            criterio.UmbralCumplimiento,
+            CalculadoraPuntaje.Cumple(vigente, criterio.UmbralCumplimiento),
             humano?.Justificacion ?? detalle.Observacion,
             CalculadoraPuntaje.EsFalloCritico(criterio.EsCritico, vigente, criterio.UmbralCumplimiento),
             evidencias
                 .Where(e => segmentos.ContainsKey(e.SegmentoId))
-                .Select(e => new EvidenciaDto(e.SegmentoId, e.CitaTextual, segmentos[e.SegmentoId].InicioSeg, segmentos[e.SegmentoId].FinSeg))
+                .Select(e => AEvidencia(e.SegmentoId, e.CitaTextual, segmentos[e.SegmentoId]))
                 .OrderBy(e => e.InicioSeg)
                 .ToList());
     }
+
+    private static EvidenciaDto AEvidencia(Guid segmentoId, string cita, SegmentoTranscripcion segmento) =>
+        new(segmentoId, cita, segmento.InicioSeg, segmento.FinSeg, segmento.Hablante, segmento.Texto);
 
     private async Task ValidarAsync(FiltroLlamadasDto filtro, CancellationToken ct)
     {

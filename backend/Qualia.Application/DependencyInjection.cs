@@ -8,6 +8,7 @@ using Qualia.Application.Features.Campanas;
 using Qualia.Application.Features.Disputas;
 using Qualia.Application.Features.Empresas;
 using Qualia.Application.Features.Llamadas;
+using Qualia.Application.Features.Desempeno;
 using Qualia.Application.Features.Procesamiento;
 using Qualia.Application.Features.Revision;
 using Qualia.Application.Features.Suscripciones.Consumo.ConsultarConsumo;
@@ -52,8 +53,13 @@ public static class DependencyInjection
         services.AddScoped<AlcanceLlamadas>();
         services.AddScoped<ConsultasLlamadas>();
         services.AddScoped<IniciarEvaluacion>();
+        services.AddScoped<EncoladorEvaluacion>();
         services.AddScoped<ProcesadorTrabajo>();
         services.AddSingleton<EjecutorProcesamiento>();
+        services.AddSingleton<DespachadorEvaluacionAutomatica>();
+
+        // --- desempeño: scorecards y reportes ---
+        services.AddScoped<ConsultasDesempeno>();
 
         // --- identidad: registro de empresa e inicio de sesión ---
         services.AddScoped<RegistroEmpresa>();

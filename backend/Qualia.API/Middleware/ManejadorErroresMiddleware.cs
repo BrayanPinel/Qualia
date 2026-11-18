@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using FluentValidation;
 using Qualia.Application.Common.Errores;
 using Qualia.Domain.Common;
 
@@ -22,7 +23,9 @@ public sealed class ManejadorErroresMiddleware(RequestDelegate siguiente, ILogge
 
             var error = ex switch
             {
-                ExcepcionNegocio n => new ErrorDto(n.Status, n.Codigo, n.Message, n.Errores, traceId),
+                // ValidateAndThrow de FluentValidation: mismo 400 VALIDACION que ValidarOLanzarAsync.
+                ValidationException v => AErrorDto(ExcepcionNegocio.Validacion(ErroresPorCampo(v)), traceId),
+                ExcepcionNegocio n => AErrorDto(n, traceId),
                 ReglaDominioException d => new ErrorDto(StatusCodes.Status409Conflict, d.Codigo, d.Message, null, traceId),
                 OperationCanceledException when contexto.RequestAborted.IsCancellationRequested => null,
                 _ => new ErrorDto(StatusCodes.Status500InternalServerError, "ERROR_INTERNO",
@@ -44,4 +47,13 @@ public sealed class ManejadorErroresMiddleware(RequestDelegate siguiente, ILogge
             await contexto.Response.WriteAsJsonAsync(error);
         }
     }
+
+    private static ErrorDto AErrorDto(ExcepcionNegocio n, string traceId) =>
+        new(n.Status, n.Codigo, n.Message, n.Errores, traceId);
+
+    /// <summary>Agrupa los fallos por propiedad, igual que ValidationResult.ToDictionary().</summary>
+    private static Dictionary<string, string[]> ErroresPorCampo(ValidationException v) =>
+        v.Errors
+            .GroupBy(e => e.PropertyName)
+            .ToDictionary(g => g.Key, g => g.Select(e => e.ErrorMessage).Distinct().ToArray());
 }

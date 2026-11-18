@@ -61,6 +61,8 @@ public sealed class ServicioRevision(
     /// <summary>
     /// Confirmación (POST /api/evaluaciones/{id}/confirmar). Exige evaluación completa y sin evidencias
     /// inválidas pendientes; la evidencia inválida se corrige con un ajuste completo.
+    /// Confirmar una evaluación marcada por otra falla de la IA (falta sin fragmento o nota dudosa)
+    /// la oficializa y quita la marca de revisión.
     /// Una confirmación posterior a un ajuste NO borra el ajuste: el puntaje vigente sigue siendo el humano.
     /// </summary>
     internal async Task<int> ConfirmarAsync(ContextoRevision contexto, Guid supervisorId, int revisionEsperada, CancellationToken ct)
@@ -85,7 +87,8 @@ public sealed class ServicioRevision(
             await AsegurarEvidenciaIAValidaAsync(contexto, ct);
         }
 
-        var nuevaRevision = await IncrementarRevisionAsync(evaluacion.Id, revisionEsperada, EstadoEvaluacion.ConfirmadaPorSupervisor, ct);
+        var nuevaRevision = await IncrementarRevisionAsync(
+            evaluacion.Id, revisionEsperada, EstadoEvaluacion.ConfirmadaPorSupervisor, ct, limpiarRequiereRevision: true);
 
         db.RevisionesHumanas.Add(new RevisionHumana
         {
@@ -271,12 +274,13 @@ public sealed class ServicioRevision(
         "La evaluación fue modificada por otra revisión. Vuelva a consultarla antes de decidir.");
 
     /// <summary>
-    /// RN-10: una evaluación marcada con evidencia inválida exige revisión (ajuste) antes de oficializarse.
+    /// RN-10: una evaluación con evidencia inválida descartada exige un ajuste antes de oficializarse.
     /// Además se comprueba que cada evidencia de IA apunte a un segmento de la misma llamada.
     /// </summary>
     private async Task AsegurarEvidenciaIAValidaAsync(ContextoRevision contexto, CancellationToken ct)
     {
-        if (contexto.Evaluacion.RequiereRevision)
+        if (contexto.Evaluacion.RequiereRevision
+            && contexto.Evaluacion.Detalles.Any(d => d.Observacion.Contains(ConstructorEvaluacion.MarcaEvidenciaDescartada)))
         {
             throw ExcepcionNegocio.Conflicto("EVIDENCIA_INVALIDA",
                 "La evaluación tiene evidencia inválida. Corríjala mediante un ajuste completo antes de oficializarla.");
