@@ -53,6 +53,10 @@ public static class DependencyInjection
         services.AddScoped<IQualiaDbContext>(sp => sp.GetRequiredService<QualiaDbContext>());
         services.AddScoped<SembradorDatosDemo>();
 
+        // --- identidad: hash de contraseñas ---
+        services.Configure<OpcionesHashContrasena>(configuration.GetSection(OpcionesHashContrasena.Seccion));
+        services.AddSingleton<IServicioHashContrasena, ServicioHashContrasena>();
+
         // --- motor de evaluación (IA:Modo = Simulado | Real) ---
         services.AddSingleton<IEnmascaradorDatos, EnmascaradorDatos>();
         services.AddSingleton<ISenalProcesamiento, SenalProcesamiento>();
