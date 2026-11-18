@@ -1,5 +1,4 @@
 using System.Text.Json.Serialization;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using Qualia.API.Configuracion;
 using Qualia.API.Middleware;
@@ -25,19 +24,8 @@ builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<IUsuarioActual, UsuarioActualHttp>();
 
-// Autenticación. PROVISIONAL hasta integrar el JWT del Rol A (identidad y seguridad).
-var modoDemo = builder.Environment.IsDevelopment() && builder.Configuration.GetValue<bool>("Autenticacion:ModoDemo");
-if (modoDemo)
-{
-    builder.Services.AddAuthentication(AutenticacionDemoHandler.Esquema)
-        .AddScheme<AuthenticationSchemeOptions, AutenticacionDemoHandler>(AutenticacionDemoHandler.Esquema, null);
-}
-else
-{
-    builder.Services.AddAuthentication();
-}
-
-builder.Services.AddAuthorization();
+// Autenticación: JWT Bearer; en Development con ModoDemo también la cabecera X-Usuario-Demo.
+builder.Services.AgregarAutenticacionQualia(builder.Configuration, builder.Environment);
 
 builder.Services.AddControllers()
     .AddJsonOptions(o =>

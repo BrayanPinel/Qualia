@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Qualia.Application.Common.Interfaces;
 using Qualia.Application.Common.Resultados;
+using Qualia.Application.Common.Seguridad;
 using Qualia.Domain.Entidades;
 using Qualia.Domain.Enums;
 using Qualia.Domain.Suscripciones;
@@ -14,13 +15,15 @@ namespace Qualia.Infrastructure.Persistence.Semillas;
 /// con los datos mínimos que necesitan: empresas, usuarios, campañas y rúbricas publicadas.
 /// Solo para desarrollo/demostración. Es idempotente (no duplica si ya existe la empresa Norte).
 ///
-/// NOTA: los usuarios se crean sin contraseña utilizable ("demo-sin-credenciales");
+/// Todos los usuarios demo y el administrador de plataforma demo inician sesión con
+/// <see cref="DatosDemo.Contrasena"/>.
 /// </summary>
 public sealed class SembradorDatosDemo(
     QualiaDbContext db,
     TimeProvider reloj,
     LectorGroundData groundData,
     ICrearSuscripcionInicial crearSuscripcion,
+    IServicioHashContrasena hash,
     ILogger<SembradorDatosDemo> logger)
 {
     private const string HashNoUtilizable = "demo-sin-credenciales";
@@ -33,6 +36,7 @@ public sealed class SembradorDatosDemo(
         {
             await SincronizarDuracionesAsync(ct);
             await AsegurarSuscripcionesAsync(ahora, ct);
+            await AsegurarCredencialesAsync(ct);
             return;
         }
 
@@ -40,6 +44,7 @@ public sealed class SembradorDatosDemo(
         SembrarSur(ahora);
         await db.SaveChangesAsync(ct);
         await AsegurarSuscripcionesAsync(ahora, ct);
+        await AsegurarCredencialesAsync(ct);
 
         logger.LogInformation("Datos de demostración cargados (empresas demo-norte y demo-sur)");
     }
@@ -71,6 +76,43 @@ public sealed class SembradorDatosDemo(
         }
 
         await db.SaveChangesAsync(ct);
+    }
+
+    /// <summary>
+    /// Da contraseña real a los usuarios demo que aún tienen el marcador sin credenciales (también en bases
+    /// creadas antes del login) y crea el administrador de plataforma demo si no existe.
+    /// </summary>
+    private async Task AsegurarCredencialesAsync(CancellationToken ct)
+    {
+        Guid[] empresasDemo = [DatosDemo.Norte.Empresa, DatosDemo.Sur.Empresa];
+        // Sembrado global de ambas empresas demo: se ignora el filtro por empresa.
+        var sinCredenciales = await db.Usuarios.IgnoreQueryFilters()
+            .Where(u => empresasDemo.Contains(u.EmpresaId) && u.PasswordHash == HashNoUtilizable)
+            .ToListAsync(ct);
+        var faltaAdministrador = !await db.Administradores.AnyAsync(a => a.Id == DatosDemo.Plataforma.Administrador, ct);
+
+        if (sinCredenciales.Count == 0 && !faltaAdministrador)
+        {
+            return;
+        }
+
+        var hashDemo = hash.Hashear(DatosDemo.Contrasena);
+        sinCredenciales.ForEach(u => u.PasswordHash = hashDemo);
+
+        if (faltaAdministrador)
+        {
+            db.Administradores.Add(new Administrador
+            {
+                Id = DatosDemo.Plataforma.Administrador,
+                Nombre = "Administrador de Plataforma (demo)",
+                Correo = DatosDemo.Plataforma.Correo,
+                Activo = true,
+                PasswordHash = hashDemo,
+            });
+        }
+
+        await db.SaveChangesAsync(ct);
+        logger.LogInformation("Credenciales demo listas: {Usuarios} usuario(s) actualizados", sinCredenciales.Count);
     }
 
     /// <summary>

@@ -36,12 +36,15 @@ public static class UsuarioActualExtensiones
     /// </summary>
     public static UsuarioEmpresa RequerirRol(this IUsuarioActual usuario, params RolEmpresa[] rolesPermitidos)
     {
-        if (!usuario.EstaAutenticado || usuario.UsuarioId is null || usuario.EmpresaId is null)
+        if (!usuario.EstaAutenticado || usuario.UsuarioId is null)
         {
             throw new Errores.ExcepcionNegocio(401, "NO_AUTENTICADO", "Se requiere una sesión válida.");
         }
 
-        if (!Enum.TryParse<RolEmpresa>(usuario.Rol, ignoreCase: false, out var rol) || !rolesPermitidos.Contains(rol))
+        // Una sesión válida sin empresa (PlatformAdmin) está autenticada pero no autorizada: 403, no 401.
+        if (usuario.EmpresaId is null
+            || !Enum.TryParse<RolEmpresa>(usuario.Rol, ignoreCase: false, out var rol)
+            || !rolesPermitidos.Contains(rol))
         {
             throw Errores.ExcepcionNegocio.Prohibido("ROL_NO_AUTORIZADO", "Su rol no permite realizar esta operación.");
         }

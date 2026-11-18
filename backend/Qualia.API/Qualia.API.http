@@ -1,5 +1,6 @@
 @host = http://localhost:5008
-@tokenPlatformAdmin = reemplazar-con-jwt-platform-admin
+# Se llena al ejecutar "Login de plataforma" (sección INICIO DE SESIÓN).
+@tokenPlatformAdmin = {{loginPlataforma.response.body.$.accessToken}}
 @empresaId = 00000000-0000-0000-0000-000000000001
 @planProId = 10000000-0000-4000-8000-000000000002
 
@@ -14,8 +15,8 @@ Accept: text/html
 ###############################################################################
 # ROL D — LLAMADAS Y PROCESAMIENTO
 # Datos precargados en desarrollo (Qualia.Infrastructure/Persistence/Semillas/DatosDemo.cs).
-# Autenticación PROVISIONAL: cabecera X-Usuario-Demo con el id del usuario.
-# Cuando el Rol A integre el login, reemplazar por: Authorization: Bearer {{token}}
+# Autenticación de desarrollo: cabecera X-Usuario-Demo con el id del usuario (ModoDemo).
+# Con JWT: Authorization: Bearer {{tokenAdminNorte}} (ver sección INICIO DE SESIÓN al final).
 ###############################################################################
 
 # --- Usuarios de demostración ---
@@ -325,3 +326,56 @@ Content-Type: application/json
   "email": "admin@sinplan.com",
   "password": "Contrasena-Segura-2026"
 }
+
+###############################################################################
+# INICIO DE SESIÓN (JWT)
+# Usuarios demo y administrador demo: contraseña Qualia-Demo-2026 (solo desarrollo).
+# Ejecute primero el login con nombre; las variables toman el token de su respuesta.
+###############################################################################
+@tokenAdminNorte = {{loginNorte.response.body.$.accessToken}}
+
+### 200 Login empresarial (código y correo sin importar mayúsculas)
+# @name loginNorte
+POST {{host}}/api/auth/login
+Content-Type: application/json
+
+{
+  "codigoEmpresa": "demo-norte",
+  "email": "ana.admin@norte.demo",
+  "password": "Qualia-Demo-2026"
+}
+
+### Usar el token: campañas de Norte con Authorization Bearer
+GET {{host}}/api/campanas
+Authorization: Bearer {{tokenAdminNorte}}
+
+### 200 Login de plataforma (PlatformAdmin, sin empresa)
+# @name loginPlataforma
+POST {{host}}/api/plataforma/auth/login
+Content-Type: application/json
+
+{
+  "email": "admin@qualia.demo",
+  "password": "Qualia-Demo-2026"
+}
+
+### 403 PlatformAdmin no accede al contenido de las empresas
+GET {{host}}/api/llamadas
+Authorization: Bearer {{tokenPlatformAdmin}}
+
+### 401 CREDENCIALES_INVALIDAS (mismo mensaje para empresa, correo o contraseña incorrectos)
+POST {{host}}/api/auth/login
+Content-Type: application/json
+
+{
+  "codigoEmpresa": "demo-norte",
+  "email": "ana.admin@norte.demo",
+  "password": "Contrasena-Equivocada"
+}
+
+### 401 NO_AUTENTICADO (sin token)
+GET {{host}}/api/campanas
+
+### 401 TOKEN_INVALIDO (token alterado)
+GET {{host}}/api/campanas
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.e30.firma-invalida
