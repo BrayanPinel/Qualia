@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Qualia.Application.Common.Interfaces;
 using Qualia.Application.Features.Campanas;
+using Qualia.Application.Features.Empresas;
 using Qualia.Application.Features.Llamadas;
 using Qualia.Application.Features.Procesamiento;
 using Qualia.Application.Features.Revision;
@@ -50,6 +51,9 @@ public static class DependencyInjection
         services.AddScoped<IniciarEvaluacion>();
         services.AddScoped<ProcesadorTrabajo>();
         services.AddSingleton<EjecutorProcesamiento>();
+
+        // --- identidad: registro de empresa ---
+        services.AddScoped<RegistroEmpresa>();
 
         // --- campañas, rúbricas y revisión humana ---
         services.AddScoped<GestionCampanas>();

@@ -263,3 +263,65 @@ Content-Type: application/json
   "permiteExcedente": true,
   "motivo": "Actualización de plan aprobada desde administración de plataforma."
 }
+
+###############################################################################
+# REGISTRO DE EMPRESA (público, HU-01)
+# Copie un "id" de GET /api/planes en @planId. Crea empresa + AdminEmpresa + suscripción
+# de prueba en una sola transacción. Al repetirlo, cambie el código de empresa.
+###############################################################################
+@planId = reemplazar-con-id-de-GET-api-planes
+
+### Planes disponibles (para elegir planId)
+GET {{host}}/api/planes
+Accept: application/json
+
+### 201 Registro correcto (código y correo se guardan normalizados: "mi-empresa", "admin@miempresa.com")
+POST {{host}}/api/empresas
+Content-Type: application/json
+
+{
+  "codigoEmpresa": "Mi-Empresa",
+  "nombreEmpresa": "Mi Empresa de Prueba",
+  "planId": "{{planId}}",
+  "nombreAdministrador": "Ana Administradora",
+  "email": "Admin@MiEmpresa.com",
+  "password": "Contrasena-Segura-2026"
+}
+
+### 409 CODIGO_EMPRESA_DUPLICADO (mismo código con otras mayúsculas)
+POST {{host}}/api/empresas
+Content-Type: application/json
+
+{
+  "codigoEmpresa": "MI-EMPRESA",
+  "nombreEmpresa": "Otra Empresa",
+  "planId": "{{planId}}",
+  "nombreAdministrador": "Otro Admin",
+  "email": "otro@empresa.com",
+  "password": "Contrasena-Segura-2026"
+}
+
+### 400 VALIDACION (código con espacios, email inválido, contraseña corta, sin plan)
+POST {{host}}/api/empresas
+Content-Type: application/json
+
+{
+  "codigoEmpresa": "no valido!",
+  "nombreEmpresa": "AB",
+  "nombreAdministrador": "Ana",
+  "email": "no-es-correo",
+  "password": "corta"
+}
+
+### 400 plan inexistente (no queda empresa ni usuario creados)
+POST {{host}}/api/empresas
+Content-Type: application/json
+
+{
+  "codigoEmpresa": "sin-plan",
+  "nombreEmpresa": "Empresa sin plan",
+  "planId": "00000000-0000-4000-8000-000000000000",
+  "nombreAdministrador": "Admin Sin Plan",
+  "email": "admin@sinplan.com",
+  "password": "Contrasena-Segura-2026"
+}
