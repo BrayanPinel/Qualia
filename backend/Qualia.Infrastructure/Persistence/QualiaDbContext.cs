@@ -22,6 +22,8 @@ public sealed class QualiaDbContext(DbContextOptions<QualiaDbContext> options, I
 
     public DbSet<Empresa> Empresas => Set<Empresa>();
     public DbSet<Usuario> Usuarios => Set<Usuario>();
+    public DbSet<Administrador> Administradores => Set<Administrador>();
+    public DbSet<Auditoria> Auditorias => Set<Auditoria>();
     public DbSet<Campana> Campanas => Set<Campana>();
     public DbSet<UsuarioCampana> UsuariosCampana => Set<UsuarioCampana>();
     public DbSet<Rubrica> Rubricas => Set<Rubrica>();
