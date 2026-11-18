@@ -39,6 +39,7 @@ public sealed class QualiaDbContext(DbContextOptions<QualiaDbContext> options, I
     public DbSet<RevisionHumana> RevisionesHumanas => Set<RevisionHumana>();
     public DbSet<CriterioRevisado> CriteriosRevisados => Set<CriterioRevisado>();
     public DbSet<EvidenciaRevision> EvidenciasRevision => Set<EvidenciaRevision>();
+    public DbSet<Disputa> Disputas => Set<Disputa>();
 
     // --- planes, suscripciones y consumo ---
     public DbSet<Plan> Planes => Set<Plan>();

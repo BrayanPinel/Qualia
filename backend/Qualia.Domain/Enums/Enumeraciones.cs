@@ -56,3 +56,10 @@ public enum ModoIA
     Real,
     Simulado
 }
+
+/// <summary>Estado propio de la disputa, independiente del estado de revisión de la evaluación.</summary>
+public enum EstadoDisputa
+{
+    Abierta,
+    Resuelta
+}
