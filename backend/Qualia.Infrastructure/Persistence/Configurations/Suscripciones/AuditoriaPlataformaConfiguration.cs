@@ -45,7 +45,8 @@ public sealed class AuditoriaPlataformaConfiguration : IEntityTypeConfiguration<
 
         builder.HasOne<Empresa>().WithMany().HasForeignKey(a => a.EmpresaObjetivoId).OnDelete(DeleteBehavior.Restrict);
 
-        // TODO (Integración Rol A): agregar FK a administrador(id) cuando exista la entidad Administrador.
+        builder.HasOne<Administrador>().WithMany().HasForeignKey(a => a.AdministradorId).OnDelete(DeleteBehavior.Restrict);
+
         builder.HasIndex(a => new { a.EmpresaObjetivoId, a.Fecha })
             .HasDatabaseName("ix_auditoria_plataforma_empresa_fecha");
 
