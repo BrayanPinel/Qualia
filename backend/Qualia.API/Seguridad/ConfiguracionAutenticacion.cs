@@ -4,10 +4,13 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authorization.Policy;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Qualia.Application.Common.Errores;
+using Qualia.Application.Common.Interfaces;
 using Qualia.Application.Common.Options;
 using Qualia.Application.Common.Seguridad;
+using Qualia.Domain.Enums;
 
 namespace Qualia.API.Seguridad;
 
@@ -58,10 +61,20 @@ public static class ConfiguracionAutenticacion
                 };
                 o.Events = new JwtBearerEvents
                 {
+                    // El token es válido, pero la cuenta o la empresa pudo desactivarse después de emitirlo.
+                    OnTokenValidated = async contexto =>
+                    {
+                        if (!await SesionVigenteAsync(contexto.Principal!, contexto.HttpContext))
+                        {
+                            contexto.HttpContext.Items[ClaveErrorToken] = "SESION_REVOCADA";
+                            contexto.Fail("La cuenta o la empresa ya no está activa.");
+                        }
+                    },
                     OnAuthenticationFailed = contexto =>
                     {
                         contexto.HttpContext.Items[ClaveErrorToken] =
-                            contexto.Exception is SecurityTokenExpiredException ? "TOKEN_EXPIRADO" : "TOKEN_INVALIDO";
+                            contexto.HttpContext.Items[ClaveErrorToken] as string
+                            ?? (contexto.Exception is SecurityTokenExpiredException ? "TOKEN_EXPIRADO" : "TOKEN_INVALIDO");
                         return Task.CompletedTask;
                     },
                 };
@@ -74,6 +87,37 @@ public static class ConfiguracionAutenticacion
 
         services.AddAuthorization();
         return services;
+    }
+
+    /// <summary>
+    /// Comprueba en la base de datos que el usuario (y su empresa) o el administrador global siga activo.
+    /// Así una desactivación surte efecto en la siguiente petición y no al expirar el token.
+    /// </summary>
+    private static async Task<bool> SesionVigenteAsync(ClaimsPrincipal principal, HttpContext http)
+    {
+        if (!Guid.TryParse(principal.FindFirst(ClaimsQualia.UsuarioId)?.Value, out var id))
+        {
+            return false;
+        }
+
+        var db = http.RequestServices.GetRequiredService<IQualiaDbContext>();
+        var ct = http.RequestAborted;
+
+        if (principal.FindFirst(ClaimsQualia.Rol)?.Value == RolesPlataforma.PlatformAdmin)
+        {
+            return await db.Administradores.AsNoTracking().AnyAsync(a => a.Id == id && a.Activo, ct);
+        }
+
+        if (!Guid.TryParse(principal.FindFirst(ClaimsQualia.EmpresaId)?.Value, out var empresaId))
+        {
+            return false;
+        }
+
+        // Búsqueda de identidad previa a fijar la empresa del contexto: se filtra explícitamente por la del token.
+        return await db.Usuarios.IgnoreQueryFilters().AsNoTracking()
+                   .AnyAsync(u => u.EmpresaId == empresaId && u.Id == id && u.Activo, ct)
+               && await db.Empresas.AsNoTracking()
+                   .AnyAsync(e => e.Id == empresaId && e.Estado == EstadoEmpresa.Activa, ct);
     }
 
     /// <summary>
@@ -93,6 +137,7 @@ public static class ConfiguracionAutenticacion
                 {
                     "TOKEN_EXPIRADO" => "La sesión expiró; inicie sesión de nuevo.",
                     "TOKEN_INVALIDO" => "El token de acceso no es válido.",
+                    "SESION_REVOCADA" => "La cuenta o la empresa ya no está activa; inicie sesión de nuevo.",
                     _ => "Se requiere una sesión válida.",
                 };
                 contexto.Response.Headers.WWWAuthenticate = "Bearer";

@@ -49,6 +49,7 @@ public static class DependencyInjection
                 .UseSnakeCaseNamingConvention();
         });
         services.AddScoped<IQualiaDbContext>(sp => sp.GetRequiredService<QualiaDbContext>());
+        services.AddScoped<IBloqueoEmpresa, BloqueoEmpresa>();
         services.AddScoped<SembradorDatosDemo>();
 
         // --- identidad: hash de contraseñas ---

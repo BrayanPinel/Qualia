@@ -379,3 +379,78 @@ GET {{host}}/api/campanas
 ### 401 TOKEN_INVALIDO (token alterado)
 GET {{host}}/api/campanas
 Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.e30.firma-invalida
+
+###############################################################################
+# USUARIOS (solo AdminEmpresa). Ejecute antes "Login empresarial" (@name loginNorte).
+###############################################################################
+
+### 200 Usuarios de la empresa (paginado, ordenado por nombre)
+GET {{host}}/api/usuarios?pagina=1&tamanoPagina=20
+Authorization: Bearer {{tokenAdminNorte}}
+
+### 201 Crear usuario (el correo se guarda normalizado; la empresa sale del token)
+# @name crearUsuario
+POST {{host}}/api/usuarios
+Authorization: Bearer {{tokenAdminNorte}}
+Content-Type: application/json
+
+{
+  "nombre": "Nuevo Agente",
+  "email": "Nuevo.Agente@Norte.demo",
+  "password": "Contrasena-Segura-2026",
+  "rol": "Agente"
+}
+
+### 204 Renombrar y desactivar (su token deja de valer en la siguiente petición: 401 SESION_REVOCADA)
+PUT {{host}}/api/usuarios/{{crearUsuario.response.body.$.id}}
+Authorization: Bearer {{tokenAdminNorte}}
+Content-Type: application/json
+
+{
+  "nombre": "Agente Desactivado",
+  "activo": false
+}
+
+### 409 CORREO_DUPLICADO (mismo correo en la misma empresa, sin importar mayúsculas)
+POST {{host}}/api/usuarios
+Authorization: Bearer {{tokenAdminNorte}}
+Content-Type: application/json
+
+{
+  "nombre": "Otra Ana",
+  "email": "ANA.ADMIN@norte.demo",
+  "password": "Contrasena-Segura-2026",
+  "rol": "Agente"
+}
+
+### 409 ULTIMO_ADMINISTRADOR (Ana es la única AdminEmpresa activa de Norte)
+PUT {{host}}/api/usuarios/{{adminNorte}}
+Authorization: Bearer {{tokenAdminNorte}}
+Content-Type: application/json
+
+{
+  "nombre": "Ana Administradora",
+  "activo": false
+}
+
+### 400 No se puede crear un PlatformAdmin desde una empresa
+POST {{host}}/api/usuarios
+Authorization: Bearer {{tokenAdminNorte}}
+Content-Type: application/json
+
+{
+  "nombre": "Intruso",
+  "email": "intruso@norte.demo",
+  "password": "Contrasena-Segura-2026",
+  "rol": "PlatformAdmin"
+}
+
+### 404 Usuario de otra empresa (Silvia es de Sur)
+PUT {{host}}/api/usuarios/{{supervisorSur}}
+Authorization: Bearer {{tokenAdminNorte}}
+Content-Type: application/json
+
+{
+  "nombre": "Secuestrada",
+  "activo": false
+}
