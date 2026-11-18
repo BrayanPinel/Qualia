@@ -2,7 +2,6 @@ using System.Net.Http.Headers;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Qualia.Application.Common.Interfaces;
@@ -17,7 +16,6 @@ using Qualia.Infrastructure.Persistence.Repositories;
 using Qualia.Infrastructure.Persistence.Seeders;
 using Qualia.Infrastructure.Persistence.Semillas;
 using Qualia.Infrastructure.Procesamiento;
-using Qualia.Infrastructure.Provisional;
 using Qualia.Infrastructure.Seguridad;
 
 namespace Qualia.Infrastructure;
@@ -57,6 +55,9 @@ public static class DependencyInjection
         services.Configure<OpcionesHashContrasena>(configuration.GetSection(OpcionesHashContrasena.Seccion));
         services.AddSingleton<IServicioHashContrasena, ServicioHashContrasena>();
 
+        // --- auditoría empresarial (contrato compartido con todos los módulos) ---
+        services.AddScoped<IRegistroAuditoria, RegistroAuditoria>();
+
         // --- motor de evaluación (IA:Modo = Simulado | Real) ---
         services.AddSingleton<IEnmascaradorDatos, EnmascaradorDatos>();
         services.AddSingleton<ISenalProcesamiento, SenalProcesamiento>();
@@ -79,8 +80,6 @@ public static class DependencyInjection
         services.AddScoped<IRepositorioSuscripciones, RepositorioSuscripciones>();
         services.AddScoped<PlanesSeeder>();
 
-        // --- Contratos con otros roles: PROVISIONALES hasta integrar sus módulos ---
-        services.TryAddScoped<IRegistroAuditoria, RegistroAuditoriaProvisional>();       // Rol A
 
         return services;
     }
