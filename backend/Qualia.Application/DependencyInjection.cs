@@ -10,6 +10,7 @@ using Qualia.Application.Features.Llamadas;
 using Qualia.Application.Features.Procesamiento;
 using Qualia.Application.Features.Revision;
 using Qualia.Application.Features.Suscripciones.Consumo.ConsultarConsumo;
+using Qualia.Application.Features.Usuarios;
 using Qualia.Application.Features.Suscripciones.Consumo.ConsumoEvaluacion;
 using Qualia.Application.Features.Suscripciones.CrearSuscripcionInicial;
 using Qualia.Application.Features.Suscripciones.ObtenerSuscripcion;
@@ -56,6 +57,7 @@ public static class DependencyInjection
         // --- identidad: registro de empresa e inicio de sesión ---
         services.AddScoped<RegistroEmpresa>();
         services.AddScoped<InicioSesion>();
+        services.AddScoped<GestionUsuarios>();
 
         // --- campañas, rúbricas y revisión humana ---
         services.AddScoped<GestionCampanas>();
