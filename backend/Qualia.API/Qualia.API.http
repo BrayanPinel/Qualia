@@ -454,3 +454,57 @@ Content-Type: application/json
   "nombre": "Secuestrada",
   "activo": false
 }
+
+###############################################################################
+# DISPUTAS (Norte tiene plan Pro con disputas; Sur, Básico sin disputas)
+# Antes: la supervisora evalúa y confirma la llamada 1 (pasos 2–5 de ROL D y la confirmación de ROL B).
+# Copie el id de la evaluación en @evaluacionId.
+###############################################################################
+@evaluacionId = reemplazar-con-id-de-GET-api-llamadas-llamada1-evaluacion
+
+### 201 El agente propietario (Andrés) disputa su evaluación oficial
+# @name crearDisputa
+POST {{host}}/api/evaluaciones/{{evaluacionId}}/disputas
+X-Usuario-Demo: {{agenteAndres}}
+Content-Type: application/json
+
+{
+  "motivo": "No estoy de acuerdo: sí verifiqué la identidad del cliente al inicio."
+}
+
+### 200 Disputas visibles (Admin: todas; Supervisor: sus campañas; Agente: las suyas)
+GET {{host}}/api/disputas?estado=Abierta
+X-Usuario-Demo: {{supervisora}}
+
+### 200 Resolver manteniendo las notas (revisionEsperada = revisión actual de la evaluación)
+PUT {{host}}/api/disputas/{{crearDisputa.response.body.$.id}}/resolucion
+X-Usuario-Demo: {{supervisora}}
+Content-Type: application/json
+
+{
+  "decision": "Mantener",
+  "resolucion": "Se revisó el audio completo y la evaluación se ajusta a la evidencia.",
+  "revisionEsperada": 2
+}
+
+### 409 DISPUTA_YA_RESUELTA (repetir la resolución)
+PUT {{host}}/api/disputas/{{crearDisputa.response.body.$.id}}/resolucion
+X-Usuario-Demo: {{supervisora}}
+Content-Type: application/json
+
+{
+  "decision": "Mantener",
+  "resolucion": "Se revisó el audio completo y la evaluación se ajusta a la evidencia.",
+  "revisionEsperada": 3
+}
+
+### 403 CAMPANA_NO_ASIGNADA (supervisor sin la campaña)
+PUT {{host}}/api/disputas/{{crearDisputa.response.body.$.id}}/resolucion
+X-Usuario-Demo: {{supervisorSinCampana}}
+Content-Type: application/json
+
+{
+  "decision": "Mantener",
+  "resolucion": "Intento de resolver sin estar asignado a la campaña.",
+  "revisionEsperada": 2
+}

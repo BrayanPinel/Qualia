@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Qualia.Application.Common.Interfaces;
 using Qualia.Application.Features.Autenticacion;
 using Qualia.Application.Features.Campanas;
+using Qualia.Application.Features.Disputas;
 using Qualia.Application.Features.Empresas;
 using Qualia.Application.Features.Llamadas;
 using Qualia.Application.Features.Procesamiento;
@@ -58,6 +59,7 @@ public static class DependencyInjection
         services.AddScoped<RegistroEmpresa>();
         services.AddScoped<InicioSesion>();
         services.AddScoped<GestionUsuarios>();
+        services.AddScoped<GestionDisputas>();
 
         // --- campañas, rúbricas y revisión humana ---
         services.AddScoped<GestionCampanas>();

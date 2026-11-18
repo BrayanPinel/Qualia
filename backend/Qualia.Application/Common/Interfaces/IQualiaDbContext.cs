@@ -34,6 +34,9 @@ public interface IQualiaDbContext
     DbSet<CriterioRevisado> CriteriosRevisados { get; }
     DbSet<EvidenciaRevision> EvidenciasRevision { get; }
 
+    // --- disputas ---
+    DbSet<Disputa> Disputas { get; }
+
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 
     /// <summary>Abre una transacción en la conexión de este contexto.</summary>
