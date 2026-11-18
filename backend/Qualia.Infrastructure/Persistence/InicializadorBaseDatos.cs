@@ -9,8 +9,8 @@ namespace Qualia.Infrastructure.Persistence;
 
 /// <summary>
 /// Preparación de la base de datos al arrancar (solo desarrollo, controlado por configuración):
-/// BaseDatos:AplicarEsquemaAlIniciar: aplica las migraciones Code First. Si el proyecto
-/// aún no tiene migraciones (la oficial la integra un solo responsable), usa EnsureCreated.
+/// BaseDatos:AplicarEsquemaAlIniciar: aplica las migraciones Code First (Persistence/Migrations).
+/// Si el proyecto no tuviera migraciones, usa EnsureCreated.
 /// BaseDatos:SembrarDatosDemo: siembra el catálogo de planes y precarga los datos demo.
 /// </summary>
 public static class InicializadorBaseDatos
@@ -25,6 +25,7 @@ public static class InicializadorBaseDatos
         {
             if (db.Database.GetMigrations().Any())
             {
+                await VerificarBaseMigrableAsync(db, ct);
                 await db.Database.MigrateAsync(ct);
                 logger.LogInformation("Migraciones aplicadas");
             }
@@ -45,14 +46,39 @@ public static class InicializadorBaseDatos
     }
 
     /// <summary>
+    /// Una base creada antes con EnsureCreated tiene las tablas pero no el historial de migraciones:
+    /// MigrateAsync intentaría crearlas de nuevo y fallaría con "relation already exists".
+    /// Se detiene el arranque con la instrucción para recrearla (solo datos de desarrollo).
+    /// </summary>
+    private static async Task VerificarBaseMigrableAsync(QualiaDbContext db, CancellationToken ct)
+    {
+        // Base inexistente: MigrateAsync la crea desde cero.
+        if (!await db.Database.CanConnectAsync(ct) || (await db.Database.GetAppliedMigrationsAsync(ct)).Any())
+        {
+            return;
+        }
+
+        var tablas = await TablasExistentesAsync(db, ct);
+        if (tablas.Any(t => !t.StartsWith("__", StringComparison.Ordinal)))
+        {
+            throw new InvalidOperationException(
+                "La base de datos de desarrollo se creó sin migraciones (EnsureCreated) y no puede migrarse. " +
+                "Recree la base local una sola vez: cd infra; docker compose down -v; docker compose up -d --wait");
+        }
+    }
+
+    private static Task<List<string>> TablasExistentesAsync(QualiaDbContext db, CancellationToken ct) =>
+        db.Database
+            .SqlQueryRaw<string>("SELECT table_name AS \"Value\" FROM information_schema.tables WHERE table_schema = {0}", QualiaDbContext.Esquema)
+            .ToListAsync(ct);
+
+    /// <summary>
     /// EnsureCreated no agrega tablas a una base que ya existe. Si un módulo nuevo agregó entidades,
     /// la base de desarrollo queda incompleta: se detiene el arranque con instrucciones claras.
     /// </summary>
     private static async Task VerificarTablasAsync(QualiaDbContext db, CancellationToken ct)
     {
-        var existentes = await db.Database
-            .SqlQueryRaw<string>("SELECT table_name AS \"Value\" FROM information_schema.tables WHERE table_schema = {0}", QualiaDbContext.Esquema)
-            .ToListAsync(ct);
+        var existentes = await TablasExistentesAsync(db, ct);
 
         var faltantes = db.Model.GetEntityTypes()
             .Select(e => e.GetTableName())
