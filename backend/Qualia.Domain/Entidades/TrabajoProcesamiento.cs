@@ -6,6 +6,7 @@ namespace Qualia.Domain.Entidades;
 /// <summary>
 /// Trabajo asíncrono que procesa una llamada (máximo uno por llamada).
 /// Pendiente → EnProceso → (ReintentoPendiente → EnProceso)* → Completado | Fallido.
+/// Un trabajo Fallido puede reiniciarse (llamada perdida que se vuelve a evaluar) en la misma fila.
 /// Mientras está EnProceso, <see cref="ProximoIntento"/> actúa como fecha de expiración
 /// del bloqueo: si el proceso se cae, el trabajo vuelve a poder reclamarse después de esa fecha.
 /// </summary>
@@ -60,6 +61,22 @@ public class TrabajoProcesamiento : IEntidadEmpresa
         UltimoError = errorSaneado;
         ProximoIntento = ahoraUtc + TimeSpan.FromTicks((long)(esperaBase.Ticks * factor));
         return false;
+    }
+
+    /// <summary>Reintento manual de una llamada perdida: vuelve a Pendiente con los intentos en cero.</summary>
+    public void Reiniciar()
+    {
+        if (Estado != EstadoTrabajo.Fallido)
+        {
+            throw new ReglaDominioException(
+                "TRANSICION_INVALIDA",
+                $"Solo un trabajo Fallido puede reiniciarse (estado actual: {Estado}).");
+        }
+
+        Estado = EstadoTrabajo.Pendiente;
+        Intentos = 0;
+        ProximoIntento = null;
+        UltimoError = null;
     }
 
     public void FallarDefinitivamente(string errorSaneado)

@@ -8,6 +8,8 @@ namespace Qualia.Domain.Suscripciones;
 /// Ciclo de vida: nace <see cref="EstadoConsumo.Reservado"/>; al completar
 /// pasa a <see cref="EstadoConsumo.Facturado"/> y ante fallo definitivo a
 /// <see cref="EstadoConsumo.Liberado"/>. Los reintentos reutilizan el mismo registro.
+/// Una llamada perdida (fallo definitivo) puede volver a evaluarse: el consumo liberado
+/// se reactiva en el mismo registro, de modo que nunca hay dos consumos por llamada.
 /// </summary>
 public sealed class ConsumoLlamada : IEntidadEmpresa
 {
@@ -72,6 +74,32 @@ public sealed class ConsumoLlamada : IEntidadEmpresa
             MinutosFacturables = 0m,
             Estado = EstadoConsumo.Reservado,
         };
+    }
+
+    /// <summary>
+    /// Reintento de una llamada perdida: un consumo liberado vuelve a Reservado contra el periodo
+    /// en que se reinicia la evaluación. El costo técnico acumulado se conserva.
+    /// </summary>
+    public void Reactivar(PeriodoConsumo periodo, decimal duracionSeg)
+    {
+        ArgumentNullException.ThrowIfNull(periodo);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(duracionSeg);
+
+        if (Estado != EstadoConsumo.Liberado)
+        {
+            throw new InvalidOperationException("Solo un consumo liberado puede reactivarse.");
+        }
+
+        if (periodo.EmpresaId != EmpresaId)
+        {
+            throw new InvalidOperationException("El periodo pertenece a otra empresa.");
+        }
+
+        PeriodoId = periodo.Id;
+        Periodo = periodo;
+        MinutosReservados = CalcularMinutos(duracionSeg);
+        MinutosFacturables = 0m;
+        Estado = EstadoConsumo.Reservado;
     }
 
     /// <summary>Acumula el costo técnico, incluso si el procesamiento falla.</summary>

@@ -30,8 +30,10 @@ public sealed class EvaluadorGroq(ClienteGroq groq, IOptions<OpcionesGroq> opcio
         "3. justificacion: en español, máximo dos oraciones, basada únicamente en la transcripción.\n" +
         "4. evidencias: fragmentos que sustentan la nota. 'segmento' es el número entre corchetes y 'cita' debe copiarse LITERALMENTE " +
         "de ese segmento (máximo 25 palabras, sin corregir ni resumir, incluidos marcadores como [IDENTIDAD]).\n" +
-        "5. Si no hay evidencia en la transcripción, devuelve evidencias vacías y explícalo en la justificación. No inventes.\n" +
-        "6. Los datos sensibles aparecen enmascarados entre corchetes; no intentes deducirlos.\n" +
+        "5. Si el agente NO cumple el criterio (falta), las evidencias deben ser el fragmento donde comete la falta " +
+        "(lo que dijo mal, o la intervención en la que debió cumplirlo y no lo hizo), para que el supervisor lo escuche.\n" +
+        "6. Si no hay evidencia en la transcripción, devuelve evidencias vacías y explícalo en la justificación. No inventes.\n" +
+        "7. Los datos sensibles aparecen enmascarados entre corchetes; no intentes deducirlos.\n" +
         "Responde SOLO con JSON: {\"criterios\":[{\"id\":\"C1\",\"puntaje\":0,\"justificacion\":\"\",\"evidencias\":[{\"segmento\":1,\"cita\":\"\"}]}]}";
 
     public async Task<ResultadoEvaluacionIA> EvaluarAsync(SolicitudEvaluacion solicitud, CancellationToken ct)

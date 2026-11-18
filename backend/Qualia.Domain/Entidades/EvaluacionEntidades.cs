@@ -20,10 +20,11 @@ public class SegmentoTranscripcion : IEntidadEmpresa
 }
 
 /// <summary>
-/// Propuesta de evaluación generada por IA (máximo una por llamada).
-/// Nunca se oficializa automáticamente: la confirma o ajusta un Supervisor.
+/// Evaluación generada por IA (máximo una por llamada).
+/// Si <see cref="RequiereRevision"/> es false, el resultado de la IA es oficial sin intervención humana.
+/// Si es true (evidencia inválida, falta sin fragmento o nota cerca del umbral), no es oficial
+/// hasta que un Supervisor la confirme o la ajuste.
 /// <see cref="Revision"/> es el contador de concurrencia optimista (revisionEsperada).
-/// <see cref="RequiereRevision"/> = true indica que se detectó evidencia inválida (RN-10).
 /// </summary>
 public class EvaluacionIA : IEntidadEmpresa
 {
@@ -36,6 +37,9 @@ public class EvaluacionIA : IEntidadEmpresa
     public bool RequiereRevision { get; set; }
     public DateTime FechaEvaluacion { get; set; }
     public int Revision { get; set; } = 1;
+
+    /// <summary>Oficial: revisada por un supervisor o calificada por la IA sin fallas detectadas.</summary>
+    public bool EsOficial => Estado != EstadoEvaluacion.EvaluadaPorIA || !RequiereRevision;
 
     public ICollection<DetalleEvaluacion> Detalles { get; set; } = [];
 }

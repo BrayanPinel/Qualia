@@ -10,8 +10,11 @@ namespace Qualia.Application.Features.Procesamiento;
 /// Debe evaluar cada criterio de la rúbrica de la llamada exactamente una vez (si no: error, se reintenta).
 /// Puntajes entre 0 y 100 (RN-05). El cumplimiento se calcula en el servidor (RN-08).
 /// Cada evidencia debe referirse a un segmento de LA MISMA llamada y su cita debe existir en ese segmento (RN-09).
-/// Las evidencias inválidas se descartan y la evaluación queda con requiere_revision = true (RN-10).
 /// Sin evidencias válidas, el detalle queda sin filas de evidencia y la observación lo indica explícitamente.
+/// La evaluación queda con requiere_revision = true (falla de la IA) cuando:
+/// se descartó alguna evidencia inválida (RN-10), la IA marca una falta sin citar el fragmento que la prueba,
+/// o la nota queda a menos del margen configurado del umbral de cumplimiento.
+/// En cualquier otro caso el resultado de la IA es oficial sin intervención del supervisor.
 /// </summary>
 
 public static partial class ConstructorEvaluacion
@@ -19,7 +22,13 @@ public static partial class ConstructorEvaluacion
     public const int LongitudMaximaCita = 1000;
     public const string NotaSinEvidencia = "Sin evidencia en la transcripción.";
 
-    public sealed record Resultado(EvaluacionIA Evaluacion, int EvidenciasDescartadas);
+    /// <summary>
+    /// Texto que identifica en la observación un descarte de evidencia inválida.
+    /// La confirmación lo usa para exigir un ajuste (no hay columna propia para el motivo).
+    /// </summary>
+    public const string MarcaEvidenciaDescartada = "evidencia(s) inválida(s)";
+
+    public sealed record Resultado(EvaluacionIA Evaluacion, int EvidenciasDescartadas, int CriteriosEnRevision);
 
     public static Resultado Construir(
         Guid empresaId,
@@ -27,7 +36,8 @@ public static partial class ConstructorEvaluacion
         ResultadoEvaluacionIA respuesta,
         IReadOnlyCollection<CriterioRubrica> criteriosRubrica,
         IReadOnlyCollection<SegmentoTranscripcion> segmentosLlamada,
-        DateTime ahoraUtc)
+        DateTime ahoraUtc,
+        decimal margenRevisionUmbral = 0m)
     {
         ValidarCobertura(respuesta, criteriosRubrica);
 
@@ -47,6 +57,7 @@ public static partial class ConstructorEvaluacion
         };
 
         var descartadas = 0;
+        var criteriosEnRevision = 0;
         var criteriosPorId = criteriosRubrica.ToDictionary(c => c.Id);
 
         foreach (var resultadoCriterio in respuesta.Criterios)
@@ -91,13 +102,24 @@ public static partial class ConstructorEvaluacion
                 });
             }
 
-            detalle.Observacion = ComponerObservacion(resultadoCriterio.Justificacion, detalle.Evidencias.Count, descartadasCriterio);
+            var faltaSinEvidencia = !detalle.CumpleCriterio && detalle.Evidencias.Count == 0;
+            var notaDudosa = margenRevisionUmbral > 0
+                             && Math.Abs(puntaje - criterio.UmbralCumplimiento) < margenRevisionUmbral;
+
+            detalle.Observacion = ComponerObservacion(
+                resultadoCriterio.Justificacion, detalle.Evidencias.Count, descartadasCriterio, faltaSinEvidencia, notaDudosa);
+
+            if (descartadasCriterio > 0 || faltaSinEvidencia || notaDudosa)
+            {
+                criteriosEnRevision++;
+            }
+
             descartadas += descartadasCriterio;
             evaluacion.Detalles.Add(detalle);
         }
 
-        evaluacion.RequiereRevision = descartadas > 0;
-        return new Resultado(evaluacion, descartadas);
+        evaluacion.RequiereRevision = criteriosEnRevision > 0;
+        return new Resultado(evaluacion, descartadas, criteriosEnRevision);
     }
 
     /// <summary>
@@ -136,7 +158,8 @@ public static partial class ConstructorEvaluacion
         }
     }
 
-    private static string ComponerObservacion(string justificacion, int evidenciasValidas, int descartadas)
+    private static string ComponerObservacion(
+        string justificacion, int evidenciasValidas, int descartadas, bool faltaSinEvidencia, bool notaDudosa)
     {
         var partes = new List<string>();
         if (!string.IsNullOrWhiteSpace(justificacion))
@@ -151,7 +174,17 @@ public static partial class ConstructorEvaluacion
 
         if (descartadas > 0)
         {
-            partes.Add($"Se descartaron {descartadas} evidencia(s) inválida(s); requiere revisión humana.");
+            partes.Add($"Se descartaron {descartadas} {MarcaEvidenciaDescartada}; requiere revisión humana.");
+        }
+
+        if (faltaSinEvidencia)
+        {
+            partes.Add("La IA marca una falta sin citar el fragmento; requiere revisión humana.");
+        }
+
+        if (notaDudosa)
+        {
+            partes.Add("La nota está cerca del umbral de cumplimiento; requiere revisión humana.");
         }
 
         return Recortar(string.Join(" ", partes), 2000);

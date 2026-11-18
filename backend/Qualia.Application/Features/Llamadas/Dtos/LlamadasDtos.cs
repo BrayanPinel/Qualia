@@ -14,7 +14,8 @@ public sealed record LlamadaDto(
     decimal DuracionSeg,
     EstadoLlamada Estado,
     DateTime FechaLlamada,
-    string? MotivoFallo);
+    string? MotivoFallo,
+    bool? RequiereRevision);
 
 public sealed record SegmentoDto(
     Guid Id,
@@ -38,6 +39,7 @@ public sealed record EvaluacionDto(
     ModoIA ModoIA,
     string ModeloUsado,
     bool RequiereRevision,
+    bool Oficial,
     decimal PuntajeTotal,
     IReadOnlyList<ResultadoCriterioDto> Criterios);
 
@@ -48,11 +50,23 @@ public sealed record ResultadoCriterioDto(
     decimal PuntajeIA,
     decimal? PuntajeHumano,
     decimal PuntajeVigente,
+    decimal UmbralCumplimiento,
+    bool Cumple,
     string Justificacion,
     bool FalloCritico,
     IReadOnlyList<EvidenciaDto> Evidencias);
 
-public sealed record EvidenciaDto(Guid SegmentoId, string CitaTextual, decimal InicioSeg, decimal FinSeg);
+/// <summary>
+/// Fragmento que sustenta la nota de un criterio. Si el criterio no se cumple, es el fragmento
+/// donde el agente cometió la falta: cita, texto completo del segmento, hablante e instante del audio.
+/// </summary>
+public sealed record EvidenciaDto(
+    Guid SegmentoId,
+    string CitaTextual,
+    decimal InicioSeg,
+    decimal FinSeg,
+    string Hablante,
+    string TextoSegmento);
 
 /// <summary>Parámetros de GET /api/llamadas (paginación y filtros opcionales).</summary>
 public sealed class FiltroLlamadasDto
@@ -63,4 +77,7 @@ public sealed class FiltroLlamadasDto
     public Guid? AgenteId { get; set; }
 
     public string? Estado { get; set; }
+
+    /// <summary>true: bandeja del supervisor (evaluaciones con falla de la IA pendientes de revisión).</summary>
+    public bool? RequiereRevision { get; set; }
 }

@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Qualia.Application.Features.Llamadas.Dtos;
 using Qualia.Application.Features.Procesamiento;
 using Qualia.Domain.Enums;
+using Qualia.Domain.Suscripciones;
 using Qualia.Infrastructure.Persistence;
 using Qualia.Tests.Integracion.Infraestructura;
 using Norte = Qualia.Infrastructure.Persistence.Semillas.DatosDemo.Norte;
@@ -75,5 +76,56 @@ public sealed class ReintentosIntegracionTests(PostgresFixture postgres)
 
         // Un trabajo fallido no se vuelve a tomar.
         Assert.Equal(0, await api.ProcesarColaAsync());
+    }
+
+    [FactConDocker]
+    public async Task Una_llamada_perdida_se_vuelve_a_evaluar_reutilizando_su_trabajo_y_su_consumo()
+    {
+        // Falla en los dos intentos permitidos y funciona al tercero (después del reintento manual).
+        await using var api = new QualiaApiFactory(postgres, $"qualia_perdida_{Guid.NewGuid():N}", maximoIntentos: 2,
+            s => { s.RemoveAll<ITranscriptor>(); s.AddSingleton<ITranscriptor>(new TranscriptorConFallos(2)); },
+            usarConsumoReal: true);
+
+        var llamadaId = Norte.Llamadas[2];
+        var supervisora = api.ClienteComo(Norte.Supervisora);
+        Assert.Equal(HttpStatusCode.Accepted, (await supervisora.PostAsync($"/api/llamadas/{llamadaId}/evaluacion", null)).StatusCode);
+        await api.ProcesarColaAsync();
+
+        var perdida = await QualiaApiFactory.LeerAsync<LlamadaDto>(await supervisora.GetAsync($"/api/llamadas/{llamadaId}"));
+        Assert.Equal(EstadoLlamada.Fallida, perdida.Estado);
+
+        await using (var scope = api.Services.CreateAsyncScope())
+        {
+            var db = scope.ServiceProvider.GetRequiredService<QualiaDbContext>();
+            var liberado = await db.ConsumosLlamada.IgnoreQueryFilters().AsNoTracking().SingleAsync(c => c.LlamadaId == llamadaId);
+            Assert.Equal(EstadoConsumo.Liberado, liberado.Estado);
+        }
+
+        // Reintento manual: 202, la llamada vuelve a EnCola y se completa.
+        var reintento = await supervisora.PostAsync($"/api/llamadas/{llamadaId}/evaluacion", null);
+        Assert.Equal(HttpStatusCode.Accepted, reintento.StatusCode);
+        Assert.Equal(1, await api.ProcesarColaAsync());
+
+        var final = await QualiaApiFactory.LeerAsync<LlamadaDto>(await supervisora.GetAsync($"/api/llamadas/{llamadaId}"));
+        Assert.Equal(EstadoLlamada.EvaluadaPorIA, final.Estado);
+        Assert.Null(final.MotivoFallo);
+        Assert.Equal(HttpStatusCode.OK, (await supervisora.GetAsync($"/api/llamadas/{llamadaId}/evaluacion")).StatusCode);
+
+        await using (var scope = api.Services.CreateAsyncScope())
+        {
+            var db = scope.ServiceProvider.GetRequiredService<QualiaDbContext>();
+            var trabajo = await db.TrabajosProcesamiento.IgnoreQueryFilters().AsNoTracking().SingleAsync(t => t.LlamadaId == llamadaId);
+            Assert.Equal(EstadoTrabajo.Completado, trabajo.Estado);
+            Assert.Equal(1, trabajo.Intentos);
+
+            // Un solo consumo por llamada: el liberado se reactivó y ahora está facturado.
+            var consumo = await db.ConsumosLlamada.IgnoreQueryFilters().AsNoTracking().SingleAsync(c => c.LlamadaId == llamadaId);
+            Assert.Equal(EstadoConsumo.Facturado, consumo.Estado);
+            Assert.Equal(0m, consumo.MinutosReservados);
+            Assert.True(consumo.MinutosFacturables > 0);
+        }
+
+        // Una llamada ya evaluada no admite otro reintento.
+        Assert.Equal(HttpStatusCode.Conflict, (await supervisora.PostAsync($"/api/llamadas/{llamadaId}/evaluacion", null)).StatusCode);
     }
 }

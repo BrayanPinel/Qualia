@@ -48,12 +48,13 @@ public sealed class ConsumoEvaluacionService : IConsumoEvaluacion
         }
 
         // Idempotencia: si la llamada ya tiene registro de consumo, no duplica la reserva (RN-13).
+        // Un consumo liberado (llamada perdida) se reactiva en el mismo registro tras validar la cuota.
         var existente = await _repositorio.ObtenerConsumoLlamadaAsync(
             request.EmpresaId,
             request.LlamadaId,
             cancellationToken);
 
-        if (existente is not null)
+        if (existente is not null && existente.Estado != EstadoConsumo.Liberado)
         {
             await transaccion.ConfirmarAsync(cancellationToken);
             return existente.AConsumoLlamadaDto();
@@ -92,8 +93,17 @@ public sealed class ConsumoEvaluacionService : IConsumoEvaluacion
             return ErroresSuscripcion.CuotaAgotada;
         }
 
-        var consumo = ConsumoLlamada.Reservar(periodo, request.LlamadaId, request.DuracionSeg);
-        _repositorio.Agregar(consumo);
+        ConsumoLlamada consumo;
+        if (existente is not null)
+        {
+            existente.Reactivar(periodo, request.DuracionSeg);
+            consumo = existente;
+        }
+        else
+        {
+            consumo = ConsumoLlamada.Reservar(periodo, request.LlamadaId, request.DuracionSeg);
+            _repositorio.Agregar(consumo);
+        }
 
         await _repositorio.GuardarCambiosAsync(cancellationToken);
         await transaccion.ConfirmarAsync(cancellationToken);

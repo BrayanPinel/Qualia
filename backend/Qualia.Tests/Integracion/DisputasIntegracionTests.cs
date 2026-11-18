@@ -63,9 +63,10 @@ public sealed class DisputasIntegracionTests : IAsyncLifetime
     public async Task Reglas_para_abrir_una_disputa()
     {
         var oficial = await EvaluacionOficialAsync(Norte.Llamadas[0], Norte.Supervisora);
-        var soloIA = await EvaluarConIAAsync(Norte.Llamadas[2], Norte.Supervisora);
+        var pendiente = await EvaluarConIAAsync(Norte.Llamadas[2], Norte.Supervisora);
+        await MarcarParaRevisionAsync(pendiente.Id);
 
-        Assert.Equal(GestionDisputas.CodigoEvaluacionNoOficial, await CodigoAsync(await DisputarAsync(Norte.AgenteAndres, soloIA.Id)));
+        Assert.Equal(GestionDisputas.CodigoEvaluacionNoOficial, await CodigoAsync(await DisputarAsync(Norte.AgenteAndres, pendiente.Id)));
         Assert.Equal(GestionDisputas.CodigoEvaluacionFueraDeAlcance, await CodigoAsync(await DisputarAsync(Norte.AgenteAlicia, oficial.Id)));
         Assert.Equal(HttpStatusCode.NotFound, (await DisputarAsync(Norte.AgenteAndres, Guid.NewGuid())).StatusCode);
         Assert.Equal(HttpStatusCode.BadRequest, (await DisputarAsync(Norte.AgenteAndres, oficial.Id, "Muy corto")).StatusCode);
@@ -223,6 +224,28 @@ public sealed class DisputasIntegracionTests : IAsyncLifetime
     };
 
     // ------------------------------------------------------------------ apoyo
+
+    [FactConDocker]
+    public async Task La_nota_oficial_de_la_IA_sin_fallas_se_puede_disputar_sin_revision_del_supervisor()
+    {
+        var evaluacion = await EvaluarConIAAsync(Norte.Llamadas[0], Norte.Supervisora);
+        await using (var scope = _api.Services.CreateAsyncScope())
+        {
+            var db = scope.ServiceProvider.GetRequiredService<QualiaDbContext>();
+            await db.EvaluacionesIA.IgnoreQueryFilters().Where(e => e.Id == evaluacion.Id)
+                .ExecuteUpdateAsync(s => s.SetProperty(e => e.RequiereRevision, false));
+        }
+
+        Assert.Equal(HttpStatusCode.Created, (await DisputarAsync(Norte.AgenteAndres, evaluacion.Id)).StatusCode);
+    }
+
+    private async Task MarcarParaRevisionAsync(Guid evaluacionId)
+    {
+        await using var scope = _api.Services.CreateAsyncScope();
+        var db = scope.ServiceProvider.GetRequiredService<QualiaDbContext>();
+        await db.EvaluacionesIA.IgnoreQueryFilters().Where(e => e.Id == evaluacionId)
+            .ExecuteUpdateAsync(s => s.SetProperty(e => e.RequiereRevision, true));
+    }
 
     private async Task<EvaluacionDto> EvaluarConIAAsync(Guid llamadaId, Guid supervisorId)
     {

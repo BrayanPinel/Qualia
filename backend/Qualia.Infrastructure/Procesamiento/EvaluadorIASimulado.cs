@@ -46,11 +46,26 @@ public sealed class EvaluadorIASimulado : IEvaluadorIA
             else
             {
                 var puntaje = aleatorio.Next(20, 60);
-                resultados.Add(new CriterioEvaluado(
-                    criterio.CriterioId,
-                    puntaje,
-                    $"No se identificó en la conversación una intervención que cumpla \"{criterio.Nombre}\".",
-                    []));
+                var cierre = solicitud.Segmentos.LastOrDefault(s => s.Hablante == TranscriptorSimulado.HablanteAgente);
+
+                // Falta: la mitad de las veces se cita la intervención final del agente, donde debió cumplirlo;
+                // en las demás no hay fragmento y la evaluación pasa a revisión del supervisor.
+                if (cierre is not null && aleatorio.Next(2) == 0)
+                {
+                    resultados.Add(new CriterioEvaluado(
+                        criterio.CriterioId,
+                        puntaje,
+                        $"El agente cierra en la intervención {cierre.Orden} sin cumplir \"{criterio.Nombre}\".",
+                        [new EvidenciaPropuesta(cierre.SegmentoId, Citar(cierre.Texto))]));
+                }
+                else
+                {
+                    resultados.Add(new CriterioEvaluado(
+                        criterio.CriterioId,
+                        puntaje,
+                        $"No se identificó en la conversación una intervención que cumpla \"{criterio.Nombre}\".",
+                        []));
+                }
             }
         }
 

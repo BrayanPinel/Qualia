@@ -22,4 +22,16 @@ public sealed class OpcionesProcesamiento
 
     /// <summary>Trabajos reclamados por ciclo.</summary>
     public int TamanoLote { get; set; } = 5;
+
+    /// <summary>Si es true, el worker encola solo las llamadas Disponible con rúbrica publicada.</summary>
+    public bool EvaluacionAutomatica { get; set; } = true;
+
+    /// <summary>
+    /// Puntos alrededor del umbral de cumplimiento en los que la nota de la IA se considera dudosa
+    /// y la evaluación pasa a revisión humana. 0 desactiva la regla.
+    /// </summary>
+    public decimal MargenRevisionUmbral { get; set; } = 5m;
+
+    /// <summary>Pausa antes de volver a encolar llamadas de una empresa sin suscripción activa o sin cuota.</summary>
+    public TimeSpan EsperaTrasRechazoConsumo { get; set; } = TimeSpan.FromMinutes(1);
 }

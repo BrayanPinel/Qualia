@@ -10,7 +10,8 @@ namespace Qualia.Domain.Entidades;
 public class Llamada : IEntidadEmpresa
 {
     // Transiciones válidas del ciclo de procesamiento.
-    // Volver a EnCola se usa para reintentos y para recuperar un trabajo interrumpido.
+    // Volver a EnCola se usa para reintentos, para recuperar un trabajo interrumpido
+    // y para volver a evaluar una llamada perdida (Fallida).
     private static readonly Dictionary<EstadoLlamada, EstadoLlamada[]> Transiciones = new()
     {
         [EstadoLlamada.Disponible] = [EstadoLlamada.EnCola],
@@ -19,7 +20,7 @@ public class Llamada : IEntidadEmpresa
         [EstadoLlamada.Transcrita] = [EstadoLlamada.Evaluando, EstadoLlamada.EnCola, EstadoLlamada.Fallida],
         [EstadoLlamada.Evaluando] = [EstadoLlamada.EvaluadaPorIA, EstadoLlamada.EnCola, EstadoLlamada.Fallida],
         [EstadoLlamada.EvaluadaPorIA] = [],
-        [EstadoLlamada.Fallida] = [],
+        [EstadoLlamada.Fallida] = [EstadoLlamada.EnCola],
     };
 
     public Guid EmpresaId { get; set; }
