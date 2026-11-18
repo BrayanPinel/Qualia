@@ -6,6 +6,16 @@ namespace Qualia.Infrastructure.Persistence.Semillas;
 /// </summary>
 public static class DatosDemo
 {
+    /// <summary>Contraseña de todos los usuarios demo y del administrador demo. Solo desarrollo.</summary>
+    public const string Contrasena = "Qualia-Demo-2026";
+
+    /// <summary>Administrador global demo (POST /api/plataforma/auth/login).</summary>
+    public static class Plataforma
+    {
+        public static readonly Guid Administrador = Guid.Parse("90000000-0000-0000-0001-000000000001");
+        public const string Correo = "admin@qualia.demo";
+    }
+
     public static class Norte
     {
         public static readonly Guid Empresa = Guid.Parse("10000000-0000-0000-0000-000000000001");
