@@ -12,7 +12,7 @@ using Qualia.Domain.Servicios;
 
 namespace Qualia.Application.Features.Usuarios;
 
-/// GET/POST /api/usuarios y PUT /api/usuarios/{id} (HU-12), solo AdminEmpresa.
+/// GET/POST /api/empresas/{empresaId}/usuarios y PUT /api/empresas/{empresaId}/usuarios/{id} (HU-12), solo AdminEmpresa.
 /// El filtro global limita todo a la empresa de la sesión: un usuario de otra empresa responde 404.
 /// Las escrituras bloquean la empresa (IBloqueoEmpresa) para que el conteo de
 /// AdminEmpresa activos y de supervisores no se rompa con peticiones concurrentes.

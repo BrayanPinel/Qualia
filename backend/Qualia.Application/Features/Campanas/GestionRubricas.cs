@@ -10,8 +10,8 @@ using Qualia.Domain.Enums;
 
 namespace Qualia.Application.Features.Campanas;
 
-/// Rúbricas versionadas: GET/POST /api/campanas/{id}/rubricas, PUT /api/rubricas/{id}
-/// y POST /api/rubricas/{id}/publicar.
+/// Rúbricas versionadas: GET/POST /api/empresas/{empresaId}/campanas/{id}/rubricas, PUT /api/empresas/{empresaId}/rubricas/{id}
+/// y POST /api/empresas/{empresaId}/rubricas/{id}/publicar.
 /// Cada POST crea una NUEVA versión en Borrador (versión = última de la campaña + 1).
 /// Solo un Borrador se edita; una versión publicada es inmutable (RN-04).
 /// Publicar exige pesos que sumen 100 y nombres sin duplicar (RN-05), retira la versión

@@ -7,7 +7,7 @@ using Qualia.Application.Common.Seguridad;
 
 namespace Qualia.Application.Features.Suscripciones.PagoSimulado;
 
-/// Caso de uso POST /api/suscripcion/pago-simulado.
+/// Caso de uso POST /api/empresas/{empresaId}/suscripcion/pago-simulado.
 public sealed class RegistrarPagoSimuladoHandler
 {
     private readonly IRepositorioSuscripciones _repositorio;

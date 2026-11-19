@@ -4,13 +4,14 @@ using Qualia.Application.Common.Errores;
 using Qualia.Application.Common.Models;
 using Qualia.Application.Features.Disputas;
 using Qualia.Application.Features.Disputas.Dtos;
+using Qualia.API.Seguridad;
 
 namespace Qualia.API.Controllers;
 
 /// Disputas de evaluaciones: el agente las abre y el supervisor asignado las resuelve.
 [ApiController]
 [Authorize]
-[Route("api")]
+[Route(RutasEmpresa.Prefijo)]
 [Produces("application/json")]
 [ProducesResponseType<ErrorDto>(StatusCodes.Status401Unauthorized)]
 [ProducesResponseType<ErrorDto>(StatusCodes.Status403Forbidden)]

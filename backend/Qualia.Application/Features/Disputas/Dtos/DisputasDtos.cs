@@ -29,7 +29,7 @@ public sealed class ResolverDisputaDto
     public List<AjusteCriterioDto>? Criterios { get; set; }
 }
 
-/// GET /api/disputas: paginación y estado opcional.
+/// GET /api/empresas/{empresaId}/disputas: paginación y estado opcional.
 public sealed class FiltroDisputasDto : PaginacionDto
 {
     public EstadoDisputa? Estado { get; set; }

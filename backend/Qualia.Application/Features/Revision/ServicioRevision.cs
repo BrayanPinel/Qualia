@@ -54,7 +54,7 @@ public sealed class ServicioRevision(
         return new ContextoRevision(evaluacion, llamada, [.. llamada.Rubrica!.Criterios]);
     }
 
-    /// Confirmación (POST /api/evaluaciones/{id}/confirmar). Exige evaluación completa y sin evidencias
+    /// Confirmación (POST /api/empresas/{empresaId}/evaluaciones/{id}/confirmar). Exige evaluación completa y sin evidencias
     /// inválidas pendientes; la evidencia inválida se corrige con un ajuste completo.
     /// Confirmar una evaluación marcada por otra falla de la IA (falta sin fragmento o nota dudosa)
     /// la oficializa y quita la marca de revisión.
@@ -108,7 +108,7 @@ public sealed class ServicioRevision(
         return await AjustarAsync(contexto, supervisorId, ajuste, cancellationToken);
     }
 
-    /// Ajuste completo (PUT /api/evaluaciones/{id}/ajuste): todos los criterios de la rúbrica exactamente una vez,
+    /// Ajuste completo (PUT /api/empresas/{empresaId}/evaluaciones/{id}/ajuste): todos los criterios de la rúbrica exactamente una vez,
     /// puntajes 0–100, justificación obligatoria y evidencias que existan en segmentos de LA MISMA llamada (RN-09).
     /// Guarda Revision_humana + Criterio_revisado + Evidencia_revision; el total se recalcula en el servidor (RN-08).
     internal async Task<int> AjustarAsync(ContextoRevision contexto, Guid supervisorId, AjustarEvaluacionDto ajuste, CancellationToken ct)

@@ -1,14 +1,17 @@
+using System.Collections.Concurrent;
 using System.Net.Http.Json;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Qualia.API.Seguridad;
 using Qualia.Application.Common.Interfaces;
 using Qualia.Application.Features.Procesamiento;
+using Qualia.Infrastructure.Persistence;
 
 namespace Qualia.Tests.Integracion.Infraestructura;
 
@@ -55,14 +58,28 @@ public sealed class QualiaApiFactory(
         });
     }
 
+    /// Las pruebas escriben las rutas de empresa en forma corta ("/api/campanas"); el cliente agrega
+    /// el prefijo /api/empresas/{empresa de la sesión}/ (ver PrefijoEmpresaHandler).
+    /// Las rutas completas y el 404 por empresa ajena se prueban en RutasEmpresaIntegracionTests.
     public HttpClient ClienteComo(Guid usuarioId)
     {
-        var cliente = CreateClient(new WebApplicationFactoryClientOptions { AllowAutoRedirect = false });
+        var cliente = ClienteAnonimo();
         cliente.DefaultRequestHeaders.Add(AutenticacionDemoHandler.Cabecera, usuarioId.ToString());
         return cliente;
     }
 
-    public HttpClient ClienteAnonimo() => CreateClient(new WebApplicationFactoryClientOptions { AllowAutoRedirect = false });
+    public HttpClient ClienteAnonimo() =>
+        CreateDefaultClient(new Uri("http://localhost"), new PrefijoEmpresaHandler(EmpresaDeUsuario));
+
+    private readonly ConcurrentDictionary<Guid, Guid> _empresasPorUsuario = new();
+
+    private Guid EmpresaDeUsuario(Guid usuarioId) => _empresasPorUsuario.GetOrAdd(usuarioId, id =>
+    {
+        using var alcance = Services.CreateScope();
+        // Búsqueda de identidad para armar la URL de prueba: se ignora el filtro por empresa.
+        return alcance.ServiceProvider.GetRequiredService<QualiaDbContext>().Usuarios.IgnoreQueryFilters()
+            .Where(u => u.Id == id).Select(u => u.EmpresaId).FirstOrDefault();
+    });
 
     /// Ejecuta ciclos del worker hasta vaciar la cola disponible.
     public async Task<int> ProcesarColaAsync()

@@ -177,16 +177,16 @@ Los módulos se comunican mediante interfaces de `Application/Common/Interfaces`
 | HU-01 | Registro de empresa | ✅ | `POST /api/empresas` |
 | HU-08 | Aislamiento entre empresas | ✅ | Transversal: Global Query Filter y 404 entre empresas |
 | HU-11 | Inicio de sesión | ✅ | `POST /api/auth/login`, `POST /api/plataforma/auth/login` |
-| HU-12 | Usuarios y asignaciones | ✅ | `/api/usuarios`, `/api/campanas/{id}/usuarios` |
-| HU-06 | Control del plan | ✅ | `/api/planes`, `/api/suscripcion`, `/api/consumo` |
+| HU-12 | Usuarios y asignaciones | ✅ | `/api/empresas/{empresaId}/usuarios`, `/api/empresas/{empresaId}/campanas/{id}/usuarios` |
+| HU-06 | Control del plan | ✅ | `/api/planes`, `/api/empresas/{empresaId}/suscripcion`, `/api/empresas/{empresaId}/consumo` |
 | HU-07 | Administración de plataforma | ✅ | `/api/plataforma/empresas` |
-| HU-02 | Campañas y rúbricas versionadas | ✅ | `/api/campanas`, `/api/rubricas` |
-| HU-13 | Procesamiento asistido por IA | ✅ | Worker automático y `POST /api/llamadas/{id}/evaluacion` |
-| HU-03 | Consulta de evaluación y evidencia | ✅ | `/api/llamadas/{id}/evaluacion`, `/transcripcion`, `/audio` |
-| HU-04 | Confirmación o ajuste | ✅ | `/api/evaluaciones/{id}/confirmar`, `/api/evaluaciones/{id}/ajuste` |
-| HU-05 | Consulta propia y disputa | ✅ | `/api/evaluaciones/{id}/disputas`, `/api/disputas` |
-| HU-09 | Scorecard del agente | ✅ | `GET /api/agentes/me/scorecard` |
-| HU-10 | Desempeño del equipo | ✅ | `/api/agentes/{id}/scorecard`, `/api/campanas/{id}/scorecards`, `/api/reportes/campanas/{id}` |
+| HU-02 | Campañas y rúbricas versionadas | ✅ | `/api/empresas/{empresaId}/campanas`, `/api/empresas/{empresaId}/rubricas` |
+| HU-13 | Procesamiento asistido por IA | ✅ | Worker automático y `POST /api/empresas/{empresaId}/llamadas/{id}/evaluacion` |
+| HU-03 | Consulta de evaluación y evidencia | ✅ | `/api/empresas/{empresaId}/llamadas/{id}/evaluacion`, `/transcripcion`, `/audio` |
+| HU-04 | Confirmación o ajuste | ✅ | `/api/empresas/{empresaId}/evaluaciones/{id}/confirmar`, `/api/empresas/{empresaId}/evaluaciones/{id}/ajuste` |
+| HU-05 | Consulta propia y disputa | ✅ | `/api/empresas/{empresaId}/evaluaciones/{id}/disputas`, `/api/empresas/{empresaId}/disputas` |
+| HU-09 | Scorecard del agente | ✅ | `GET /api/empresas/{empresaId}/agentes/me/scorecard` |
+| HU-10 | Desempeño del equipo | ✅ | `/api/empresas/{empresaId}/agentes/{id}/scorecard`, `/api/empresas/{empresaId}/campanas/{id}/scorecards`, `/api/empresas/{empresaId}/reportes/campanas/{id}` |
 
 ---
 
@@ -277,6 +277,7 @@ e => e.EmpresaId == EmpresaIdActual
 ### 7.1 Convenciones implementadas
 
 - Prefijo `/api`, JSON en `camelCase` y enumeraciones como texto.
+- Las rutas de una empresa llevan su identificador: `/api/empresas/{empresaId}/…`. Un filtro global (`FiltroEmpresaDeRuta`) compara ese `empresaId` con el del JWT: si no coincide responde 404 `EMPRESA_NO_ENCONTRADA` y, sin empresa en la sesión (PlatformAdmin), 403. Los datos se filtran siempre por la empresa del token. Las rutas globales (planes, registro, logins, plataforma y audio temporal) no llevan empresa.
 - Los campos desconocidos de entrada se rechazan (`UnmappedMemberHandling.Disallow`). La API nunca expone entidades de dominio, solo DTOs.
 - Listados paginados con `pagina` desde 1 y `tamanoPagina` de 1 a 100 (predeterminado 20), respondidos como `PaginaDto<T>`.
 - Las respuestas no incluyen hashes, credenciales de proveedores ni rutas internas de almacenamiento.
@@ -328,39 +329,39 @@ En Development, con `Autenticacion:ModoDemo=true`, la API acepta además la cabe
 | POST /api/empresas | Público | HU-01 |
 | POST /api/auth/login | Público | HU-11 |
 | POST /api/plataforma/auth/login | Público | HU-07 |
-| GET /api/usuarios | AdminEmpresa | HU-12 |
-| POST /api/usuarios | AdminEmpresa | HU-12 |
-| PUT /api/usuarios/{id} | AdminEmpresa | HU-12 |
-| GET /api/suscripcion | AdminEmpresa | HU-06 |
-| GET /api/consumo?periodo=YYYY-MM | AdminEmpresa | HU-06 |
-| POST /api/suscripcion/pago-simulado | AdminEmpresa | HU-06 |
+| GET /api/empresas/{empresaId}/usuarios | AdminEmpresa | HU-12 |
+| POST /api/empresas/{empresaId}/usuarios | AdminEmpresa | HU-12 |
+| PUT /api/empresas/{empresaId}/usuarios/{id} | AdminEmpresa | HU-12 |
+| GET /api/empresas/{empresaId}/suscripcion | AdminEmpresa | HU-06 |
+| GET /api/empresas/{empresaId}/consumo?periodo=YYYY-MM | AdminEmpresa | HU-06 |
+| POST /api/empresas/{empresaId}/suscripcion/pago-simulado | AdminEmpresa | HU-06 |
 | GET /api/plataforma/empresas | PlatformAdmin | HU-07 |
 | PUT /api/plataforma/empresas/{empresaId}/suscripcion | PlatformAdmin | HU-07 |
-| GET /api/campanas | AdminEmpresa; Supervisor; Agente; Auditor | HU-02 |
-| POST /api/campanas | AdminEmpresa | HU-02 |
-| PUT /api/campanas/{id} | AdminEmpresa | HU-02 |
-| GET /api/campanas/{id}/usuarios | AdminEmpresa | HU-12 |
-| PUT /api/campanas/{id}/usuarios/{usuarioId} | AdminEmpresa | HU-12 |
-| DELETE /api/campanas/{id}/usuarios/{usuarioId} | AdminEmpresa | HU-12 |
-| GET /api/campanas/{id}/rubricas | AdminEmpresa; Supervisor asignado | HU-02 |
-| POST /api/campanas/{id}/rubricas | AdminEmpresa | HU-02 |
-| PUT /api/rubricas/{id} | AdminEmpresa | HU-02 |
-| POST /api/rubricas/{id}/publicar | AdminEmpresa | HU-02 |
-| POST /api/llamadas/{id}/evaluacion | Supervisor asignado | HU-13 |
-| GET /api/llamadas | AdminEmpresa; Supervisor asignado; Agente propietario | HU-03 |
-| GET /api/llamadas/{id} | Mismos permisos de lectura | HU-03 |
-| GET /api/llamadas/{id}/transcripcion | Mismos permisos de lectura | HU-03 |
-| GET /api/llamadas/{id}/audio | Mismos permisos de lectura | HU-03 |
-| GET /api/llamadas/{id}/evaluacion | Mismos permisos de lectura | HU-03 |
-| POST /api/evaluaciones/{id}/confirmar | Supervisor asignado | HU-04 |
-| PUT /api/evaluaciones/{id}/ajuste | Supervisor asignado | HU-04 |
-| POST /api/evaluaciones/{id}/disputas | Agente propietario; plan habilitado | HU-05 |
-| GET /api/disputas | AdminEmpresa; Supervisor asignado; Agente propietario | HU-05 |
-| PUT /api/disputas/{id}/resolucion | Supervisor asignado | HU-05 |
-| GET /api/agentes/me/scorecard | Agente | HU-09 |
-| GET /api/agentes/{id}/scorecard | AdminEmpresa; Supervisor asignado | HU-10 |
-| GET /api/campanas/{id}/scorecards | AdminEmpresa; Supervisor asignado | HU-10 |
-| GET /api/reportes/campanas/{id} | AdminEmpresa; Supervisor asignado; Auditor | HU-10 |
+| GET /api/empresas/{empresaId}/campanas | AdminEmpresa; Supervisor; Agente; Auditor | HU-02 |
+| POST /api/empresas/{empresaId}/campanas | AdminEmpresa | HU-02 |
+| PUT /api/empresas/{empresaId}/campanas/{id} | AdminEmpresa | HU-02 |
+| GET /api/empresas/{empresaId}/campanas/{id}/usuarios | AdminEmpresa | HU-12 |
+| PUT /api/empresas/{empresaId}/campanas/{id}/usuarios/{usuarioId} | AdminEmpresa | HU-12 |
+| DELETE /api/empresas/{empresaId}/campanas/{id}/usuarios/{usuarioId} | AdminEmpresa | HU-12 |
+| GET /api/empresas/{empresaId}/campanas/{id}/rubricas | AdminEmpresa; Supervisor asignado | HU-02 |
+| POST /api/empresas/{empresaId}/campanas/{id}/rubricas | AdminEmpresa | HU-02 |
+| PUT /api/empresas/{empresaId}/rubricas/{id} | AdminEmpresa | HU-02 |
+| POST /api/empresas/{empresaId}/rubricas/{id}/publicar | AdminEmpresa | HU-02 |
+| POST /api/empresas/{empresaId}/llamadas/{id}/evaluacion | Supervisor asignado | HU-13 |
+| GET /api/empresas/{empresaId}/llamadas | AdminEmpresa; Supervisor asignado; Agente propietario | HU-03 |
+| GET /api/empresas/{empresaId}/llamadas/{id} | Mismos permisos de lectura | HU-03 |
+| GET /api/empresas/{empresaId}/llamadas/{id}/transcripcion | Mismos permisos de lectura | HU-03 |
+| GET /api/empresas/{empresaId}/llamadas/{id}/audio | Mismos permisos de lectura | HU-03 |
+| GET /api/empresas/{empresaId}/llamadas/{id}/evaluacion | Mismos permisos de lectura | HU-03 |
+| POST /api/empresas/{empresaId}/evaluaciones/{id}/confirmar | Supervisor asignado | HU-04 |
+| PUT /api/empresas/{empresaId}/evaluaciones/{id}/ajuste | Supervisor asignado | HU-04 |
+| POST /api/empresas/{empresaId}/evaluaciones/{id}/disputas | Agente propietario; plan habilitado | HU-05 |
+| GET /api/empresas/{empresaId}/disputas | AdminEmpresa; Supervisor asignado; Agente propietario | HU-05 |
+| PUT /api/empresas/{empresaId}/disputas/{id}/resolucion | Supervisor asignado | HU-05 |
+| GET /api/empresas/{empresaId}/agentes/me/scorecard | Agente | HU-09 |
+| GET /api/empresas/{empresaId}/agentes/{id}/scorecard | AdminEmpresa; Supervisor asignado | HU-10 |
+| GET /api/empresas/{empresaId}/campanas/{id}/scorecards | AdminEmpresa; Supervisor asignado | HU-10 |
+| GET /api/empresas/{empresaId}/reportes/campanas/{id} | AdminEmpresa; Supervisor asignado; Auditor | HU-10 |
 | GET /api/audio-temporal/{token} | Anónimo con URL firmada (destino de `…/audio`) | HU-03 |
 
 Cada endpoint está documentado en OpenAPI y Scalar, y tiene ejemplos ejecutables en `backend/Qualia.API/Qualia.API.http`.
@@ -387,21 +388,21 @@ Los casos de uso usan dos estilos compatibles: lanzar `ExcepcionNegocio`, o devo
 3. Si no hay fallas, la evaluación es oficial (`oficial: true`). Si las hay, aparece en la bandeja del supervisor:
 
 ```http
-GET /api/llamadas?requiereRevision=true
+GET /api/empresas/{empresaId}/llamadas?requiereRevision=true
 Authorization: Bearer <token>
 ```
 
 4. El supervisor consulta la evaluación. Cada criterio incumplido trae el fragmento de la falta: cita, texto del segmento, hablante e instante del audio.
 
 ```http
-GET /api/llamadas/10000000-0000-0000-0005-000000000001/evaluacion
+GET /api/empresas/{empresaId}/llamadas/10000000-0000-0000-0005-000000000001/evaluacion
 Authorization: Bearer <token>
 ```
 
 5. El supervisor confirma la evaluación o la ajusta enviando la revisión esperada:
 
 ```http
-POST /api/evaluaciones/{id}/confirmar
+POST /api/empresas/{empresaId}/evaluaciones/{id}/confirmar
 Authorization: Bearer <token>
 Content-Type: application/json
 

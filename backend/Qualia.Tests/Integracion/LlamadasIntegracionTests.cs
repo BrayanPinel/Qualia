@@ -46,7 +46,7 @@ public sealed class LlamadasIntegracionTests : IAsyncLifetime
         // 2. Inicia la evaluación: 202 + Location de seguimiento.
         var inicio = await supervisora.PostAsync($"/api/llamadas/{llamadaId}/evaluacion", null);
         Assert.Equal(HttpStatusCode.Accepted, inicio.StatusCode);
-        Assert.Equal($"/api/llamadas/{llamadaId}", inicio.Headers.Location?.OriginalString);
+        Assert.Equal($"/api/empresas/{Norte.Empresa}/llamadas/{llamadaId}", inicio.Headers.Location?.OriginalString);
         var aceptada = await QualiaApiFactory.LeerAsync<EvaluacionAceptadaDto>(inicio);
         Assert.Equal(EstadoLlamada.EnCola, aceptada.Estado);
         Assert.Equal(Norte.Empresa, aceptada.EmpresaId);

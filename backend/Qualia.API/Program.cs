@@ -27,7 +27,8 @@ builder.Services.AddScoped<IUsuarioActual, UsuarioActualHttp>();
 // Autenticación: JWT Bearer; en Development con ModoDemo también la cabecera X-Usuario-Demo.
 builder.Services.AgregarAutenticacionQualia(builder.Configuration, builder.Environment);
 
-builder.Services.AddControllers()
+// Rutas /api/empresas/{empresaId}/…: la empresa de la URL debe ser la de la sesión (404 si no).
+builder.Services.AddControllers(o => o.Filters.Add<FiltroEmpresaDeRuta>())
     .AddJsonOptions(o =>
     {
         // Enumeraciones como texto ("EnCola", "Borrador"...), como en el contrato.

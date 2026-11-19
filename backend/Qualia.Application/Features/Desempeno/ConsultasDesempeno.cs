@@ -26,7 +26,7 @@ public sealed class ConsultasDesempeno(
     IValidator<FiltroReporteDto> validadorReporte,
     TimeProvider reloj)
 {
-    /// GET /api/agentes/me/scorecard — el agente consulta su propio desempeño.
+    /// GET /api/empresas/{empresaId}/agentes/me/scorecard — el agente consulta su propio desempeño.
     public async Task<ScorecardDto> ScorecardPropioAsync(FiltroScorecardDto filtro, CancellationToken ct)
     {
         var agente = usuarioActual.RequerirRol(RolEmpresa.Agente);
@@ -41,7 +41,7 @@ public sealed class ConsultasDesempeno(
         return contexto.Scorecard(agente.UsuarioId);
     }
 
-    /// GET /api/agentes/{id}/scorecard — AdminEmpresa o Supervisor asignado a la campaña.
+    /// GET /api/empresas/{empresaId}/agentes/{id}/scorecard — AdminEmpresa o Supervisor asignado a la campaña.
     public async Task<ScorecardDto> ScorecardAgenteAsync(Guid agenteId, FiltroScorecardDto filtro, CancellationToken ct)
     {
         var usuario = usuarioActual.RequerirRol(RolEmpresa.AdminEmpresa, RolEmpresa.Supervisor);
@@ -62,7 +62,7 @@ public sealed class ConsultasDesempeno(
         return contexto.Scorecard(agenteId);
     }
 
-    /// GET /api/campanas/{id}/scorecards — un scorecard por agente: asignados a la campaña
+    /// GET /api/empresas/{empresaId}/campanas/{id}/scorecards — un scorecard por agente: asignados a la campaña
     /// o con llamadas evaluadas en ella durante el periodo. Ordenados por nombre.
     public async Task<PaginaDto<ScorecardDto>> ScorecardsCampanaAsync(Guid campanaId, FiltroScorecardsCampanaDto filtro, CancellationToken ct)
     {
@@ -94,7 +94,7 @@ public sealed class ConsultasDesempeno(
             pagina.Select(contexto.Scorecard).ToList(), filtro.Pagina, filtro.TamanoPagina, total);
     }
 
-    /// GET /api/reportes/campanas/{id} — agregado de la campaña; también para Auditor.
+    /// GET /api/empresas/{empresaId}/reportes/campanas/{id} — agregado de la campaña; también para Auditor.
     public async Task<ReporteCampanaDto> ReporteCampanaAsync(Guid campanaId, FiltroReporteDto filtro, CancellationToken ct)
     {
         var usuario = usuarioActual.RequerirRol(RolEmpresa.AdminEmpresa, RolEmpresa.Supervisor, RolEmpresa.Auditor);

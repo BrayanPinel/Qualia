@@ -228,7 +228,7 @@ El backend consulta el estado vigente y los límites antes de iniciar una evalua
 **HU-04 — Confirmación o ajuste · P0**  
 *Como* Supervisor, *quiero* confirmar o corregir una evaluación, *para* conservar la decisión humana.
 
-- El supervisor consulta la bandeja `GET /api/llamadas?requiereRevision=true`; las evaluaciones sin falla ya son oficiales y no requieren acción.
+- El supervisor consulta la bandeja `GET /api/empresas/{empresaId}/llamadas?requiereRevision=true`; las evaluaciones sin falla ya son oficiales y no requieren acción.
 - La acción Confirmar constituye la declaración del supervisor de haber revisado todos los criterios; no se registra una marca de lectura por criterio. El servidor comprueba que la evaluación esté completa y que no conserve evidencias inválidas antes de oficializarla.
 - Un ajuste exige motivo y notas válidas; el total se recalcula en el servidor.
 - Se conserva el resultado de IA y se audita el cambio. Una revisión concurrente desactualizada devuelve 409.
@@ -377,7 +377,7 @@ Los datos necesarios para las historias vigentes quedan integrados en 6.2; no so
 ### 7.1 Convenciones
 
 - Prefijo `/api`; JSON en `camelCase`.
-- La API obtiene `empresaId` del JWT validado y lo aplica a las consultas y escrituras empresariales. Cada búsqueda por ID comprueba también la empresa y los permisos del usuario. Un recurso de otra empresa devuelve 404. En las rutas de administración global, PlatformAdmin indica la empresa objetivo en la ruta.
+- La API obtiene `empresaId` del JWT validado y lo aplica a las consultas y escrituras empresariales. Cada búsqueda por ID comprueba también la empresa y los permisos del usuario. Un recurso de otra empresa devuelve 404. Las rutas de una empresa llevan su identificador: `/api/empresas/{empresaId}/…`. El `empresaId` de la URL debe coincidir con el del JWT; si no coincide, la API responde 404 `EMPRESA_NO_ENCONTRADA` sin revelar si la empresa existe, y los datos se filtran siempre por la empresa del token, nunca por la de la URL. Una sesión sin empresa (PlatformAdmin) recibe 403 en esas rutas. En las rutas de administración global, PlatformAdmin indica la empresa objetivo en la ruta.
 - Fechas de instante en ISO 8601 UTC; periodo de scorecard como `YYYY-MM`.
 - Listados paginados: `pagina` desde 1 y `tamanoPagina` de 1 a 100; predeterminado 20.
 - Campos desconocidos de entrada se rechazan. No se aceptan entidades de dominio directamente.
@@ -393,12 +393,12 @@ Los datos necesarios para las historias vigentes quedan integrados en 6.2; no so
 | POST /api/empresas | Público | RegistrarEmpresaDto | 201 EmpresaRegistradaDto |
 | POST /api/auth/login | Público | LoginDto | 200 SesionDto |
 | POST /api/plataforma/auth/login | Público | LoginPlataformaDto | 200 SesionPlataformaDto |
-| GET /api/usuarios | AdminEmpresa | Paginación | 200 PaginaDto<UsuarioDto> |
-| POST /api/usuarios | AdminEmpresa | CrearUsuarioDto | 201 UsuarioDto |
-| PUT /api/usuarios/{id} | AdminEmpresa | ActualizarUsuarioDto | 204 |
-| GET /api/suscripcion | AdminEmpresa | Sin cuerpo | 200 SuscripcionDto |
-| GET /api/consumo?periodo=YYYY-MM | AdminEmpresa | Periodo | 200 ConsumoDto |
-| POST /api/suscripcion/pago-simulado | AdminEmpresa | PagoSimuladoDto | 200 SuscripcionDto |
+| GET /api/empresas/{empresaId}/usuarios | AdminEmpresa | Paginación | 200 PaginaDto<UsuarioDto> |
+| POST /api/empresas/{empresaId}/usuarios | AdminEmpresa | CrearUsuarioDto | 201 UsuarioDto |
+| PUT /api/empresas/{empresaId}/usuarios/{id} | AdminEmpresa | ActualizarUsuarioDto | 204 |
+| GET /api/empresas/{empresaId}/suscripcion | AdminEmpresa | Sin cuerpo | 200 SuscripcionDto |
+| GET /api/empresas/{empresaId}/consumo?periodo=YYYY-MM | AdminEmpresa | Periodo | 200 ConsumoDto |
+| POST /api/empresas/{empresaId}/suscripcion/pago-simulado | AdminEmpresa | PagoSimuladoDto | 200 SuscripcionDto |
 | GET /api/plataforma/empresas | PlatformAdmin | Paginación | 200 PaginaDto<EmpresaComercialDto> |
 | PUT /api/plataforma/empresas/{empresaId}/suscripcion | PlatformAdmin | CambiarSuscripcionDto | 200 SuscripcionDto |
 
@@ -406,43 +406,43 @@ Los datos necesarios para las historias vigentes quedan integrados en 6.2; no so
 
 | Método y ruta | Acceso | Entrada | Salida exitosa |
 |---|---|---|---|
-| GET /api/campanas | AdminEmpresa; Supervisor; Agente; Auditor | Paginación; alcance filtrado por rol y empresa | 200 PaginaDto<CampanaDto> |
-| POST /api/campanas | AdminEmpresa | GuardarCampanaDto | 201 CampanaDto |
-| PUT /api/campanas/{id} | AdminEmpresa | GuardarCampanaDto | 204 |
-| GET /api/campanas/{id}/usuarios | AdminEmpresa | Paginación | 200 PaginaDto<UsuarioDto>; solo asignados a esa campaña |
-| PUT /api/campanas/{id}/usuarios/{usuarioId} | AdminEmpresa | Sin cuerpo | 204; asignación idempotente |
-| DELETE /api/campanas/{id}/usuarios/{usuarioId} | AdminEmpresa | Sin cuerpo | 204; revoca asignación |
-| GET /api/campanas/{id}/rubricas | AdminEmpresa; Supervisor asignado | Sin cuerpo | 200 RubricaDto[] |
-| POST /api/campanas/{id}/rubricas | AdminEmpresa | CrearRubricaDto | 201 RubricaDto |
-| PUT /api/rubricas/{id} | AdminEmpresa | CrearRubricaDto | 204; solo borrador |
-| POST /api/rubricas/{id}/publicar | AdminEmpresa | Sin cuerpo | 200 RubricaDto |
+| GET /api/empresas/{empresaId}/campanas | AdminEmpresa; Supervisor; Agente; Auditor | Paginación; alcance filtrado por rol y empresa | 200 PaginaDto<CampanaDto> |
+| POST /api/empresas/{empresaId}/campanas | AdminEmpresa | GuardarCampanaDto | 201 CampanaDto |
+| PUT /api/empresas/{empresaId}/campanas/{id} | AdminEmpresa | GuardarCampanaDto | 204 |
+| GET /api/empresas/{empresaId}/campanas/{id}/usuarios | AdminEmpresa | Paginación | 200 PaginaDto<UsuarioDto>; solo asignados a esa campaña |
+| PUT /api/empresas/{empresaId}/campanas/{id}/usuarios/{usuarioId} | AdminEmpresa | Sin cuerpo | 204; asignación idempotente |
+| DELETE /api/empresas/{empresaId}/campanas/{id}/usuarios/{usuarioId} | AdminEmpresa | Sin cuerpo | 204; revoca asignación |
+| GET /api/empresas/{empresaId}/campanas/{id}/rubricas | AdminEmpresa; Supervisor asignado | Sin cuerpo | 200 RubricaDto[] |
+| POST /api/empresas/{empresaId}/campanas/{id}/rubricas | AdminEmpresa | CrearRubricaDto | 201 RubricaDto |
+| PUT /api/empresas/{empresaId}/rubricas/{id} | AdminEmpresa | CrearRubricaDto | 204; solo borrador |
+| POST /api/empresas/{empresaId}/rubricas/{id}/publicar | AdminEmpresa | Sin cuerpo | 200 RubricaDto |
 
-En `GET /api/campanas`, AdminEmpresa y Auditor reciben las campañas de su empresa; Supervisor recibe solo las asignadas; Agente recibe las asignadas o aquellas donde conserva llamadas propias. Esto permite seleccionar `campanaId` para reportes y scorecards. El listado no concede acceso adicional a usuarios, rúbricas, llamadas o evaluaciones: cada endpoint mantiene su política. Auditor solo puede consultar metadatos de campañas y reportes agregados.
+En `GET /api/empresas/{empresaId}/campanas`, AdminEmpresa y Auditor reciben las campañas de su empresa; Supervisor recibe solo las asignadas; Agente recibe las asignadas o aquellas donde conserva llamadas propias. Esto permite seleccionar `campanaId` para reportes y scorecards. El listado no concede acceso adicional a usuarios, rúbricas, llamadas o evaluaciones: cada endpoint mantiene su política. Auditor solo puede consultar metadatos de campañas y reportes agregados.
 
 ### 7.4 Endpoints del proceso principal
 
 | Método y ruta | Acceso | Entrada | Salida exitosa |
 |---|---|---|---|
-| POST /api/llamadas/{id}/evaluacion | Supervisor asignado | UUID de la llamada en la ruta, sin cuerpo; acepta llamadas Disponible o Fallida (reintento) | 202 EvaluacionAceptadaDto |
-| GET /api/llamadas | AdminEmpresa; Supervisor asignado; Agente propietario | Paginación y filtros opcionales de campaña, agente y estado | 200 PaginaDto<LlamadaDto> |
-| GET /api/llamadas/{id} | Mismos permisos de lectura | Sin cuerpo | 200 LlamadaDto |
-| GET /api/llamadas/{id}/transcripcion | Mismos permisos de lectura | Sin cuerpo | 200 SegmentoDto[] |
-| GET /api/llamadas/{id}/audio | Mismos permisos de lectura | Sin cuerpo | 200 AccesoAudioDto |
-| GET /api/llamadas/{id}/evaluacion | Mismos permisos de lectura | Sin cuerpo | 200 EvaluacionDto |
-| POST /api/evaluaciones/{id}/confirmar | Supervisor asignado | ConfirmarEvaluacionDto | 200 EvaluacionDto |
-| PUT /api/evaluaciones/{id}/ajuste | Supervisor asignado | AjustarEvaluacionDto | 200 EvaluacionDto |
-| POST /api/evaluaciones/{id}/disputas | Agente propietario; plan habilitado | CrearDisputaDto | 201 DisputaDto |
-| GET /api/disputas | AdminEmpresa; Supervisor asignado; Agente propietario | Paginación y estado opcional | 200 PaginaDto<DisputaDto> |
-| PUT /api/disputas/{id}/resolucion | Supervisor asignado | ResolverDisputaDto | 200 DisputaDto |
+| POST /api/empresas/{empresaId}/llamadas/{id}/evaluacion | Supervisor asignado | UUID de la llamada en la ruta, sin cuerpo; acepta llamadas Disponible o Fallida (reintento) | 202 EvaluacionAceptadaDto |
+| GET /api/empresas/{empresaId}/llamadas | AdminEmpresa; Supervisor asignado; Agente propietario | Paginación y filtros opcionales de campaña, agente y estado | 200 PaginaDto<LlamadaDto> |
+| GET /api/empresas/{empresaId}/llamadas/{id} | Mismos permisos de lectura | Sin cuerpo | 200 LlamadaDto |
+| GET /api/empresas/{empresaId}/llamadas/{id}/transcripcion | Mismos permisos de lectura | Sin cuerpo | 200 SegmentoDto[] |
+| GET /api/empresas/{empresaId}/llamadas/{id}/audio | Mismos permisos de lectura | Sin cuerpo | 200 AccesoAudioDto |
+| GET /api/empresas/{empresaId}/llamadas/{id}/evaluacion | Mismos permisos de lectura | Sin cuerpo | 200 EvaluacionDto |
+| POST /api/empresas/{empresaId}/evaluaciones/{id}/confirmar | Supervisor asignado | ConfirmarEvaluacionDto | 200 EvaluacionDto |
+| PUT /api/empresas/{empresaId}/evaluaciones/{id}/ajuste | Supervisor asignado | AjustarEvaluacionDto | 200 EvaluacionDto |
+| POST /api/empresas/{empresaId}/evaluaciones/{id}/disputas | Agente propietario; plan habilitado | CrearDisputaDto | 201 DisputaDto |
+| GET /api/empresas/{empresaId}/disputas | AdminEmpresa; Supervisor asignado; Agente propietario | Paginación y estado opcional | 200 PaginaDto<DisputaDto> |
+| PUT /api/empresas/{empresaId}/disputas/{id}/resolucion | Supervisor asignado | ResolverDisputaDto | 200 DisputaDto |
 
 ### 7.5 Endpoints de desempeño
 
 | Método y ruta | Acceso | Entrada | Salida exitosa |
 |---|---|---|---|
-| GET /api/agentes/me/scorecard | Agente | Query: campanaId, periodo | 200 ScorecardDto |
-| GET /api/agentes/{id}/scorecard | AdminEmpresa; Supervisor asignado | Query: campanaId, periodo | 200 ScorecardDto |
-| GET /api/campanas/{id}/scorecards | AdminEmpresa; Supervisor asignado | Query: periodo y paginación | 200 PaginaDto<ScorecardDto> |
-| GET /api/reportes/campanas/{id} | AdminEmpresa; Supervisor asignado; Auditor | Query: periodo | 200 ReporteCampanaDto agregado |
+| GET /api/empresas/{empresaId}/agentes/me/scorecard | Agente | Query: campanaId, periodo | 200 ScorecardDto |
+| GET /api/empresas/{empresaId}/agentes/{id}/scorecard | AdminEmpresa; Supervisor asignado | Query: campanaId, periodo | 200 ScorecardDto |
+| GET /api/empresas/{empresaId}/campanas/{id}/scorecards | AdminEmpresa; Supervisor asignado | Query: periodo y paginación | 200 PaginaDto<ScorecardDto> |
+| GET /api/empresas/{empresaId}/reportes/campanas/{id} | AdminEmpresa; Supervisor asignado; Auditor | Query: periodo | 200 ReporteCampanaDto agregado |
 
 ### 7.6 DTOs de entrada
 
@@ -588,22 +588,22 @@ Para el periodo consultado, sean `C` los minutos contratados, `R` la suma de min
 El worker encola automáticamente las llamadas `Disponible` con rúbrica publicada. El supervisor también puede adelantar una llamada concreta con una petición sin cuerpo:
 
 ```http
-POST /api/llamadas/c5d37117-82b7-4ab0-91cd-ea14d87b1039/evaluacion
+POST /api/empresas/{empresaId}/llamadas/c5d37117-82b7-4ab0-91cd-ea14d87b1039/evaluacion
 Authorization: Bearer <token>
 ```
 
-**Respuesta:** `202 Accepted`, con cabecera `Location: /api/llamadas/c5d37117-82b7-4ab0-91cd-ea14d87b1039`.
+**Respuesta:** `202 Accepted`, con cabecera `Location: /api/empresas/{empresaId}/llamadas/c5d37117-82b7-4ab0-91cd-ea14d87b1039`.
 
 ```json
 {
   "llamadaId": "c5d37117-82b7-4ab0-91cd-ea14d87b1039",
   "empresaId": "5930dcbc-9116-431a-b7e4-06742f44f9a3",
   "estado": "EnCola",
-  "seguimientoUrl": "/api/llamadas/c5d37117-82b7-4ab0-91cd-ea14d87b1039"
+  "seguimientoUrl": "/api/empresas/{empresaId}/llamadas/c5d37117-82b7-4ab0-91cd-ea14d87b1039"
 }
 ```
 
-El frontend consulta `GET /api/llamadas/c5d37117-82b7-4ab0-91cd-ea14d87b1039` hasta conocer el resultado. Si existe evaluación, solicita `GET /api/llamadas/c5d37117-82b7-4ab0-91cd-ea14d87b1039/evaluacion`. La confirmación envía únicamente la revisión esperada y expresa la declaración de revisión completa del supervisor:
+El frontend consulta `GET /api/empresas/{empresaId}/llamadas/c5d37117-82b7-4ab0-91cd-ea14d87b1039` hasta conocer el resultado. Si existe evaluación, solicita `GET /api/empresas/{empresaId}/llamadas/c5d37117-82b7-4ab0-91cd-ea14d87b1039/evaluacion`. La confirmación envía únicamente la revisión esperada y expresa la declaración de revisión completa del supervisor:
 
 ```json
 { "revisionEsperada": 1 }

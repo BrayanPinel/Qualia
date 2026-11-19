@@ -8,13 +8,14 @@ using Qualia.Application.Features.Suscripciones.Comun;
 using Qualia.Application.Features.Suscripciones.ObtenerSuscripcion;
 using Qualia.Application.Features.Suscripciones.PagoSimulado;
 using Qualia.Application.Common.Errores;
+using Qualia.API.Seguridad;
 
 namespace Qualia.API.Controllers;
 
 /// Consulta de la suscripción vigente y procesamiento de pagos simulados de la empresa autenticada
-/// (GET /api/suscripcion y POST /api/suscripcion/pago-simulado).
+/// (GET /api/empresas/{empresaId}/suscripcion y POST /api/empresas/{empresaId}/suscripcion/pago-simulado).
 [ApiController]
-[Route("api/suscripcion")]
+[Route(RutasEmpresa.Prefijo + "/suscripcion")]
 [Authorize(Roles = "AdminEmpresa")]
 public sealed class SuscripcionController : ControllerBase
 {

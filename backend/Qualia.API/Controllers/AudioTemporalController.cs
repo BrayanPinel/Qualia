@@ -7,7 +7,7 @@ using Qualia.Application.Features.Llamadas;
 
 namespace Qualia.API.Controllers;
 
-/// Destino de la URL temporal que entrega GET /api/llamadas/{id}/audio.
+/// Destino de la URL temporal que entrega GET /api/empresas/{empresaId}/llamadas/{id}/audio.
 /// validó al emitir la URL y aquí se verifica su firma HMAC y su expiración.
 /// Admite peticiones Range, necesarias para posicionar el reproductor en el segmento de la evidencia.
 
