@@ -5,13 +5,14 @@ using Qualia.Application.Common.Models;
 using Qualia.Application.Features.Campanas.Dtos;
 using Qualia.Application.Features.Usuarios;
 using Qualia.Application.Features.Usuarios.Dtos;
+using Qualia.API.Seguridad;
 
 namespace Qualia.API.Controllers;
 
 /// Usuarios de la empresa de la sesión (solo AdminEmpresa).
 [ApiController]
 [Authorize]
-[Route("api/usuarios")]
+[Route(RutasEmpresa.Prefijo + "/usuarios")]
 [Produces("application/json")]
 [ProducesResponseType<ErrorDto>(StatusCodes.Status401Unauthorized)]
 [ProducesResponseType<ErrorDto>(StatusCodes.Status403Forbidden)]

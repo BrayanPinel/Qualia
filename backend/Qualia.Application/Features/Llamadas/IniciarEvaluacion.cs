@@ -9,7 +9,7 @@ using Qualia.Domain.Enums;
 
 namespace Qualia.Application.Features.Llamadas;
 
-/// POST /api/llamadas/{id}/evaluacion — inicio manual por el Supervisor asignado.
+/// POST /api/empresas/{empresaId}/llamadas/{id}/evaluacion — inicio manual por el Supervisor asignado.
 /// Normalmente no hace falta: el despachador automático encola las llamadas Disponible.
 /// Sirve para adelantar una llamada concreta y para volver a evaluar una llamada perdida (Fallida).
 public sealed class IniciarEvaluacion(
@@ -53,6 +53,6 @@ public sealed class IniciarEvaluacion(
             reintento ? "Llamada perdida {LlamadaId} reencolada por el supervisor {UsuarioId}" : "Llamada {LlamadaId} encolada por el supervisor {UsuarioId}",
             llamadaId, usuario.UsuarioId);
 
-        return new EvaluacionAceptadaDto(llamadaId, usuario.EmpresaId, EstadoLlamada.EnCola, $"/api/llamadas/{llamadaId}");
+        return new EvaluacionAceptadaDto(llamadaId, usuario.EmpresaId, EstadoLlamada.EnCola, $"/api/empresas/{usuario.EmpresaId}/llamadas/{llamadaId}");
     }
 }

@@ -1,4 +1,7 @@
 @host = http://localhost:5008
+# Rutas de empresa: /api/empresas/{empresaId}/… (debe ser la empresa de la sesión; si no, 404 EMPRESA_NO_ENCONTRADA).
+@empresaNorte = 10000000-0000-0000-0000-000000000001
+@empresaSur = 20000000-0000-0000-0000-000000000001
 # Se llena al ejecutar "Login de plataforma" (sección INICIO DE SESIÓN).
 @tokenPlatformAdmin = {{loginPlataforma.response.body.$.accessToken}}
 @empresaId = 00000000-0000-0000-0000-000000000001
@@ -38,39 +41,39 @@ Accept: text/html
 # Si la IA no detecta fallas, su nota es oficial; el supervisor solo revisa la bandeja (paso 1b).
 
 ### 1. Supervisora: llamadas de sus campañas (requiereRevision indica si la IA tuvo una falla)
-GET {{host}}/api/llamadas?pagina=1&tamanoPagina=20
+GET {{host}}/api/empresas/{{empresaNorte}}/llamadas?pagina=1&tamanoPagina=20
 X-Usuario-Demo: {{supervisora}}
 
 ### 1b. Bandeja de revisión: solo las evaluaciones que la IA marcó con falla
-GET {{host}}/api/llamadas?requiereRevision=true
+GET {{host}}/api/empresas/{{empresaNorte}}/llamadas?requiereRevision=true
 X-Usuario-Demo: {{supervisora}}
 
 ### 2. Inicio manual opcional (202; 409 EVALUACION_YA_INICIADA si ya se encoló sola)
-POST {{host}}/api/llamadas/{{llamada1}}/evaluacion
+POST {{host}}/api/empresas/{{empresaNorte}}/llamadas/{{llamada1}}/evaluacion
 X-Usuario-Demo: {{supervisora}}
 
 ### 3. Seguimiento del estado (EnCola → Transcribiendo → Transcrita → Evaluando → EvaluadaPorIA)
-GET {{host}}/api/llamadas/{{llamada1}}
+GET {{host}}/api/empresas/{{empresaNorte}}/llamadas/{{llamada1}}
 X-Usuario-Demo: {{supervisora}}
 
 ### 4. Transcripción enmascarada
-GET {{host}}/api/llamadas/{{llamada1}}/transcripcion
+GET {{host}}/api/empresas/{{empresaNorte}}/llamadas/{{llamada1}}/transcripcion
 X-Usuario-Demo: {{supervisora}}
 
 ### 5. Evaluación de la IA: oficial, cumple por criterio y fragmento de cada falta (texto, hablante, inicio/fin del audio)
-GET {{host}}/api/llamadas/{{llamada1}}/evaluacion
+GET {{host}}/api/empresas/{{empresaNorte}}/llamadas/{{llamada1}}/evaluacion
 X-Usuario-Demo: {{supervisora}}
 
 ### 6. URL temporal y firmada del audio (abrir la "url" de la respuesta en el navegador)
-GET {{host}}/api/llamadas/{{llamada1}}/audio
+GET {{host}}/api/empresas/{{empresaNorte}}/llamadas/{{llamada1}}/audio
 X-Usuario-Demo: {{supervisora}}
 
 ### 6b. Reintento de una llamada perdida (estado Fallida): 202; reutiliza su trabajo y su consumo
-POST {{host}}/api/llamadas/{{llamada1}}/evaluacion
+POST {{host}}/api/empresas/{{empresaNorte}}/llamadas/{{llamada1}}/evaluacion
 X-Usuario-Demo: {{supervisora}}
 
 ### 7. El agente propietario ve solo sus llamadas
-GET {{host}}/api/llamadas
+GET {{host}}/api/empresas/{{empresaNorte}}/llamadas
 X-Usuario-Demo: {{agenteAndres}}
 
 ###############################################################################
@@ -78,35 +81,35 @@ X-Usuario-Demo: {{agenteAndres}}
 ###############################################################################
 
 ### 409 EVALUACION_YA_INICIADA (repetir el paso 2)
-POST {{host}}/api/llamadas/{{llamada1}}/evaluacion
+POST {{host}}/api/empresas/{{empresaNorte}}/llamadas/{{llamada1}}/evaluacion
 X-Usuario-Demo: {{supervisora}}
 
 ### 409 RUBRICA_SIN_PUBLICAR
-POST {{host}}/api/llamadas/{{llamadaRubricaBorrador}}/evaluacion
+POST {{host}}/api/empresas/{{empresaNorte}}/llamadas/{{llamadaRubricaBorrador}}/evaluacion
 X-Usuario-Demo: {{supervisora}}
 
 ### 403 CAMPANA_NO_ASIGNADA (supervisor sin la campaña)
-POST {{host}}/api/llamadas/{{llamada2}}/evaluacion
+POST {{host}}/api/empresas/{{empresaNorte}}/llamadas/{{llamada2}}/evaluacion
 X-Usuario-Demo: {{supervisorSinCampana}}
 
 ### 403 ROL_NO_AUTORIZADO (un agente no inicia evaluaciones)
-POST {{host}}/api/llamadas/{{llamada2}}/evaluacion
+POST {{host}}/api/empresas/{{empresaNorte}}/llamadas/{{llamada2}}/evaluacion
 X-Usuario-Demo: {{agenteAndres}}
 
 ### 403 Auditor sin acceso al contenido de llamadas
-GET {{host}}/api/llamadas
+GET {{host}}/api/empresas/{{empresaNorte}}/llamadas
 X-Usuario-Demo: {{auditor}}
 
 ### 404 Aislamiento: la empresa Sur no ve llamadas de Norte
-GET {{host}}/api/llamadas/{{llamada1}}
+GET {{host}}/api/empresas/{{empresaSur}}/llamadas/{{llamada1}}
 X-Usuario-Demo: {{supervisorSur}}
 
 ### 400 VALIDACION (tamaño de página y estado inválidos)
-GET {{host}}/api/llamadas?tamanoPagina=500&estado=Inventado
+GET {{host}}/api/empresas/{{empresaNorte}}/llamadas?tamanoPagina=500&estado=Inventado
 X-Usuario-Demo: {{adminNorte}}
 
 ### 401 Sin sesión
-GET {{host}}/api/llamadas
+GET {{host}}/api/empresas/{{empresaNorte}}/llamadas
 
 ###############################################################################
 # ROL B — CAMPAÑAS, RÚBRICAS Y REVISIÓN HUMANA
@@ -119,45 +122,45 @@ GET {{host}}/api/llamadas
 @campanaSur = 20000000-0000-0000-0002-000000000001
 
 ### B1. Campañas visibles (AdminEmpresa/Auditor: todas; Supervisor/Agente: las asignadas)
-GET {{host}}/api/campanas?pagina=1&tamanoPagina=20
+GET {{host}}/api/empresas/{{empresaNorte}}/campanas?pagina=1&tamanoPagina=20
 X-Usuario-Demo: {{adminNorte}}
 
 ### B2. Crear campaña (201)
-POST {{host}}/api/campanas
+POST {{host}}/api/empresas/{{empresaNorte}}/campanas
 X-Usuario-Demo: {{adminNorte}}
 Content-Type: application/json
 
 { "nombre": "Retención de clientes", "activa": true }
 
 ### B3. Actualizar campaña (204)
-PUT {{host}}/api/campanas/{{campanaNorte}}
+PUT {{host}}/api/empresas/{{empresaNorte}}/campanas/{{campanaNorte}}
 X-Usuario-Demo: {{adminNorte}}
 Content-Type: application/json
 
 { "nombre": "Atención Hogar", "activa": true }
 
 ### B4. Usuarios asignados a la campaña
-GET {{host}}/api/campanas/{{campanaNorte}}/usuarios
+GET {{host}}/api/empresas/{{empresaNorte}}/campanas/{{campanaNorte}}/usuarios
 X-Usuario-Demo: {{adminNorte}}
 
 ### B5. Asignar al supervisor sin campaña (204, idempotente)
-PUT {{host}}/api/campanas/{{campanaNorte}}/usuarios/{{supervisorSinCampana}}
+PUT {{host}}/api/empresas/{{empresaNorte}}/campanas/{{campanaNorte}}/usuarios/{{supervisorSinCampana}}
 X-Usuario-Demo: {{adminNorte}}
 
 ### B6. Revocar la asignación (204, idempotente)
-DELETE {{host}}/api/campanas/{{campanaNorte}}/usuarios/{{supervisorSinCampana}}
+DELETE {{host}}/api/empresas/{{empresaNorte}}/campanas/{{campanaNorte}}/usuarios/{{supervisorSinCampana}}
 X-Usuario-Demo: {{adminNorte}}
 
 ### B7. 409 ROL_NO_ASIGNABLE (un Auditor no se asigna a campañas)
-PUT {{host}}/api/campanas/{{campanaNorte}}/usuarios/{{auditor}}
+PUT {{host}}/api/empresas/{{empresaNorte}}/campanas/{{campanaNorte}}/usuarios/{{auditor}}
 X-Usuario-Demo: {{adminNorte}}
 
 ### B8. Versiones de rúbrica de la campaña (AdminEmpresa o Supervisor asignado)
-GET {{host}}/api/campanas/{{campanaNorte}}/rubricas
+GET {{host}}/api/empresas/{{empresaNorte}}/campanas/{{campanaNorte}}/rubricas
 X-Usuario-Demo: {{supervisora}}
 
 ### B9. Nueva versión en Borrador (201; los pesos pueden no sumar 100 todavía)
-POST {{host}}/api/campanas/{{campanaNorte}}/rubricas
+POST {{host}}/api/empresas/{{empresaNorte}}/campanas/{{campanaNorte}}/rubricas
 X-Usuario-Demo: {{adminNorte}}
 Content-Type: application/json
 
@@ -171,22 +174,22 @@ Content-Type: application/json
 }
 
 ### B10. Publicar con pesos que no suman 100 → 400 RUBRICA_INVALIDA (usar el id devuelto en B9)
-POST {{host}}/api/rubricas/REEMPLAZAR-ID-DE-B9/publicar
+POST {{host}}/api/empresas/{{empresaNorte}}/rubricas/REEMPLAZAR-ID-DE-B9/publicar
 X-Usuario-Demo: {{adminNorte}}
 
 ### B11. Publicar la versión 2 (200): retira la v1; las llamadas existentes conservan la v1
-POST {{host}}/api/rubricas/{{rubricaV2Borrador}}/publicar
+POST {{host}}/api/empresas/{{empresaNorte}}/rubricas/{{rubricaV2Borrador}}/publicar
 X-Usuario-Demo: {{adminNorte}}
 
 ### B12. Editar una versión publicada → 409 RUBRICA_PUBLICADA
-PUT {{host}}/api/rubricas/{{rubricaV1}}
+PUT {{host}}/api/empresas/{{empresaNorte}}/rubricas/{{rubricaV1}}
 X-Usuario-Demo: {{adminNorte}}
 Content-Type: application/json
 
 { "nombre": "Cambio", "criterios": [ { "nombre": "Saludo", "descripcion": "Saluda.", "peso": 100, "esCritico": false, "umbralCumplimiento": 70 } ] }
 
 ### B13. Aislamiento: la campaña de Sur no existe para Norte → 404
-GET {{host}}/api/campanas/{{campanaSur}}/rubricas
+GET {{host}}/api/empresas/{{empresaNorte}}/campanas/{{campanaSur}}/rubricas
 X-Usuario-Demo: {{adminNorte}}
 
 # --- Revisión humana: primero ejecutar 2 (iniciar evaluación) y 5 (consultar evaluación) de la sección del Rol D.
@@ -194,14 +197,14 @@ X-Usuario-Demo: {{adminNorte}}
 @evaluacion = REEMPLAZAR-ID-DE-EVALUACION
 
 ### B14. Confirmar (200; la revisión pasa de 1 a 2)
-POST {{host}}/api/evaluaciones/{{evaluacion}}/confirmar
+POST {{host}}/api/empresas/{{empresaNorte}}/evaluaciones/{{evaluacion}}/confirmar
 X-Usuario-Demo: {{supervisora}}
 Content-Type: application/json
 
 { "revisionEsperada": 1 }
 
 ### B15. Repetir con la misma revisión → 409 REVISION_DESACTUALIZADA
-POST {{host}}/api/evaluaciones/{{evaluacion}}/confirmar
+POST {{host}}/api/empresas/{{empresaNorte}}/evaluaciones/{{evaluacion}}/confirmar
 X-Usuario-Demo: {{supervisora}}
 Content-Type: application/json
 
@@ -209,7 +212,7 @@ Content-Type: application/json
 
 ### B16. Ajuste completo: todos los criterios, motivo, justificaciones y evidencias (lista vacía = sin evidencia)
 # criterioId: de la evaluación (B14/paso 5). segmentoId y citaTextual: de la transcripción (paso 4).
-PUT {{host}}/api/evaluaciones/{{evaluacion}}/ajuste
+PUT {{host}}/api/empresas/{{empresaNorte}}/evaluaciones/{{evaluacion}}/ajuste
 X-Usuario-Demo: {{supervisora}}
 Content-Type: application/json
 
@@ -231,17 +234,17 @@ GET {{host}}/api/planes
 Accept: application/json
 
 ### Rol C (P0) — 2. Consultar suscripción vigente y periodo actual de la empresa autenticada
-GET {{host}}/api/suscripcion
+GET {{host}}/api/empresas/{{empresaNorte}}/suscripcion
 X-Usuario-Demo: {{adminNorte}}
 Accept: application/json
 
 ### Rol C (P0) — 3. Consultar consumo mensual (YYYY-MM)
-GET {{host}}/api/consumo?periodo=2026-11
+GET {{host}}/api/empresas/{{empresaNorte}}/consumo?periodo=2026-11
 X-Usuario-Demo: {{adminNorte}}
 Accept: application/json
 
 ### Rol C (P0) — 4a. Pago simulado Aprobado (activa/renueva sin duplicar cuota en el mismo mes)
-POST {{host}}/api/suscripcion/pago-simulado
+POST {{host}}/api/empresas/{{empresaNorte}}/suscripcion/pago-simulado
 X-Usuario-Demo: {{adminNorte}}
 Content-Type: application/json
 
@@ -250,7 +253,7 @@ Content-Type: application/json
 }
 
 ### Rol C (P0) — 4b. Pago simulado Rechazado (no acredita minutos y devuelve ErrorDto 409 PAGO_RECHAZADO)
-POST {{host}}/api/suscripcion/pago-simulado
+POST {{host}}/api/empresas/{{empresaNorte}}/suscripcion/pago-simulado
 X-Usuario-Demo: {{adminNorte}}
 Content-Type: application/json
 
@@ -357,7 +360,7 @@ Content-Type: application/json
 }
 
 ### Usar el token: campañas de Norte con Authorization Bearer
-GET {{host}}/api/campanas
+GET {{host}}/api/empresas/{{empresaNorte}}/campanas
 Authorization: Bearer {{tokenAdminNorte}}
 
 ### 200 Login de plataforma (PlatformAdmin, sin empresa)
@@ -371,7 +374,7 @@ Content-Type: application/json
 }
 
 ### 403 PlatformAdmin no accede al contenido de las empresas
-GET {{host}}/api/llamadas
+GET {{host}}/api/empresas/{{empresaNorte}}/llamadas
 Authorization: Bearer {{tokenPlatformAdmin}}
 
 ### 401 CREDENCIALES_INVALIDAS (mismo mensaje para empresa, correo o contraseña incorrectos)
@@ -385,10 +388,10 @@ Content-Type: application/json
 }
 
 ### 401 NO_AUTENTICADO (sin token)
-GET {{host}}/api/campanas
+GET {{host}}/api/empresas/{{empresaNorte}}/campanas
 
 ### 401 TOKEN_INVALIDO (token alterado)
-GET {{host}}/api/campanas
+GET {{host}}/api/empresas/{{empresaNorte}}/campanas
 Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.e30.firma-invalida
 
 ###############################################################################
@@ -396,12 +399,12 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.e30.firma-invalida
 ###############################################################################
 
 ### 200 Usuarios de la empresa (paginado, ordenado por nombre)
-GET {{host}}/api/usuarios?pagina=1&tamanoPagina=20
+GET {{host}}/api/empresas/{{empresaNorte}}/usuarios?pagina=1&tamanoPagina=20
 Authorization: Bearer {{tokenAdminNorte}}
 
 ### 201 Crear usuario (el correo se guarda normalizado; la empresa sale del token)
 # @name crearUsuario
-POST {{host}}/api/usuarios
+POST {{host}}/api/empresas/{{empresaNorte}}/usuarios
 Authorization: Bearer {{tokenAdminNorte}}
 Content-Type: application/json
 
@@ -413,7 +416,7 @@ Content-Type: application/json
 }
 
 ### 204 Renombrar y desactivar (su token deja de valer en la siguiente petición: 401 SESION_REVOCADA)
-PUT {{host}}/api/usuarios/{{crearUsuario.response.body.$.id}}
+PUT {{host}}/api/empresas/{{empresaNorte}}/usuarios/{{crearUsuario.response.body.$.id}}
 Authorization: Bearer {{tokenAdminNorte}}
 Content-Type: application/json
 
@@ -423,7 +426,7 @@ Content-Type: application/json
 }
 
 ### 409 CORREO_DUPLICADO (mismo correo en la misma empresa, sin importar mayúsculas)
-POST {{host}}/api/usuarios
+POST {{host}}/api/empresas/{{empresaNorte}}/usuarios
 Authorization: Bearer {{tokenAdminNorte}}
 Content-Type: application/json
 
@@ -435,7 +438,7 @@ Content-Type: application/json
 }
 
 ### 409 ULTIMO_ADMINISTRADOR (Ana es la única AdminEmpresa activa de Norte)
-PUT {{host}}/api/usuarios/{{adminNorte}}
+PUT {{host}}/api/empresas/{{empresaNorte}}/usuarios/{{adminNorte}}
 Authorization: Bearer {{tokenAdminNorte}}
 Content-Type: application/json
 
@@ -445,7 +448,7 @@ Content-Type: application/json
 }
 
 ### 400 No se puede crear un PlatformAdmin desde una empresa
-POST {{host}}/api/usuarios
+POST {{host}}/api/empresas/{{empresaNorte}}/usuarios
 Authorization: Bearer {{tokenAdminNorte}}
 Content-Type: application/json
 
@@ -457,7 +460,7 @@ Content-Type: application/json
 }
 
 ### 404 Usuario de otra empresa (Silvia es de Sur)
-PUT {{host}}/api/usuarios/{{supervisorSur}}
+PUT {{host}}/api/empresas/{{empresaNorte}}/usuarios/{{supervisorSur}}
 Authorization: Bearer {{tokenAdminNorte}}
 Content-Type: application/json
 
@@ -475,7 +478,7 @@ Content-Type: application/json
 
 ### 201 El agente propietario (Andrés) disputa su evaluación oficial
 # @name crearDisputa
-POST {{host}}/api/evaluaciones/{{evaluacionId}}/disputas
+POST {{host}}/api/empresas/{{empresaNorte}}/evaluaciones/{{evaluacionId}}/disputas
 X-Usuario-Demo: {{agenteAndres}}
 Content-Type: application/json
 
@@ -484,11 +487,11 @@ Content-Type: application/json
 }
 
 ### 200 Disputas visibles (Admin: todas; Supervisor: sus campañas; Agente: las suyas)
-GET {{host}}/api/disputas?estado=Abierta
+GET {{host}}/api/empresas/{{empresaNorte}}/disputas?estado=Abierta
 X-Usuario-Demo: {{supervisora}}
 
 ### 200 Resolver manteniendo las notas (revisionEsperada = revisión actual de la evaluación)
-PUT {{host}}/api/disputas/{{crearDisputa.response.body.$.id}}/resolucion
+PUT {{host}}/api/empresas/{{empresaNorte}}/disputas/{{crearDisputa.response.body.$.id}}/resolucion
 X-Usuario-Demo: {{supervisora}}
 Content-Type: application/json
 
@@ -499,7 +502,7 @@ Content-Type: application/json
 }
 
 ### 409 DISPUTA_YA_RESUELTA (repetir la resolución)
-PUT {{host}}/api/disputas/{{crearDisputa.response.body.$.id}}/resolucion
+PUT {{host}}/api/empresas/{{empresaNorte}}/disputas/{{crearDisputa.response.body.$.id}}/resolucion
 X-Usuario-Demo: {{supervisora}}
 Content-Type: application/json
 
@@ -510,7 +513,7 @@ Content-Type: application/json
 }
 
 ### 403 CAMPANA_NO_ASIGNADA (supervisor sin la campaña)
-PUT {{host}}/api/disputas/{{crearDisputa.response.body.$.id}}/resolucion
+PUT {{host}}/api/empresas/{{empresaNorte}}/disputas/{{crearDisputa.response.body.$.id}}/resolucion
 X-Usuario-Demo: {{supervisorSinCampana}}
 Content-Type: application/json
 
@@ -527,29 +530,41 @@ Content-Type: application/json
 ###############################################################################
 
 ### D1. Scorecard propio del agente
-GET {{host}}/api/agentes/me/scorecard?campanaId={{campanaNorte}}
+GET {{host}}/api/empresas/{{empresaNorte}}/agentes/me/scorecard?campanaId={{campanaNorte}}
 X-Usuario-Demo: {{agenteAndres}}
 
 ### D2. Scorecard de un agente (AdminEmpresa o Supervisor asignado)
-GET {{host}}/api/agentes/{{agenteAndres}}/scorecard?campanaId={{campanaNorte}}
+GET {{host}}/api/empresas/{{empresaNorte}}/agentes/{{agenteAndres}}/scorecard?campanaId={{campanaNorte}}
 X-Usuario-Demo: {{supervisora}}
 
 ### D3. Scorecards del equipo de la campaña (paginados por agente)
-GET {{host}}/api/campanas/{{campanaNorte}}/scorecards?pagina=1&tamanoPagina=20
+GET {{host}}/api/empresas/{{empresaNorte}}/campanas/{{campanaNorte}}/scorecards?pagina=1&tamanoPagina=20
 X-Usuario-Demo: {{supervisora}}
 
 ### D4. Reporte agregado de la campaña (también para el Auditor)
-GET {{host}}/api/reportes/campanas/{{campanaNorte}}
+GET {{host}}/api/empresas/{{empresaNorte}}/reportes/campanas/{{campanaNorte}}
 X-Usuario-Demo: {{auditor}}
 
 ### D5. 403 CAMPANA_NO_ASIGNADA (supervisor sin la campaña)
-GET {{host}}/api/campanas/{{campanaNorte}}/scorecards
+GET {{host}}/api/empresas/{{empresaNorte}}/campanas/{{campanaNorte}}/scorecards
 X-Usuario-Demo: {{supervisorSinCampana}}
 
 ### D6. 404 Aislamiento: la campaña de Sur no existe para Norte
-GET {{host}}/api/reportes/campanas/{{campanaSur}}
+GET {{host}}/api/empresas/{{empresaNorte}}/reportes/campanas/{{campanaSur}}
 X-Usuario-Demo: {{adminNorte}}
 
 ### D7. 400 VALIDACION (periodo con formato inválido)
-GET {{host}}/api/reportes/campanas/{{campanaNorte}}?periodo=2026-13
+GET {{host}}/api/empresas/{{empresaNorte}}/reportes/campanas/{{campanaNorte}}?periodo=2026-13
 X-Usuario-Demo: {{adminNorte}}
+
+###############################################################################
+# EMPRESA EN LA RUTA: el {empresaId} de la URL debe ser el de la sesión
+###############################################################################
+
+### 404 EMPRESA_NO_ENCONTRADA (Ana es de Norte y pide los usuarios de Sur)
+GET {{host}}/api/empresas/{{empresaSur}}/usuarios
+Authorization: Bearer {{tokenAdminNorte}}
+
+### 403 ROL_NO_AUTORIZADO (PlatformAdmin no tiene empresa: no entra a rutas de empresa)
+GET {{host}}/api/empresas/{{empresaNorte}}/llamadas
+Authorization: Bearer {{tokenPlatformAdmin}}

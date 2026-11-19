@@ -4,13 +4,14 @@ using Qualia.Application.Common.Errores;
 using Qualia.Application.Features.Llamadas.Dtos;
 using Qualia.Application.Features.Revision;
 using Qualia.Application.Features.Revision.Dtos;
+using Qualia.API.Seguridad;
 
 namespace Qualia.API.Controllers;
 
 /// Decisión humana sobre la propuesta de IA (Rol B, Supervisor asignado).
 [ApiController]
 [Authorize]
-[Route("api/evaluaciones")]
+[Route(RutasEmpresa.Prefijo + "/evaluaciones")]
 [Produces("application/json")]
 [ProducesResponseType<ErrorDto>(StatusCodes.Status400BadRequest)]
 [ProducesResponseType<ErrorDto>(StatusCodes.Status401Unauthorized)]

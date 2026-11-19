@@ -66,7 +66,7 @@ public sealed record EvidenciaDto(
     string Hablante,
     string TextoSegmento);
 
-/// Parámetros de GET /api/llamadas (paginación y filtros opcionales).
+/// Parámetros de GET /api/empresas/{empresaId}/llamadas (paginación y filtros opcionales).
 public sealed class FiltroLlamadasDto
 {
     public int Pagina { get; set; } = 1;

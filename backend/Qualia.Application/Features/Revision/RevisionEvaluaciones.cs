@@ -10,7 +10,7 @@ using Qualia.Domain.Enums;
 
 namespace Qualia.Application.Features.Revision;
 
-/// POST /api/evaluaciones/{id}/confirmar y PUT /api/evaluaciones/{id}/ajuste.
+/// POST /api/empresas/{empresaId}/evaluaciones/{id}/confirmar y PUT /api/empresas/{empresaId}/evaluaciones/{id}/ajuste.
 /// Solo el Supervisor asignado a la campaña de la llamada. Cada decisión se ejecuta en UNA transacción
 /// (revisión condicionada + Revision_humana + auditoría) y responde con el EvaluacionDto vigente.
 public sealed class RevisionEvaluaciones(

@@ -13,7 +13,7 @@ public sealed class GuardarCampanaDto
     public bool? Activa { get; set; }
 }
 
-/// CrearRubricaDto { nombre, criterios[] } — también se usa en PUT /api/rubricas/{id}.
+/// CrearRubricaDto { nombre, criterios[] } — también se usa en PUT /api/empresas/{empresaId}/rubricas/{id}.
 public sealed class CrearRubricaDto
 {
     public string? Nombre { get; set; }

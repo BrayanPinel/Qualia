@@ -3,13 +3,14 @@ using Microsoft.AspNetCore.Mvc;
 using Qualia.Application.Common.Errores;
 using Qualia.Application.Features.Campanas;
 using Qualia.Application.Features.Campanas.Dtos;
+using Qualia.API.Seguridad;
 
 namespace Qualia.API.Controllers;
 
 /// Edición de borradores y publicación de versiones de rúbrica (Rol B, AdminEmpresa).
 [ApiController]
 [Authorize]
-[Route("api/rubricas")]
+[Route(RutasEmpresa.Prefijo + "/rubricas")]
 [Produces("application/json")]
 [ProducesResponseType<ErrorDto>(StatusCodes.Status401Unauthorized)]
 [ProducesResponseType<ErrorDto>(StatusCodes.Status403Forbidden)]

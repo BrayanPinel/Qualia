@@ -7,13 +7,14 @@ using Qualia.Application.Common.Resultados;
 using Qualia.Application.Features.Suscripciones.Comun;
 using Qualia.Application.Features.Suscripciones.Consumo.ConsultarConsumo;
 using Qualia.Application.Common.Errores;
+using Qualia.API.Seguridad;
 
 namespace Qualia.API.Controllers;
 
 /// Consulta de minutos contratados, reservados, facturables, disponibles y excedentes
-/// por periodo mensual UTC (GET /api/consumo?periodo=YYYY-MM).
+/// por periodo mensual UTC (GET /api/empresas/{empresaId}/consumo?periodo=YYYY-MM).
 [ApiController]
-[Route("api/consumo")]
+[Route(RutasEmpresa.Prefijo + "/consumo")]
 [Authorize(Roles = "AdminEmpresa")]
 public sealed class ConsumoController : ControllerBase
 {

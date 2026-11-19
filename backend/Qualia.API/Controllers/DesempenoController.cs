@@ -4,13 +4,14 @@ using Qualia.Application.Common.Errores;
 using Qualia.Application.Common.Models;
 using Qualia.Application.Features.Desempeno;
 using Qualia.Application.Features.Desempeno.Dtos;
+using Qualia.API.Seguridad;
 
 namespace Qualia.API.Controllers;
 
 /// Scorecards de agentes y reporte agregado por campaña.
 [ApiController]
 [Authorize]
-[Route("api")]
+[Route(RutasEmpresa.Prefijo)]
 [Produces("application/json")]
 [ProducesResponseType<ErrorDto>(StatusCodes.Status400BadRequest)]
 [ProducesResponseType<ErrorDto>(StatusCodes.Status401Unauthorized)]
