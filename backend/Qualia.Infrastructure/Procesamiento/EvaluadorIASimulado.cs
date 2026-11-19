@@ -5,12 +5,10 @@ using Qualia.Domain.Enums;
 
 namespace Qualia.Infrastructure.Procesamiento;
 
-/// <summary>
 /// Evaluador del modo Simulado: busca en la transcripción enmascarada el segmento del agente
 /// que mejor coincide con las palabras clave de cada criterio, cita un fragmento literal de él
 /// y asigna un puntaje determinista. Si no hay coincidencias, informa ausencia de evidencia.
 /// El adaptador real es EvaluadorGroq; ambos pasan por la misma validación de evidencias.
-/// </summary>
 public sealed class EvaluadorIASimulado : IEvaluadorIA
 {
     public const string Modelo = "qualia-simulador-v1";
@@ -76,7 +74,7 @@ public sealed class EvaluadorIASimulado : IEvaluadorIA
             Modelo, ModoIA.Simulado, resultados, caracteresEntrada / 4, caracteresSalida / 4, CostoEstimado: 0m));
     }
 
-    /// <summary>Primeras palabras del segmento: siempre es un fragmento literal del texto.</summary>
+    /// Primeras palabras del segmento: siempre es un fragmento literal del texto.
     private static string Citar(string texto)
     {
         var palabras = texto.Split(' ', StringSplitOptions.RemoveEmptyEntries);
@@ -93,7 +91,7 @@ public sealed class EvaluadorIASimulado : IEvaluadorIA
     private static int Coincidencias(HashSet<string> claves, string texto) =>
         PalabrasClave(texto).Count(claves.Contains);
 
-    /// <summary>Raíz simple: primeros 5 caracteres ("verificar" ≈ "verifiqué", "saludo" ≈ "saluda", "ayuda" ≈ "ayudarle").</summary>
+    /// Raíz simple: primeros 5 caracteres ("verificar" ≈ "verifiqué", "saludo" ≈ "saluda", "ayuda" ≈ "ayudarle").
     private static string Raiz(string palabra) => palabra.Length <= 5 ? palabra : palabra[..5];
 
     private static string Normalizar(string texto)

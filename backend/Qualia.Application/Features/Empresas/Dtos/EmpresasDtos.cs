@@ -5,7 +5,7 @@ namespace Qualia.Application.Features.Empresas.Dtos;
 // Las propiedades de entrada son anulables para que un campo ausente se informe como error de validación
 // en lugar de tomar un valor por defecto silencioso.
 
-/// <summary>RegistrarEmpresaDto { codigoEmpresa, nombreEmpresa, planId, nombreAdministrador, email, password }.</summary>
+/// RegistrarEmpresaDto { codigoEmpresa, nombreEmpresa, planId, nombreAdministrador, email, password }.
 public sealed class RegistrarEmpresaDto
 {
     public string? CodigoEmpresa { get; set; }
@@ -16,10 +16,8 @@ public sealed class RegistrarEmpresaDto
     public string? Password { get; set; }
 }
 
-/// <summary>
-/// Respuesta de POST /api/empresas. <see cref="UsuarioAdministradorId"/> es el Usuario AdminEmpresa
+/// Respuesta de POST /api/empresas. UsuarioAdministradorId es el Usuario AdminEmpresa
 /// de la empresa, no un Administrador global de la plataforma.
-/// </summary>
 public sealed record EmpresaRegistradaDto(
     Guid EmpresaId,
     string CodigoEmpresa,

@@ -20,11 +20,9 @@ using Qualia.Infrastructure.Seguridad;
 
 namespace Qualia.Infrastructure;
 
-/// <summary>
 /// Composición de infraestructura. La cadena de conexión se valida al
 /// resolver el DbContext, no al arrancar la API, para que el arranque
 /// funcione sin una base de datos levantada.
-/// </summary>
 public static class DependencyInjection
 {
     public const string NombreCadenaConexion = "PostgresConnection";
@@ -85,11 +83,9 @@ public static class DependencyInjection
         return services;
     }
 
-    /// <summary>
     /// Simulado: transcripción desde el ground data y evaluación por palabras clave.
     /// Real: Deepgram (transcripción) y Groq (actores y evaluación).
     /// Las llaves se leen del .env (Deepgram__ApiKey y Groq__ApiKey).
-    /// </summary>
     private static void AgregarProveedoresIA(IServiceCollection services, IConfiguration configuration)
     {
         services.Configure<OpcionesIA>(configuration.GetSection(OpcionesIA.Seccion));
@@ -131,7 +127,7 @@ public static class DependencyInjection
     }
 }
 
-/// <summary>Deja constancia en el log del modo de IA activo al iniciar la API.</summary>
+/// Deja constancia en el log del modo de IA activo al iniciar la API.
 internal sealed class AvisoModoIA(ILogger<AvisoModoIA> logger, bool faltanLlaves, bool real = false) : IHostedService
 {
     public Task StartAsync(CancellationToken cancellationToken)

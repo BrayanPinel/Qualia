@@ -14,7 +14,7 @@ using Sur = Qualia.Infrastructure.Persistence.Semillas.DatosDemo.Sur;
 
 namespace Qualia.Tests.Integracion;
 
-/// <summary>Scorecards y reporte de campaña (HU-09, HU-10, RN-11) contra PostgreSQL real.</summary>
+/// Scorecards y reporte de campaña (HU-09, HU-10, RN-11) contra PostgreSQL real.
 [Collection(ColeccionPostgres.Nombre)]
 public sealed class DesempenoIntegracionTests : IAsyncLifetime
 {
@@ -142,7 +142,7 @@ public sealed class DesempenoIntegracionTests : IAsyncLifetime
             await _api.ClienteComo(Norte.AgenteAndres).GetAsync("/api/agentes/me/scorecard")));
     }
 
-    /// <summary>Evalúa todas las llamadas, las deja oficiales y en octubre, y fija el mínimo de muestra de Norte.</summary>
+    /// Evalúa todas las llamadas, las deja oficiales y en octubre, y fija el mínimo de muestra de Norte.
     private async Task EvaluarTodoAsync(int minimoMuestra)
     {
         var despachador = _api.Services.GetRequiredService<DespachadorEvaluacionAutomatica>();
@@ -186,7 +186,7 @@ public sealed class DesempenoIntegracionTests : IAsyncLifetime
         await QualiaApiFactory.LeerAsync<EvaluacionDto>(
             await _api.ClienteComo(Norte.Admin).GetAsync($"/api/llamadas/{llamadaId}/evaluacion"));
 
-    /// <summary>Media de los totales por llamada, calculada desde la API de evaluaciones.</summary>
+    /// Media de los totales por llamada, calculada desde la API de evaluaciones.
     private async Task<decimal> PromedioEsperadoAsync(params Guid[] llamadas)
     {
         var totales = new List<decimal>();

@@ -11,11 +11,9 @@ using Qualia.Application.Common.Errores;
 
 namespace Qualia.API.Controllers;
 
-/// <summary>
 /// Administración comercial global para PlatformAdmin, sin acceso al contenido
 /// de llamadas (GET /api/plataforma/empresas y
 /// PUT /api/plataforma/empresas/{empresaId}/suscripcion, HU-07).
-/// </summary>
 [ApiController]
 [Route("api/plataforma/empresas")]
 [Authorize(Roles = "PlatformAdmin")]

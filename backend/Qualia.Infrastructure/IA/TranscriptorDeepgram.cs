@@ -8,14 +8,12 @@ using Qualia.Application.Features.Procesamiento;
 
 namespace Qualia.Infrastructure.IA;
 
-/// <summary>
 /// Transcriptor real: Deepgram Nova-2 en español con diarización y reconocimiento de actores con Groq.
 /// Envía el audio a Deepgram y guarda la respuesta JSON cruda.
 /// Toma los enunciados con su hablante y tiempos.
 /// Enmascara cada enunciado y pide a Groq el rol (Agente / Cliente) de cada uno.
 /// Agrupa enunciados consecutivos del mismo actor en segmentos.
 /// El texto devuelto no va enmascarado: el ProcesadorTrabajo lo enmascara antes de guardarlo.
-/// </summary>
 public sealed class TranscriptorDeepgram(
     HttpClient http,
     IOptions<OpcionesDeepgram> opciones,
@@ -91,7 +89,7 @@ public sealed class TranscriptorDeepgram(
         return Interpretar(cuerpo);
     }
 
-    /// <summary>Extrae los enunciados y la duración de la respuesta de Deepgram.</summary>
+    /// Extrae los enunciados y la duración de la respuesta de Deepgram.
     public static (List<EnunciadoDeepgram> Enunciados, decimal DuracionAudio) Interpretar(string json)
     {
         try

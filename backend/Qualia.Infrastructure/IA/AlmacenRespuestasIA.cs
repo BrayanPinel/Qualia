@@ -5,13 +5,11 @@ using Microsoft.Extensions.Options;
 
 namespace Qualia.Infrastructure.IA;
 
-/// <summary>
 /// Guarda las respuestas JSON crudas de los proveedores de IA en
 /// RespuestasIA/{empresaId}/{llamadaId}/{fecha}_{etapa}.json.
 /// Permite auditar qué devolvió Deepgram/Groq y reprocesar sin volver a pagar.
 /// La respuesta cruda de Deepgram contiene la transcripción sin enmascarar (RN-14):
 /// la carpeta está excluida de Git y se puede desactivar con IA:GuardarRespuestasCrudas = false.
-/// </summary>
 public sealed class AlmacenRespuestasIA(
     IOptions<OpcionesIA> opciones,
     IHostEnvironment entorno,
@@ -22,7 +20,7 @@ public sealed class AlmacenRespuestasIA(
 
     public string DirectorioBase => Path.GetFullPath(Path.Combine(entorno.ContentRootPath, _opciones.DirectorioRespuestas));
 
-    /// <summary>Si no puede escribir, solo lo registra en el log.</summary>
+    /// Si no puede escribir, solo lo registra en el log.
     public async Task GuardarAsync(Guid empresaId, Guid llamadaId, string etapa, string contenidoJson, CancellationToken ct)
     {
         if (!_opciones.GuardarRespuestasCrudas)

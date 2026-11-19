@@ -1,16 +1,14 @@
 namespace Qualia.Domain.Suscripciones;
 
-/// <summary>
-/// Estados de <see cref="ConsumoLlamada"/>. Se persisten como texto.
-/// </summary>
+/// Estados de ConsumoLlamada. Se persisten como texto.
 public enum EstadoConsumo
 {
-    /// <summary>Minutos reservados al encolar la llamada.</summary>
+    /// Minutos reservados al encolar la llamada.
     Reservado,
 
-    /// <summary>Procesamiento completado: la reserva pasa a facturable.</summary>
+    /// Procesamiento completado: la reserva pasa a facturable.
     Facturado,
 
-    /// <summary>Fallo definitivo: reservados y facturables quedan en cero.</summary>
+    /// Fallo definitivo: reservados y facturables quedan en cero.
     Liberado,
 }

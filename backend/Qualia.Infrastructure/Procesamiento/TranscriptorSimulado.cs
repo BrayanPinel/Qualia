@@ -3,13 +3,11 @@ using Qualia.Infrastructure.IA;
 
 namespace Qualia.Infrastructure.Procesamiento;
 
-/// <summary>
 /// Transcriptor del modo Simulado, determinista para cada llamada.
 /// Si la llamada tiene ground data, devuelve esa transcripción exacta (coincide con el audio).
 /// Si no, genera un diálogo plausible de centro de contacto.
 /// Incluye a propósito datos sensibles para demostrar el enmascarado.
-/// El adaptador real es <see cref="TranscriptorDeepgram"/>.
-/// </summary>
+/// El adaptador real es TranscriptorDeepgram.
 public sealed class TranscriptorSimulado(LectorGroundData? lectorGroundData = null) : ITranscriptor
 {
     public const string HablanteAgente = "Agente";
@@ -66,7 +64,7 @@ public sealed class TranscriptorSimulado(LectorGroundData? lectorGroundData = nu
         return Task.FromResult(new ResultadoTranscripcion(segmentos, tokens, CostoEstimado: 0m));
     }
 
-    /// <summary>Reparte la duración de la llamada en proporción a la longitud de cada intervención.</summary>
+    /// Reparte la duración de la llamada en proporción a la longitud de cada intervención.
     private static List<SegmentoTranscrito> DistribuirTiempos(List<(string Hablante, string Texto)> lineas, decimal duracion)
     {
         var totalCaracteres = lineas.Sum(l => l.Texto.Length);

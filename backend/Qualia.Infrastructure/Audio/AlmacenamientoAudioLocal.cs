@@ -4,10 +4,8 @@ using Qualia.Application.Features.Llamadas;
 
 namespace Qualia.Infrastructure.Audio;
 
-/// <summary>
 /// Almacenamiento local de audios de demostración. Protege contra rutas que intenten salir
 /// de la carpeta base. En modo demostración genera un WAV sintético si el archivo no existe.
-/// </summary>
 public sealed class AlmacenamientoAudioLocal(IOptions<OpcionesAudio> opciones, IHostEnvironment entorno) : IAlmacenamientoAudio
 {
     private const int MuestrasPorSegundo = 8000;
@@ -48,7 +46,7 @@ public sealed class AlmacenamientoAudioLocal(IOptions<OpcionesAudio> opciones, I
         _ => "application/octet-stream",
     };
 
-    /// <summary>WAV PCM 8 kHz / 8 bits mono con tonos suaves alternos (simula turnos de habla).</summary>
+    /// WAV PCM 8 kHz / 8 bits mono con tonos suaves alternos (simula turnos de habla).
     private static MemoryStream GenerarWav(decimal duracionSeg)
     {
         var segundos = Math.Clamp(duracionSeg, 1m, DuracionMaximaSintetica);

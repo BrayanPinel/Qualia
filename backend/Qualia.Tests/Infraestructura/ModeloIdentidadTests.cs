@@ -6,10 +6,8 @@ using Qualia.Infrastructure.Persistence;
 
 namespace Qualia.Tests.Infraestructura;
 
-/// <summary>
 /// Comprueba el mapeo de las entidades de identidad en el modelo integrado:
 /// tablas, claves, FK empresariales, índices únicos y filtro multiempresa. No abre conexión.
-/// </summary>
 public sealed class ModeloIdentidadTests
 {
     private static QualiaDbContext CrearContexto()

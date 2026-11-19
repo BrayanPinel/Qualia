@@ -7,14 +7,12 @@ using Qualia.Domain.Enums;
 
 namespace Qualia.Application.Features.Llamadas;
 
-/// <summary>
 /// Autorización por recurso de las llamadas. El filtro global ya limita
 /// a la empresa del token; aquí se agrega el alcance por rol:
 /// AdminEmpresa: todas las llamadas de su empresa.
 /// Supervisor: llamadas de campañas a las que está asignado (campaña obtenida vía rúbrica).
 /// Agente: solo sus llamadas.
 /// Auditor / PlatformAdmin: sin acceso al contenido de llamadas (403).
-/// </summary>
 public sealed class AlcanceLlamadas(IQualiaDbContext db, IUsuarioActual usuarioActual)
 {
     public UsuarioEmpresa RequerirLector() =>
@@ -29,10 +27,8 @@ public sealed class AlcanceLlamadas(IQualiaDbContext db, IUsuarioActual usuarioA
         _ => consulta.Where(_ => false),
     };
 
-    /// <summary>
     /// 404 si la llamada no existe o es de otra empresa (el filtro global la oculta);
     /// 403 si existe en la empresa pero el usuario no tiene alcance sobre ella.
-    /// </summary>
     public async Task<UsuarioEmpresa> VerificarAccesoAsync(Guid llamadaId, CancellationToken ct)
     {
         var usuario = RequerirLector();

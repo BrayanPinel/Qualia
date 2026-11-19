@@ -10,14 +10,12 @@ using Qualia.Infrastructure.IA;
 
 namespace Qualia.Infrastructure.Persistence.Semillas;
 
-/// <summary>
 /// Precarga de llamadas ficticias
 /// con los datos mínimos que necesitan: empresas, usuarios, campañas y rúbricas publicadas.
 /// Solo para desarrollo/demostración. Es idempotente (no duplica si ya existe la empresa Norte).
 ///
 /// Todos los usuarios demo y el administrador de plataforma demo inician sesión con
-/// <see cref="DatosDemo.Contrasena"/>.
-/// </summary>
+/// DatosDemo.Contrasena.
 public sealed class SembradorDatosDemo(
     QualiaDbContext db,
     TimeProvider reloj,
@@ -49,11 +47,9 @@ public sealed class SembradorDatosDemo(
         logger.LogInformation("Datos de demostración cargados (empresas demo-norte y demo-sur)");
     }
 
-    /// <summary>
     /// Cada empresa demo necesita una suscripción operativa para evaluar llamadas y administrar campañas.
     /// Se crea con el mismo contrato que usará el registro de empresas (ICrearSuscripcionInicial).
     /// Si la base demo sobrevivió a un cambio de mes, se renueva con un pago simulado aprobado.
-    /// </summary>
     private async Task AsegurarSuscripcionesAsync(DateTime ahora, CancellationToken ct)
     {
         (Guid Empresa, Guid Plan)[] demo = [(DatosDemo.Norte.Empresa, PlanesCatalogo.ProId), (DatosDemo.Sur.Empresa, PlanesCatalogo.BasicoId)];
@@ -78,10 +74,8 @@ public sealed class SembradorDatosDemo(
         await db.SaveChangesAsync(ct);
     }
 
-    /// <summary>
     /// Da contraseña real a los usuarios demo que aún tienen el marcador sin credenciales (también en bases
     /// creadas antes del login) y crea el administrador de plataforma demo si no existe.
-    /// </summary>
     private async Task AsegurarCredencialesAsync(CancellationToken ct)
     {
         Guid[] empresasDemo = [DatosDemo.Norte.Empresa, DatosDemo.Sur.Empresa];
@@ -115,10 +109,8 @@ public sealed class SembradorDatosDemo(
         logger.LogInformation("Credenciales demo listas: {Usuarios} usuario(s) actualizados", sinCredenciales.Count);
     }
 
-    /// <summary>
     /// La duración registrada debe coincidir con la del audio.
     /// Si los audios se regeneraron, actualiza las llamadas demo que aún no se han procesado.
-    /// </summary>
     private async Task SincronizarDuracionesAsync(CancellationToken ct)
     {
         var demo = DatosDemo.Norte.Llamadas.Concat(DatosDemo.Sur.Llamadas).Append(DatosDemo.Norte.LlamadaRubricaBorrador).ToList();
@@ -144,7 +136,7 @@ public sealed class SembradorDatosDemo(
         }
     }
 
-    /// <summary>Duración real del audio según su ground data; si no existe, la de respaldo.</summary>
+    /// Duración real del audio según su ground data; si no existe, la de respaldo.
     private decimal Duracion(string archivoRuta, decimal respaldo) => groundData.Leer(archivoRuta)?.DuracionSeg ?? respaldo;
 
     private void SembrarNorte(DateTime ahora)

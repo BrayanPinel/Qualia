@@ -7,7 +7,7 @@
 //   dotnet run herramientas/GenerarAudiosDemo.cs -- --forzar -> regenera todos
 //
 // Entrada: Qualia.API/AudiosDemo/guiones/*.json
-// Salida:  Qualia.API/AudiosDemo/<archivo>.wav y <archivo>.ground.json
+// Salida:  un .wav y un .ground.json por guion en Qualia.API/AudiosDemo
 //
 // Cada turno se sintetiza con Deepgram Aura-2 y se concatena con pausas.
 // Como el audio se arma por turnos, se sabe qué actor habla en cada segundo.

@@ -2,10 +2,8 @@ using Qualia.Application.Common.Errores;
 
 namespace Qualia.Application.Common.Resultados;
 
-/// <summary>
 /// Categoría del error de aplicación. El valor numérico es el código HTTP
 /// con el que la API lo expone (400, 401, 403, 404, 409).
-/// </summary>
 public enum TipoError
 {
     Validacion = 400,
@@ -15,10 +13,8 @@ public enum TipoError
     Conflicto = 409,
 }
 
-/// <summary>
 /// Error de negocio o validación, independiente de HTTP. La API lo traduce a
 /// ErrorDto { status, codigo, mensaje, errores?, traceId }.
-/// </summary>
 public sealed record ErrorAplicacion(
     TipoError Tipo,
     string Codigo,

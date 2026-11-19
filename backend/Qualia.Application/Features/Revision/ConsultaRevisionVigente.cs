@@ -3,11 +3,9 @@ using Qualia.Application.Common.Interfaces;
 
 namespace Qualia.Application.Features.Revision;
 
-/// <summary>
-/// Implementación del Rol B del contrato B → D (y C) <see cref="IConsultaRevisionVigente"/>:
+/// Implementación del Rol B del contrato B → D (y C) IConsultaRevisionVigente:
 /// el resultado humano vigente es el del ÚLTIMO AJUSTE COMPLETO (la revisión más reciente que tiene
 /// criterios revisados). Las confirmaciones posteriores no lo borran.
-/// </summary>
 public sealed class ConsultaRevisionVigente(IQualiaDbContext db) : IConsultaRevisionVigente
 {
     public async Task<AjusteVigente?> ObtenerAjusteVigenteAsync(Guid empresaId, Guid evaluacionId, CancellationToken cancellationToken)

@@ -14,11 +14,9 @@ using Qualia.Domain.Enums;
 
 namespace Qualia.API.Seguridad;
 
-/// <summary>
 /// Autenticación de la API: JWT Bearer siempre. Solo en Development con Autenticacion:ModoDemo=true
 /// se acepta además la cabecera X-Usuario-Demo (la usan las pruebas de integración y los .http del equipo).
 /// Un esquema de política elige el manejador según la petición.
-/// </summary>
 public static class ConfiguracionAutenticacion
 {
     public const string Esquema = "Qualia";
@@ -89,10 +87,8 @@ public static class ConfiguracionAutenticacion
         return services;
     }
 
-    /// <summary>
     /// Comprueba en la base de datos que el usuario (y su empresa) o el administrador global siga activo.
     /// Así una desactivación surte efecto en la siguiente petición y no al expirar el token.
-    /// </summary>
     private static async Task<bool> SesionVigenteAsync(ClaimsPrincipal principal, HttpContext http)
     {
         if (!Guid.TryParse(principal.FindFirst(ClaimsQualia.UsuarioId)?.Value, out var id))
@@ -120,10 +116,8 @@ public static class ConfiguracionAutenticacion
                    .AnyAsync(e => e.Id == empresaId && e.Estado == EstadoEmpresa.Activa, ct);
     }
 
-    /// <summary>
     /// 401 y 403 del pipeline ([Authorize]) con el mismo ErrorDto que el resto de la API,
     /// en lugar de una respuesta vacía.
-    /// </summary>
     private sealed class RespuestaAutorizacion : IAuthorizationMiddlewareResultHandler
     {
         private readonly AuthorizationMiddlewareResultHandler _predeterminado = new();
@@ -163,7 +157,7 @@ public static class ConfiguracionAutenticacion
     }
 }
 
-/// <summary>Advierte en el log cuando la clave JWT es temporal (solo Development).</summary>
+/// Advierte en el log cuando la clave JWT es temporal (solo Development).
 internal sealed class AvisoClaveJwt(ILogger<AvisoClaveJwt> logger, bool temporal) : IHostedService
 {
     public Task StartAsync(CancellationToken cancellationToken)

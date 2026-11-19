@@ -1,19 +1,17 @@
 namespace Qualia.Domain.Suscripciones;
 
-/// <summary>
-/// Estados de <see cref="Suscripcion"/>. Se persisten como texto.
-/// </summary>
+/// Estados de Suscripcion. Se persisten como texto.
 public enum EstadoSuscripcion
 {
-    /// <summary>Permite operar dentro de la cuota de prueba.</summary>
+    /// Permite operar dentro de la cuota de prueba.
     Prueba,
 
-    /// <summary>Permite operar según el plan.</summary>
+    /// Permite operar según el plan.
     Activa,
 
-    /// <summary>Permite consulta; bloquea nuevas evaluaciones.</summary>
+    /// Permite consulta; bloquea nuevas evaluaciones.
     EnMora,
 
-    /// <summary>Permite consulta durante la gracia; bloquea el inicio de evaluaciones.</summary>
+    /// Permite consulta durante la gracia; bloquea el inicio de evaluaciones.
     Vencida,
 }

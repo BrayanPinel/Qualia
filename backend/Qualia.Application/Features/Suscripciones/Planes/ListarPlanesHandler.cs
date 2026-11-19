@@ -2,9 +2,7 @@ using Qualia.Application.Features.Suscripciones.Comun;
 
 namespace Qualia.Application.Features.Suscripciones.Planes;
 
-/// <summary>
 /// Caso de uso público GET /api/planes 
-/// </summary>
 public sealed class ListarPlanesHandler
 {
     private readonly IRepositorioSuscripciones _repositorio;

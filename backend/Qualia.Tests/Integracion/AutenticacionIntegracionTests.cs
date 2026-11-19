@@ -25,10 +25,8 @@ using Norte = Qualia.Infrastructure.Persistence.Semillas.DatosDemo.Norte;
 
 namespace Qualia.Tests.Integracion;
 
-/// <summary>
 /// Login empresarial y de plataforma con JWT contra PostgreSQL real: credenciales, aislamiento por empresa,
 /// cuentas inactivas, tokens alterados o expirados y separación entre PlatformAdmin y usuarios de empresa.
-/// </summary>
 [Collection(ColeccionPostgres.Nombre)]
 public sealed class AutenticacionIntegracionTests : IAsyncLifetime
 {
@@ -268,7 +266,7 @@ public sealed class AutenticacionIntegracionTests : IAsyncLifetime
         return cliente;
     }
 
-    /// <summary>Token con los claims de Ana (AdminEmpresa de Norte) firmado con la clave indicada.</summary>
+    /// Token con los claims de Ana (AdminEmpresa de Norte) firmado con la clave indicada.
     private string Emitir(SecurityKey clave, DateTime expira)
     {
         var jwt = _api.Services.GetRequiredService<IOptions<JwtOptions>>().Value;

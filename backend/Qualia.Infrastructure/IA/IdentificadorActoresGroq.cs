@@ -5,15 +5,13 @@ using Qualia.Application.Features.Procesamiento;
 
 namespace Qualia.Infrastructure.IA;
 
-/// <param name="Hablante">Etiqueta de diarización de Deepgram (0, 1…). Es solo una pista.</param>
-/// <param name="Texto">Texto ya enmascarado (RN-14).</param>
+/// Hablante: Etiqueta de diarización de Deepgram (0, 1…). Es solo una pista.
+/// Texto: Texto ya enmascarado (RN-14).
 public sealed record EnunciadoParaActor(int Hablante, string Texto);
 
-/// <summary>
 /// Reconoce el actor (Agente / Cliente) de cada fragmento de la llamada usando Groq.
 /// La diarización de Deepgram separa voces, pero no sabe quién es el agente y con voces
 /// parecidas puede asignar toda la llamada a un solo hablante; Groq decide por el contenido.
-/// </summary>
 public sealed class IdentificadorActoresGroq(ClienteGroq groq, IOptions<OpcionesGroq> opciones)
 {
     public const string Agente = "Agente";
@@ -41,7 +39,7 @@ public sealed class IdentificadorActoresGroq(ClienteGroq groq, IOptions<Opciones
         return (Interpretar(respuesta.Contenido, enunciados.Count), respuesta);
     }
 
-    /// <summary>Exige un rol válido para cada fragmento, exactamente una vez.</summary>
+    /// Exige un rol válido para cada fragmento, exactamente una vez.
     public static IReadOnlyList<string> Interpretar(string json, int cantidad)
     {
         var roles = new string?[cantidad];

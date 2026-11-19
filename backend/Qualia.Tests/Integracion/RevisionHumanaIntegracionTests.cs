@@ -14,10 +14,8 @@ using Sur = Qualia.Infrastructure.Persistence.Semillas.DatosDemo.Sur;
 
 namespace Qualia.Tests.Integracion;
 
-/// <summary>
 /// Rol B — revisión humana contra PostgreSQL real, sobre evaluaciones producidas por el motor del Rol D:
 /// confirmación, ajuste completo con evidencias, conservación del resultado de IA y control de concurrencia.
-/// </summary>
 [Collection(ColeccionPostgres.Nombre)]
 public sealed class RevisionHumanaIntegracionTests : IAsyncLifetime
 {
@@ -33,7 +31,7 @@ public sealed class RevisionHumanaIntegracionTests : IAsyncLifetime
 
     public async Task DisposeAsync() => await _api.DisposeAsync();
 
-    /// <summary>Recorrido del Rol D: la supervisora inicia la evaluación y el worker genera el borrador de IA.</summary>
+    /// Recorrido del Rol D: la supervisora inicia la evaluación y el worker genera el borrador de IA.
     private async Task<EvaluacionDto> EvaluarConIAAsync(Guid llamadaId, Guid supervisorId)
     {
         var supervisor = _api.ClienteComo(supervisorId);
@@ -46,7 +44,7 @@ public sealed class RevisionHumanaIntegracionTests : IAsyncLifetime
         await QualiaApiFactory.LeerAsync<List<SegmentoDto>>(
             await _api.ClienteComo(usuarioId).GetAsync($"/api/llamadas/{llamadaId}/transcripcion"));
 
-    /// <summary>Ajuste completo: cada criterio con puntaje fijo y, para el primero, una cita real del primer segmento.</summary>
+    /// Ajuste completo: cada criterio con puntaje fijo y, para el primero, una cita real del primer segmento.
     private static object AjusteCompleto(EvaluacionDto evaluacion, SegmentoDto segmento, int revisionEsperada, decimal puntaje = 55m) => new
     {
         revisionEsperada,

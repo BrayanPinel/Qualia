@@ -11,13 +11,11 @@ using Qualia.Domain.Suscripciones;
 
 namespace Qualia.Application.Features.Desempeno;
 
-/// <summary>
 /// Scorecards por agente y reporte agregado por campaña (HU-09, HU-10, RN-11).
 /// Se calculan a partir de los hechos: llamadas del mes (por fecha_llamada UTC) con evaluación,
 /// puntaje vigente (último ajuste humano o resultado de IA) y disputas abiertas.
 /// Oficial: revisada por un supervisor o calificada por la IA sin fallas detectadas.
 /// Elegible: oficial y sin disputa abierta. Los promedios exigen Empresa.minimo_muestra elegibles.
-/// </summary>
 public sealed class ConsultasDesempeno(
     IQualiaDbContext db,
     IUsuarioActual usuarioActual,
@@ -28,7 +26,7 @@ public sealed class ConsultasDesempeno(
     IValidator<FiltroReporteDto> validadorReporte,
     TimeProvider reloj)
 {
-    /// <summary>GET /api/agentes/me/scorecard — el agente consulta su propio desempeño.</summary>
+    /// GET /api/agentes/me/scorecard — el agente consulta su propio desempeño.
     public async Task<ScorecardDto> ScorecardPropioAsync(FiltroScorecardDto filtro, CancellationToken ct)
     {
         var agente = usuarioActual.RequerirRol(RolEmpresa.Agente);
@@ -43,7 +41,7 @@ public sealed class ConsultasDesempeno(
         return contexto.Scorecard(agente.UsuarioId);
     }
 
-    /// <summary>GET /api/agentes/{id}/scorecard — AdminEmpresa o Supervisor asignado a la campaña.</summary>
+    /// GET /api/agentes/{id}/scorecard — AdminEmpresa o Supervisor asignado a la campaña.
     public async Task<ScorecardDto> ScorecardAgenteAsync(Guid agenteId, FiltroScorecardDto filtro, CancellationToken ct)
     {
         var usuario = usuarioActual.RequerirRol(RolEmpresa.AdminEmpresa, RolEmpresa.Supervisor);
@@ -64,10 +62,8 @@ public sealed class ConsultasDesempeno(
         return contexto.Scorecard(agenteId);
     }
 
-    /// <summary>
     /// GET /api/campanas/{id}/scorecards — un scorecard por agente: asignados a la campaña
     /// o con llamadas evaluadas en ella durante el periodo. Ordenados por nombre.
-    /// </summary>
     public async Task<PaginaDto<ScorecardDto>> ScorecardsCampanaAsync(Guid campanaId, FiltroScorecardsCampanaDto filtro, CancellationToken ct)
     {
         var usuario = usuarioActual.RequerirRol(RolEmpresa.AdminEmpresa, RolEmpresa.Supervisor);
@@ -98,7 +94,7 @@ public sealed class ConsultasDesempeno(
             pagina.Select(contexto.Scorecard).ToList(), filtro.Pagina, filtro.TamanoPagina, total);
     }
 
-    /// <summary>GET /api/reportes/campanas/{id} — agregado de la campaña; también para Auditor.</summary>
+    /// GET /api/reportes/campanas/{id} — agregado de la campaña; también para Auditor.
     public async Task<ReporteCampanaDto> ReporteCampanaAsync(Guid campanaId, FiltroReporteDto filtro, CancellationToken ct)
     {
         var usuario = usuarioActual.RequerirRol(RolEmpresa.AdminEmpresa, RolEmpresa.Supervisor, RolEmpresa.Auditor);
@@ -138,7 +134,7 @@ public sealed class ConsultasDesempeno(
         return new ContextoCampana(empresaId, campanaId, periodo, minimo, conTendencia, conComparacion, actual, anterior);
     }
 
-    /// <summary>Hechos de las llamadas evaluadas de la campaña en el mes, con el puntaje vigente por criterio.</summary>
+    /// Hechos de las llamadas evaluadas de la campaña en el mes, con el puntaje vigente por criterio.
     private async Task<List<HechoLlamada>> CargarHechosAsync(Guid campanaId, PeriodoMensual periodo, CancellationToken ct)
     {
         var inicio = periodo.InicioUtc;
@@ -238,7 +234,7 @@ public sealed class ConsultasDesempeno(
             ? periodo
             : PeriodoMensual.DesdeFecha(reloj.GetUtcNow().UtcDateTime);
 
-    /// <summary>Media de los totales por llamada (no media de promedios), a dos decimales.</summary>
+    /// Media de los totales por llamada (no media de promedios), a dos decimales.
     private static decimal Promedio(IReadOnlyCollection<HechoLlamada> elegibles) =>
         Math.Round(elegibles.Average(h => h.Total), 2, MidpointRounding.AwayFromZero);
 
@@ -250,7 +246,7 @@ public sealed class ConsultasDesempeno(
         public int CriticosFallidos => Criterios.Count(c => c.FalloCritico);
     }
 
-    /// <summary>Hechos ya cargados de una campaña y mes (y del mes anterior si el plan tiene tendencia).</summary>
+    /// Hechos ya cargados de una campaña y mes (y del mes anterior si el plan tiene tendencia).
     private sealed record ContextoCampana(
         Guid EmpresaId,
         Guid CampanaId,
@@ -306,7 +302,7 @@ public sealed class ConsultasDesempeno(
             return elegibles.Count >= Minimo ? Promedio(elegibles) : null;
         }
 
-        /// <summary>Cada grupo se identifica por rúbrica, versión y criterio: no se mezclan versiones.</summary>
+        /// Cada grupo se identifica por rúbrica, versión y criterio: no se mezclan versiones.
         private static List<PromedioCriterioDto> PromediosPorCriterio(IEnumerable<HechoLlamada> elegibles) =>
             elegibles
                 .SelectMany(h => h.Criterios.Select(c => (h.RubricaId, h.Version, Criterio: c)))

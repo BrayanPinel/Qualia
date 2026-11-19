@@ -6,11 +6,9 @@ using Qualia.Application.Common.Resultados;
 
 namespace Qualia.API.Common;
 
-/// <summary>
-/// Extensiones de presentación HTTP para traducir <see cref="Resultado{T}"/> al contrato
-/// uniforme <see cref="ErrorDto"/>. La empresa de la petición la resuelve IContextoEmpresa
+/// Extensiones de presentación HTTP para traducir Resultado al contrato
+/// uniforme ErrorDto. La empresa de la petición la resuelve IContextoEmpresa
 /// a partir del token, sin pasos adicionales en los controladores.
-/// </summary>
 public static class ResultadoExtensions
 {
     private static readonly string[] ClaimsAdministrador =

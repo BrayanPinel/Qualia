@@ -78,7 +78,7 @@ public class DominioTests
         Assert.False(CalculadoraPuntaje.EsFalloCritico(esCritico: false, puntaje: 10, umbralCumplimiento: 80));
     }
 
-    /// <summary>Simula el UPDATE atómico con el que el ejecutor reclama el trabajo.</summary>
+    /// Simula el UPDATE atómico con el que el ejecutor reclama el trabajo.
     private static void Reclamar(TrabajoProcesamiento trabajo)
     {
         trabajo.Estado = EstadoTrabajo.EnProceso;

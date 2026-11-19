@@ -209,7 +209,7 @@ public sealed class SuscripcionesControllersTests
         }
     }
 
-    /// <summary>Contexto de empresa de prueba: simula la empresa que IContextoEmpresa obtiene del token.</summary>
+    /// Contexto de empresa de prueba: simula la empresa que IContextoEmpresa obtiene del token.
     private sealed class ContextoEmpresaPrueba : IContextoEmpresa
     {
         public Guid? EmpresaIdActual { get; set; }

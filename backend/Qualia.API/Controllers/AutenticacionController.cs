@@ -6,13 +6,13 @@ using Qualia.Application.Features.Autenticacion.Dtos;
 
 namespace Qualia.API.Controllers;
 
-/// <summary>Inicio de sesión de los usuarios de una empresa.</summary>
+/// Inicio de sesión de los usuarios de una empresa.
 [ApiController]
 [Route("api/auth")]
 [Produces("application/json")]
 public sealed class AutenticacionController(InicioSesion inicioSesion) : ControllerBase
 {
-    /// <summary>Devuelve un token Bearer con la empresa y el rol del usuario.</summary>
+    /// Devuelve un token Bearer con la empresa y el rol del usuario.
     [HttpPost("login")]
     [AllowAnonymous]
     [ProducesResponseType<SesionDto>(StatusCodes.Status200OK)]
@@ -23,13 +23,13 @@ public sealed class AutenticacionController(InicioSesion inicioSesion) : Control
         Ok(await inicioSesion.IniciarEmpresarialAsync(dto, ct));
 }
 
-/// <summary>Inicio de sesión del Administrador global de la plataforma.</summary>
+/// Inicio de sesión del Administrador global de la plataforma.
 [ApiController]
 [Route("api/plataforma/auth")]
 [Produces("application/json")]
 public sealed class PlataformaAutenticacionController(InicioSesion inicioSesion) : ControllerBase
 {
-    /// <summary>Devuelve un token Bearer con rol PlatformAdmin (sin empresa).</summary>
+    /// Devuelve un token Bearer con rol PlatformAdmin (sin empresa).
     [HttpPost("login")]
     [AllowAnonymous]
     [ProducesResponseType<SesionPlataformaDto>(StatusCodes.Status200OK)]

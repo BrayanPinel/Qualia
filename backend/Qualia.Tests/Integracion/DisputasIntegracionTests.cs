@@ -15,11 +15,9 @@ using Sur = Qualia.Infrastructure.Persistence.Semillas.DatosDemo.Sur;
 
 namespace Qualia.Tests.Integracion;
 
-/// <summary>
 /// Disputas contra PostgreSQL real con el recorrido completo: el worker evalúa con IA, la supervisora confirma,
 /// el agente disputa y la supervisora mantiene o modifica las notas (contrato de revisión humana).
 /// Norte tiene plan Pro (con disputas); Sur, Básico (sin disputas).
-/// </summary>
 [Collection(ColeccionPostgres.Nombre)]
 public sealed class DisputasIntegracionTests : IAsyncLifetime
 {
@@ -283,7 +281,7 @@ public sealed class DisputasIntegracionTests : IAsyncLifetime
     private async Task<List<SegmentoDto>> SegmentosAsync(Guid llamadaId, Guid usuarioId) =>
         await QualiaApiFactory.LeerAsync<List<SegmentoDto>>(await _api.ClienteComo(usuarioId).GetAsync($"/api/llamadas/{llamadaId}/transcripcion"));
 
-    /// <summary>Ajuste completo: todos los criterios con el mismo puntaje; el primero con una cita real.</summary>
+    /// Ajuste completo: todos los criterios con el mismo puntaje; el primero con una cita real.
     private static IEnumerable<object> Ajustes(EvaluacionDto evaluacion, SegmentoDto segmento, decimal puntaje) =>
         evaluacion.Criterios.Select((c, i) => (object)new
         {

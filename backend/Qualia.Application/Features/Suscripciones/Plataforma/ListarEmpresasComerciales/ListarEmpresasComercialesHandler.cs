@@ -6,10 +6,8 @@ using Qualia.Domain.Suscripciones;
 
 namespace Qualia.Application.Features.Suscripciones.Plataforma.ListarEmpresasComerciales;
 
-/// <summary>
 /// Caso de uso GET /api/plataforma/empresas (HU-07).
 /// Devuelve únicamente proyección comercial sin acceso a contenido de llamadas.
-/// </summary>
 public sealed class ListarEmpresasComercialesHandler
 {
     private readonly IRepositorioSuscripciones _repositorio;

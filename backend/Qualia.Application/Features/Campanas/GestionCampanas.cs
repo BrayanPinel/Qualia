@@ -11,11 +11,9 @@ using Qualia.Domain.Enums;
 
 namespace Qualia.Application.Features.Campanas;
 
-/// <summary>
 /// Casos de uso de campañas y asignaciones:
 /// GET/POST/PUT /api/campanas y GET/PUT/DELETE /api/campanas/{id}/usuarios[/{usuarioId}].
 /// El filtro global ya limita a la empresa del token; aquí se aplican el rol y el alcance.
-/// </summary>
 public sealed class GestionCampanas(
     IQualiaDbContext db,
     IUsuarioActual usuarioActual,
@@ -25,10 +23,8 @@ public sealed class GestionCampanas(
     IRegistroAuditoria auditoria,
     ILogger<GestionCampanas> logger)
 {
-    /// <summary>
     /// AdminEmpresa y Auditor: todas las campañas de su empresa. Supervisor: las asignadas.
     /// Agente: las asignadas o aquellas donde conserva llamadas propias.
-    /// </summary>
     public async Task<PaginaDto<CampanaDto>> ListarAsync(PaginacionDto paginacion, CancellationToken ct)
     {
         var usuario = usuarioActual.RequerirRol(RolEmpresa.AdminEmpresa, RolEmpresa.Supervisor, RolEmpresa.Agente, RolEmpresa.Auditor);
@@ -101,7 +97,7 @@ public sealed class GestionCampanas(
         await db.SaveChangesAsync(ct);
     }
 
-    /// <summary>Usuarios asignados a la campaña (solo AdminEmpresa).</summary>
+    /// Usuarios asignados a la campaña (solo AdminEmpresa).
     public async Task<PaginaDto<UsuarioDto>> ListarUsuariosAsync(Guid campanaId, PaginacionDto paginacion, CancellationToken ct)
     {
         RequerirAdmin();
@@ -123,11 +119,9 @@ public sealed class GestionCampanas(
         return new PaginaDto<UsuarioDto>(items, paginacion.Pagina, paginacion.TamanoPagina, total);
     }
 
-    /// <summary>
     /// Asignación idempotente. Solo Agente o Supervisor activos de la misma empresa (RN-03).
     /// Para supervisores se consulta el límite del plan con el contrato del Rol C: cuenta los
     /// supervisores que quedarían con al menos una campaña asignada.
-    /// </summary>
     public async Task AsignarUsuarioAsync(Guid campanaId, Guid usuarioId, CancellationToken ct)
     {
         var admin = RequerirAdmin();
@@ -174,7 +168,7 @@ public sealed class GestionCampanas(
         }
     }
 
-    /// <summary>Revoca la asignación. Idempotente: si no existía, no hace nada.</summary>
+    /// Revoca la asignación. Idempotente: si no existía, no hace nada.
     public async Task RevocarUsuarioAsync(Guid campanaId, Guid usuarioId, CancellationToken ct)
     {
         var admin = RequerirAdmin();
@@ -224,7 +218,7 @@ public sealed class GestionCampanas(
         }
     }
 
-    /// <summary>Un usuario de otra empresa queda oculto por el filtro global: 404, igual que uno inexistente.</summary>
+    /// Un usuario de otra empresa queda oculto por el filtro global: 404, igual que uno inexistente.
     private async Task<Usuario> BuscarUsuarioAsync(Guid usuarioId, CancellationToken ct) =>
         await db.Usuarios.AsNoTracking().FirstOrDefaultAsync(u => u.Id == usuarioId, ct)
         ?? throw ExcepcionNegocio.NoEncontrado("USUARIO_NO_ENCONTRADO", "El usuario no existe.");

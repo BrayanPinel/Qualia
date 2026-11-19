@@ -4,24 +4,22 @@ using Qualia.Application.Common.Seguridad;
 
 namespace Qualia.Infrastructure.Seguridad;
 
-/// <summary>Configuración del hash de contraseñas (sección Seguridad:HashContrasena).</summary>
+/// Configuración del hash de contraseñas (sección Seguridad:HashContrasena).
 public sealed class OpcionesHashContrasena
 {
     public const string Seccion = "Seguridad:HashContrasena";
 
-    /// <summary>Por debajo de este valor el servicio no se crea: protege de una configuración débil por error.</summary>
+    /// Por debajo de este valor el servicio no se crea: protege de una configuración débil por error.
     public const int MinimoIteraciones = 100_000;
 
-    /// <summary>Iteraciones de PBKDF2-HMAC-SHA512; 210.000 es la recomendación de OWASP.</summary>
+    /// Iteraciones de PBKDF2-HMAC-SHA512; 210.000 es la recomendación de OWASP.
     public int Iteraciones { get; set; } = 210_000;
 }
 
-/// <summary>
-/// <see cref="IServicioHashContrasena"/> con el <see cref="PasswordHasher{TUser}"/> de Microsoft (PBKDF2).
+/// IServicioHashContrasena con el PasswordHasher de Microsoft (PBKDF2).
 /// A diferencia de BCrypt, no trunca a 72 bytes, así que admite las contraseñas de hasta 128 caracteres
 /// del contrato. El hash guarda versión, iteraciones y sal, lo que permite subir las iteraciones
 /// sin invalidar las contraseñas existentes.
-/// </summary>
 public sealed class ServicioHashContrasena : IServicioHashContrasena
 {
     private readonly PasswordHasher<Credencial> _hasher;
@@ -71,7 +69,7 @@ public sealed class ServicioHashContrasena : IServicioHashContrasena
         }
     }
 
-    /// <summary>PasswordHasher exige un tipo de usuario, pero el algoritmo no lo usa.</summary>
+    /// PasswordHasher exige un tipo de usuario, pero el algoritmo no lo usa.
     private sealed class Credencial
     {
         public static readonly Credencial Instancia = new();

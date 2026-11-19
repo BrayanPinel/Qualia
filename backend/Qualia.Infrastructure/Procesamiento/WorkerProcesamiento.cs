@@ -5,11 +5,9 @@ using Qualia.Application.Features.Procesamiento;
 
 namespace Qualia.Infrastructure.Procesamiento;
 
-/// <summary>
 /// Servicio en segundo plano. En cada ciclo encola las llamadas nuevas (evaluación automática)
 /// y procesa la cola de trabajos. Despierta con la señal de IniciarEvaluacion o por sondeo
 /// periódico (llamadas nuevas, reintentos y bloqueos vencidos).
-/// </summary>
 public sealed class WorkerProcesamiento(
     DespachadorEvaluacionAutomatica despachador,
     EjecutorProcesamiento ejecutor,
@@ -54,7 +52,7 @@ public sealed class WorkerProcesamiento(
     }
 }
 
-/// <summary>Señal en memoria (un solo proceso) para despertar al worker sin esperar el sondeo.</summary>
+/// Señal en memoria (un solo proceso) para despertar al worker sin esperar el sondeo.
 public sealed class SenalProcesamiento : ISenalProcesamiento
 {
     private readonly SemaphoreSlim _semaforo = new(0, 1);

@@ -3,13 +3,11 @@ using Qualia.Domain.Enums;
 
 namespace Qualia.Domain.Entidades;
 
-/// <summary>
 /// Trabajo asíncrono que procesa una llamada (máximo uno por llamada).
 /// Pendiente → EnProceso → (ReintentoPendiente → EnProceso)* → Completado | Fallido.
 /// Un trabajo Fallido puede reiniciarse (llamada perdida que se vuelve a evaluar) en la misma fila.
-/// Mientras está EnProceso, <see cref="ProximoIntento"/> actúa como fecha de expiración
+/// Mientras está EnProceso, ProximoIntento actúa como fecha de expiración
 /// del bloqueo: si el proceso se cae, el trabajo vuelve a poder reclamarse después de esa fecha.
-/// </summary>
 public class TrabajoProcesamiento : IEntidadEmpresa
 {
     public Guid EmpresaId { get; set; }
@@ -19,7 +17,7 @@ public class TrabajoProcesamiento : IEntidadEmpresa
     public int Intentos { get; set; }
     public DateTime? ProximoIntento { get; set; }
 
-    /// <summary>Último error ya saneado (sin datos internos); se expone como motivoFallo.</summary>
+    /// Último error ya saneado (sin datos internos); se expone como motivoFallo.
     public string? UltimoError { get; set; }
 
     public Llamada? Llamada { get; set; }
@@ -41,10 +39,8 @@ public class TrabajoProcesamiento : IEntidadEmpresa
         ProximoIntento = null;
     }
 
-    /// <summary>
     /// Registra un error recuperable. Si ya se alcanzó el máximo de intentos, el trabajo
     /// falla definitivamente. Devuelve true cuando el fallo es definitivo.
-    /// </summary>
     public bool RegistrarFallo(string errorSaneado, int maximoIntentos, DateTime ahoraUtc, TimeSpan esperaBase)
     {
         AsegurarEnProceso();
@@ -63,7 +59,7 @@ public class TrabajoProcesamiento : IEntidadEmpresa
         return false;
     }
 
-    /// <summary>Reintento manual de una llamada perdida: vuelve a Pendiente con los intentos en cero.</summary>
+    /// Reintento manual de una llamada perdida: vuelve a Pendiente con los intentos en cero.
     public void Reiniciar()
     {
         if (Estado != EstadoTrabajo.Fallido)

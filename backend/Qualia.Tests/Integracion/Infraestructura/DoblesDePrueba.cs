@@ -7,12 +7,12 @@ using Qualia.Infrastructure.Procesamiento;
 
 namespace Qualia.Tests.Integracion.Infraestructura;
 
-/// <summary>Doble del contrato del Rol C: registra las llamadas para verificar el protocolo D ↔ C.</summary>
+/// Doble del contrato del Rol C: registra las llamadas para verificar el protocolo D ↔ C.
 public sealed class ConsumoEvaluacionRegistrado : IConsumoEvaluacion
 {
     public ConcurrentQueue<(string Operacion, Guid LlamadaId)> Operaciones { get; } = new();
 
-    /// <summary>Si se define, ReservarAsync devuelve este error (p. ej. SUSCRIPCION_NO_ACTIVA).</summary>
+    /// Si se define, ReservarAsync devuelve este error (p. ej. SUSCRIPCION_NO_ACTIVA).
     public Func<Guid, ErrorAplicacion?> RechazarReserva { get; set; } = _ => null;
 
     public int Contar(string operacion, Guid llamadaId) =>
@@ -50,7 +50,7 @@ public sealed class ConsumoEvaluacionRegistrado : IConsumoEvaluacion
     }
 }
 
-/// <summary>Transcriptor que falla un número configurable de veces antes de delegar en el simulado.</summary>
+/// Transcriptor que falla un número configurable de veces antes de delegar en el simulado.
 public sealed class TranscriptorConFallos(int fallosAntesDeFuncionar) : ITranscriptor
 {
     private readonly TranscriptorSimulado _real = new();

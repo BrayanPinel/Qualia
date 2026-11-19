@@ -23,14 +23,12 @@ using Qualia.Application.Features.Suscripciones.Plataforma.ListarEmpresasComerci
 
 namespace Qualia.Application;
 
-/// <summary>
 /// Composición de la capa de aplicación. Los módulos agregan sus
 /// validadores de FluentValidation y servicios de aplicación aquí,
 /// sin que la API conozca implementaciones concretas.
-/// </summary>
 public static class DependencyInjection
 {
-    /// <param name="configuration">Opcional: sin configuración se usan los valores por defecto de las opciones.</param>
+    /// configuration: Opcional: sin configuración se usan los valores por defecto de las opciones.
     public static IServiceCollection AddApplication(this IServiceCollection services, IConfiguration? configuration = null)
     {
         // Registra todos los validadores FluentValidation de esta capa.
@@ -78,10 +76,8 @@ public static class DependencyInjection
         return services;
     }
 
-    /// <summary>
     /// Registra los casos de uso y contratos compartidos del módulo de suscripciones.
     /// Requiere que la capa de infraestructura registre IRepositorioSuscripciones e IContextoEmpresa.
-    /// </summary>
     public static IServiceCollection AddSuscripcionesApplication(this IServiceCollection services) =>
         services.AddApplication();
 

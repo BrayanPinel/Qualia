@@ -10,12 +10,10 @@ using Qualia.Domain.Enums;
 
 namespace Qualia.Application.Features.Procesamiento;
 
-/// <summary>
 /// Encola sin intervención humana las llamadas Disponible cuya rúbrica ya está publicada.
 /// Cada llamada se encola en su propio scope con el contexto de empresa de la llamada.
 /// Si la empresa no tiene suscripción activa o cuota, sus llamadas quedan Disponible
-/// y no se vuelven a intentar hasta que pase <see cref="OpcionesProcesamiento.EsperaTrasRechazoConsumo"/>.
-/// </summary>
+/// y no se vuelven a intentar hasta que pase OpcionesProcesamiento.EsperaTrasRechazoConsumo.
 public sealed class DespachadorEvaluacionAutomatica(
     IServiceScopeFactory scopes,
     TimeProvider reloj,
@@ -25,7 +23,7 @@ public sealed class DespachadorEvaluacionAutomatica(
     private readonly OpcionesProcesamiento _opciones = opciones.Value;
     private readonly ConcurrentDictionary<Guid, DateTime> _empresasEnEspera = new();
 
-    /// <summary>Devuelve la cantidad de llamadas encoladas en el ciclo.</summary>
+    /// Devuelve la cantidad de llamadas encoladas en el ciclo.
     public async Task<int> EjecutarCicloAsync(CancellationToken cancellationToken)
     {
         if (!_opciones.EvaluacionAutomatica)

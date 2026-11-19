@@ -1,9 +1,7 @@
 namespace Qualia.Domain.Suscripciones;
 
-/// <summary>
 /// Plan comercial (tabla global plan, sin empresa_id).
 /// Los límites null significan "sin límite".
-/// </summary>
 public sealed class Plan
 {
     public const int LongitudMaximaNombre = 50;
@@ -76,13 +74,13 @@ public sealed class Plan
 
     public bool Activo { get; private set; }
 
-    /// <summary>null = sin límite de supervisores.</summary>
+    /// null = sin límite de supervisores.
     public int? LimiteSupervisores { get; private set; }
 
-    /// <summary>null = sin límite de rúbricas activas.</summary>
+    /// null = sin límite de rúbricas activas.
     public int? LimiteRubricas { get; private set; }
 
-    /// <summary>Parámetro previsto para la futura política de retención (365 en el MVP).</summary>
+    /// Parámetro previsto para la futura política de retención (365 en el MVP).
     public int RetencionDias { get; private set; }
 
     public IReadOnlyCollection<FuncionPlan> Funciones => _funciones;
@@ -98,10 +96,8 @@ public sealed class Plan
         return _funciones.Any(f => string.Equals(f.CodigoFuncion, normalizado, StringComparison.OrdinalIgnoreCase));
     }
 
-    /// <summary>
     /// Agrega la función si aún no existe. Devuelve la función creada
     /// o null si el plan ya la tenía (operación idempotente).
-    /// </summary>
     public FuncionPlan? AgregarFuncion(string codigoFuncion)
     {
         var funcion = new FuncionPlan(Id, codigoFuncion);
@@ -114,11 +110,11 @@ public sealed class Plan
         return funcion;
     }
 
-    /// <summary>¿El plan admite <paramref name="totalResultante"/> supervisores activos?</summary>
+    /// ¿El plan admite totalResultante supervisores activos?
     public bool AdmiteSupervisores(int totalResultante) =>
         LimiteSupervisores is null || totalResultante <= LimiteSupervisores.Value;
 
-    /// <summary>¿El plan admite <paramref name="totalResultante"/> rúbricas activas?</summary>
+    /// ¿El plan admite totalResultante rúbricas activas?
     public bool AdmiteRubricasActivas(int totalResultante) =>
         LimiteRubricas is null || totalResultante <= LimiteRubricas.Value;
 }

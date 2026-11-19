@@ -7,7 +7,7 @@ namespace Qualia.Application.Features.Disputas.Dtos;
 
 // Entrada con propiedades anulables: un campo ausente se informa como error de validación.
 
-/// <summary>CrearDisputaDto { motivo }.</summary>
+/// CrearDisputaDto { motivo }.
 public sealed class CrearDisputaDto
 {
     public string? Motivo { get; set; }
@@ -19,10 +19,8 @@ public enum DecisionDisputa
     Modificar,
 }
 
-/// <summary>
 /// ResolverDisputaDto { decision, resolucion, revisionEsperada, criterios? }.
 /// Modificar exige la lista completa de ajustes (mismas reglas que el ajuste del supervisor); Mantener la omite.
-/// </summary>
 public sealed class ResolverDisputaDto
 {
     public DecisionDisputa? Decision { get; set; }
@@ -31,13 +29,13 @@ public sealed class ResolverDisputaDto
     public List<AjusteCriterioDto>? Criterios { get; set; }
 }
 
-/// <summary>GET /api/disputas: paginación y estado opcional.</summary>
+/// GET /api/disputas: paginación y estado opcional.
 public sealed class FiltroDisputasDto : PaginacionDto
 {
     public EstadoDisputa? Estado { get; set; }
 }
 
-/// <summary>DisputaDto { id, empresaId, evaluacionId, estado, motivo, resolucion?, resueltaPorId?, creadaEn, resueltaEn? }.</summary>
+/// DisputaDto { id, empresaId, evaluacionId, estado, motivo, resolucion?, resueltaPorId?, creadaEn, resueltaEn? }.
 public sealed record DisputaDto(
     Guid Id,
     Guid EmpresaId,

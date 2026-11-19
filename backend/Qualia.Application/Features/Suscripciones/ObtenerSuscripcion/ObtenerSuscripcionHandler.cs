@@ -6,10 +6,8 @@ using Qualia.Application.Common.Seguridad;
 
 namespace Qualia.Application.Features.Suscripciones.ObtenerSuscripcion;
 
-/// <summary>
 /// Caso de uso GET /api/suscripcion.
 /// Devuelve la suscripción vigente o, si no hay, la última vencida.
-/// </summary>
 public sealed class ObtenerSuscripcionHandler
 {
     private readonly IRepositorioSuscripciones _repositorio;

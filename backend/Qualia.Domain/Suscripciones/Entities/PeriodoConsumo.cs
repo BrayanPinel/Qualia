@@ -2,12 +2,10 @@ using Qualia.Domain.Common;
 
 namespace Qualia.Domain.Suscripciones;
 
-/// <summary>
 /// Periodo de consumo mensual (tabla empresarial periodo_consumo).
 /// Existe a lo sumo un periodo por empresa y mes: todos terminan el primer día
 /// del mes siguiente, por eso se garantiza con UNIQUE (empresa_id, fecha_fin).
 /// minutos_contratados se fija al abrirlo y no se recalcula.
-/// </summary>
 public sealed class PeriodoConsumo : IEntidadEmpresa
 {
     // Constructor para EF Core.
@@ -29,14 +27,12 @@ public sealed class PeriodoConsumo : IEntidadEmpresa
 
     public Suscripcion? Suscripcion { get; private set; }
 
-    /// <summary>Mes calendario UTC al que pertenece el periodo.</summary>
+    /// Mes calendario UTC al que pertenece el periodo.
     public PeriodoMensual Mes => PeriodoMensual.DesdeFecha(FechaInicio);
 
-    /// <summary>
-    /// Abre el periodo del <paramref name="mes"/> para la suscripción. Nunca comienza
+    /// Abre el periodo del mes para la suscripción. Nunca comienza
     /// antes del inicio de la suscripción: el primer periodo arranca al registrar la
     /// empresa y no se asigna consumo anterior al registro.
-    /// </summary>
     public static PeriodoConsumo Abrir(Suscripcion suscripcion, PeriodoMensual mes, decimal minutosContratados)
     {
         ArgumentNullException.ThrowIfNull(suscripcion);
@@ -62,10 +58,8 @@ public sealed class PeriodoConsumo : IEntidadEmpresa
         };
     }
 
-    /// <summary>
     /// Sustituye los datos de plan del periodo del mes cuando aún no registra ningún
     /// consumo de llamada, tras un cambio de plan aprobado.
-    /// </summary>
     public void ReemplazarPlanEnPeriodoVacio(Suscripcion nuevaSuscripcion, decimal minutosContratados)
     {
         ArgumentNullException.ThrowIfNull(nuevaSuscripcion);

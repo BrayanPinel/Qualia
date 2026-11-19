@@ -3,11 +3,9 @@ using Qualia.Domain.Common;
 
 namespace Qualia.Domain.Suscripciones;
 
-/// <summary>
 /// Mes calendario UTC usado para consumo y facturación:
 /// desde el primer día a las 00:00 UTC (incluido) hasta el primer día del mes
 /// siguiente (excluido). Su representación textual es YYYY-MM.
-/// </summary>
 public readonly record struct PeriodoMensual
 {
     public const string Formato = "yyyy-MM";
@@ -22,10 +20,10 @@ public readonly record struct PeriodoMensual
 
     public int Mes { get; }
 
-    /// <summary>Primer instante del mes (incluido).</summary>
+    /// Primer instante del mes (incluido).
     public DateTime InicioUtc => new(Anio, Mes, 1, 0, 0, 0, DateTimeKind.Utc);
 
-    /// <summary>Primer instante del mes siguiente (excluido).</summary>
+    /// Primer instante del mes siguiente (excluido).
     public DateTime FinUtc => InicioUtc.AddMonths(1);
 
     public static PeriodoMensual Crear(int anio, int mes)
@@ -39,14 +37,14 @@ public readonly record struct PeriodoMensual
         return new PeriodoMensual(anio, mes);
     }
 
-    /// <summary>Mes calendario UTC que contiene el instante indicado.</summary>
+    /// Mes calendario UTC que contiene el instante indicado.
     public static PeriodoMensual DesdeFecha(DateTime instanteUtc)
     {
         FechasUtc.Exigir(instanteUtc, nameof(instanteUtc));
         return Crear(instanteUtc.Year, instanteUtc.Month);
     }
 
-    /// <summary>Interpreta exactamente el formato YYYY-MM.</summary>
+    /// Interpreta exactamente el formato YYYY-MM.
     public static bool TryParse(string? texto, out PeriodoMensual periodo)
     {
         periodo = default;

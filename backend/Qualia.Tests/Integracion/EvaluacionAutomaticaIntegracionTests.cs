@@ -11,10 +11,8 @@ using Norte = Qualia.Infrastructure.Persistence.Semillas.DatosDemo.Norte;
 
 namespace Qualia.Tests.Integracion;
 
-/// <summary>
 /// La IA califica sola las llamadas precargadas; el supervisor solo revisa las que la IA marca con falla
 /// y ve el fragmento donde el agente cometió cada falta.
-/// </summary>
 [Collection(ColeccionPostgres.Nombre)]
 public sealed class EvaluacionAutomaticaIntegracionTests : IAsyncLifetime
 {

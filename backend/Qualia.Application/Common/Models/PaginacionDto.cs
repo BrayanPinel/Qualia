@@ -2,7 +2,7 @@ using FluentValidation;
 
 namespace Qualia.Application.Common.Models;
 
-/// <summary>Parámetros de paginación de los listados: pagina desde 1, tamanoPagina de 1 a 100.</summary>
+/// Parámetros de paginación de los listados: pagina desde 1, tamanoPagina de 1 a 100.
 public class PaginacionDto
 {
     public int Pagina { get; set; } = 1;

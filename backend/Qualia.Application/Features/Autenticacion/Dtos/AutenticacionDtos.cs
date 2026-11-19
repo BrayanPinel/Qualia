@@ -4,7 +4,7 @@ namespace Qualia.Application.Features.Autenticacion.Dtos;
 
 // Entrada con propiedades anulables: un campo ausente se informa como error de validación.
 
-/// <summary>LoginDto { codigoEmpresa, email, password }.</summary>
+/// LoginDto { codigoEmpresa, email, password }.
 public sealed class LoginDto
 {
     public string? CodigoEmpresa { get; set; }
@@ -12,18 +12,16 @@ public sealed class LoginDto
     public string? Password { get; set; }
 }
 
-/// <summary>LoginPlataformaDto { email, password }.</summary>
+/// LoginPlataformaDto { email, password }.
 public sealed class LoginPlataformaDto
 {
     public string? Email { get; set; }
     public string? Password { get; set; }
 }
 
-/// <summary>SesionDto { accessToken, tokenType, expiraEn, usuario, empresaId }.</summary>
+/// SesionDto { accessToken, tokenType, expiraEn, usuario, empresaId }.
 public sealed record SesionDto(string AccessToken, string TokenType, DateTime ExpiraEn, UsuarioDto Usuario, Guid EmpresaId);
 
-/// <summary>
 /// SesionPlataformaDto { accessToken, tokenType, expiraEn, administradorId, rol }.
-/// <see cref="AdministradorId"/> es el Administrador global, no un Usuario de empresa.
-/// </summary>
+/// AdministradorId es el Administrador global, no un Usuario de empresa.
 public sealed record SesionPlataformaDto(string AccessToken, string TokenType, DateTime ExpiraEn, Guid AdministradorId, string Rol);

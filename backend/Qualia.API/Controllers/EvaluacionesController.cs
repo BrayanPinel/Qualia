@@ -7,7 +7,7 @@ using Qualia.Application.Features.Revision.Dtos;
 
 namespace Qualia.API.Controllers;
 
-/// <summary>Decisión humana sobre la propuesta de IA (Rol B, Supervisor asignado).</summary>
+/// Decisión humana sobre la propuesta de IA (Rol B, Supervisor asignado).
 [ApiController]
 [Authorize]
 [Route("api/evaluaciones")]
@@ -19,13 +19,13 @@ namespace Qualia.API.Controllers;
 [ProducesResponseType<ErrorDto>(StatusCodes.Status409Conflict)]
 public sealed class EvaluacionesController(RevisionEvaluaciones revision) : ControllerBase
 {
-    /// <summary>Confirma la evaluación con la revisión esperada (409 si otra revisión se adelantó).</summary>
+    /// Confirma la evaluación con la revisión esperada (409 si otra revisión se adelantó).
     [HttpPost("{id:guid}/confirmar")]
     [ProducesResponseType<EvaluacionDto>(StatusCodes.Status200OK)]
     public async Task<ActionResult<EvaluacionDto>> Confirmar(Guid id, [FromBody] ConfirmarEvaluacionDto dto, CancellationToken ct) =>
         Ok(await revision.ConfirmarAsync(id, dto, ct));
 
-    /// <summary>Ajuste completo con motivo, puntajes, justificaciones y evidencias; conserva el resultado de IA.</summary>
+    /// Ajuste completo con motivo, puntajes, justificaciones y evidencias; conserva el resultado de IA.
     [HttpPut("{id:guid}/ajuste")]
     [ProducesResponseType<EvaluacionDto>(StatusCodes.Status200OK)]
     public async Task<ActionResult<EvaluacionDto>> Ajustar(Guid id, [FromBody] AjustarEvaluacionDto dto, CancellationToken ct) =>

@@ -14,11 +14,9 @@ using Xunit.Abstractions;
 
 namespace Qualia.Tests.Integracion;
 
-/// <summary>
 /// Mide el reconocimiento de actores con los proveedores reales contra el ground data de cada audio demo.
 /// Consume crédito de Deepgram, por eso solo corre con la variable QUALIA_PRUEBAS_IA_REAL=1.
 /// Escribe el resultado en Qualia.API/AudiosDemo/reporte-reconocimiento-actores.json.
-/// </summary>
 public sealed class ReconocimientoActoresRealTests(ITestOutputHelper salida)
 {
     private const double PasoSeg = 0.1;
@@ -107,10 +105,8 @@ public sealed class ReconocimientoActoresRealTests(ITestOutputHelper salida)
         Assert.True(promedioLlm >= ExactitudMinima, $"Exactitud promedio {promedioLlm:P1} menor a {ExactitudMinima:P0}");
     }
 
-    /// <summary>
     /// Exactitud = muestras donde el actor reconocido coincide con el ground data / muestras con voz reconocida.
     /// Cobertura = muestras del ground data cubiertas por algún segmento reconocido.
-    /// </summary>
     private static (double Exactitud, double Cobertura) Medir(GroundData ground, IReadOnlyList<SegmentoTranscrito> reconocidos)
     {
         int total = 0, cubiertas = 0, correctas = 0;
@@ -175,7 +171,7 @@ public sealed class ReconocimientoActoresRealTests(ITestOutputHelper salida)
     }
 }
 
-/// <summary>Solo corre con QUALIA_PRUEBAS_IA_REAL=1 (usa crédito de Deepgram y Groq).</summary>
+/// Solo corre con QUALIA_PRUEBAS_IA_REAL=1 (usa crédito de Deepgram y Groq).
 public sealed class FactConIARealAttribute : FactAttribute
 {
     public FactConIARealAttribute()

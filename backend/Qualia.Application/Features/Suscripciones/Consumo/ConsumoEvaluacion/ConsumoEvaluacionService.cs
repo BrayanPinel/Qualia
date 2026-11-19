@@ -6,10 +6,8 @@ using Qualia.Domain.Suscripciones;
 
 namespace Qualia.Application.Features.Suscripciones.Consumo.ConsumoEvaluacion;
 
-/// <summary>
-/// Implementación del contrato compartido <see cref="IConsumoEvaluacion"/> (RN-13).
+/// Implementación del contrato compartido IConsumoEvaluacion (RN-13).
 /// Gestiona reserva atómica, uso técnico por intento, facturación y liberación idempotentes.
-/// </summary>
 public sealed class ConsumoEvaluacionService : IConsumoEvaluacion
 {
     private readonly IRepositorioSuscripciones _repositorio;

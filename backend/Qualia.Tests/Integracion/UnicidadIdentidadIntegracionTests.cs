@@ -9,10 +9,8 @@ using Qualia.Tests.Integracion.Infraestructura;
 
 namespace Qualia.Tests.Integracion;
 
-/// <summary>
 /// Restricciones únicas de identidad contra PostgreSQL real, con los valores ya normalizados:
 /// correo único por empresa (no global), código de empresa y correo de administrador únicos globales.
-/// </summary>
 [Collection(ColeccionPostgres.Nombre)]
 public sealed class UnicidadIdentidadIntegracionTests(PostgresFixture postgres) : IAsyncLifetime
 {

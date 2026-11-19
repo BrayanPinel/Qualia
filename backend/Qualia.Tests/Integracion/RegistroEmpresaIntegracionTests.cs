@@ -18,10 +18,8 @@ using Norte = Qualia.Infrastructure.Persistence.Semillas.DatosDemo.Norte;
 
 namespace Qualia.Tests.Integracion;
 
-/// <summary>
 /// POST /api/empresas contra PostgreSQL real: alta transaccional de empresa, AdminEmpresa y suscripción
 /// de prueba (contrato de suscripciones), rechazo sin registros huérfanos y auditoría persistida.
-/// </summary>
 [Collection(ColeccionPostgres.Nombre)]
 public sealed class RegistroEmpresaIntegracionTests : IAsyncLifetime
 {
@@ -232,7 +230,7 @@ public sealed class RegistroEmpresaIntegracionTests : IAsyncLifetime
         Password = Contrasena,
     };
 
-    /// <summary>Falla solo con <see cref="PlanQueFalla"/>; el resto (p. ej. el sembrador demo) usa el servicio real.</summary>
+    /// Falla solo con PlanQueFalla; el resto (p. ej. el sembrador demo) usa el servicio real.
     private sealed class SuscripcionQueFalla(CrearSuscripcionInicialService real) : ICrearSuscripcionInicial
     {
         public static readonly Guid PlanQueFalla = Guid.Parse("0badc0de-0000-4000-8000-000000000001");

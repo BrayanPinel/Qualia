@@ -5,7 +5,6 @@ using Qualia.Domain.Servicios;
 
 namespace Qualia.Application.Features.Procesamiento;
 
-/// <summary>
 /// Valida la respuesta del evaluador y construye la Evaluacion_IA con sus detalles y evidencias.
 /// Debe evaluar cada criterio de la rúbrica de la llamada exactamente una vez (si no: error, se reintenta).
 /// Puntajes entre 0 y 100 (RN-05). El cumplimiento se calcula en el servidor (RN-08).
@@ -15,17 +14,14 @@ namespace Qualia.Application.Features.Procesamiento;
 /// se descartó alguna evidencia inválida (RN-10), la IA marca una falta sin citar el fragmento que la prueba,
 /// o la nota queda a menos del margen configurado del umbral de cumplimiento.
 /// En cualquier otro caso el resultado de la IA es oficial sin intervención del supervisor.
-/// </summary>
 
 public static partial class ConstructorEvaluacion
 {
     public const int LongitudMaximaCita = 1000;
     public const string NotaSinEvidencia = "Sin evidencia en la transcripción.";
 
-    /// <summary>
     /// Texto que identifica en la observación un descarte de evidencia inválida.
     /// La confirmación lo usa para exigir un ajuste (no hay columna propia para el motivo).
-    /// </summary>
     public const string MarcaEvidenciaDescartada = "evidencia(s) inválida(s)";
 
     public sealed record Resultado(EvaluacionIA Evaluacion, int EvidenciasDescartadas, int CriteriosEnRevision);
@@ -122,10 +118,8 @@ public static partial class ConstructorEvaluacion
         return new Resultado(evaluacion, descartadas, criteriosEnRevision);
     }
 
-    /// <summary>
     /// La cita debe aparecer literalmente en el texto (enmascarado) del segmento.
     /// Se toleran diferencias de mayúsculas y de espacios.
-    /// </summary>
 
     public static bool EsCitaValida(string cita, string textoSegmento)
     {

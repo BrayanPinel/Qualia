@@ -5,9 +5,7 @@ using Qualia.Domain.Common;
 
 namespace Qualia.API.Middleware;
 
-/// <summary>
 /// Middleware global de errores: toda excepción se responde con el formato uniforme ErrorDto
-/// </summary>
 
 public sealed class ManejadorErroresMiddleware(RequestDelegate siguiente, ILogger<ManejadorErroresMiddleware> logger)
 {
@@ -51,7 +49,7 @@ public sealed class ManejadorErroresMiddleware(RequestDelegate siguiente, ILogge
     private static ErrorDto AErrorDto(ExcepcionNegocio n, string traceId) =>
         new(n.Status, n.Codigo, n.Message, n.Errores, traceId);
 
-    /// <summary>Agrupa los fallos por propiedad, igual que ValidationResult.ToDictionary().</summary>
+    /// Agrupa los fallos por propiedad, igual que ValidationResult.ToDictionary().
     private static Dictionary<string, string[]> ErroresPorCampo(ValidationException v) =>
         v.Errors
             .GroupBy(e => e.PropertyName)

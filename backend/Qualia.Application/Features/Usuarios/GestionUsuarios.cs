@@ -12,12 +12,10 @@ using Qualia.Domain.Servicios;
 
 namespace Qualia.Application.Features.Usuarios;
 
-/// <summary>
 /// GET/POST /api/usuarios y PUT /api/usuarios/{id} (HU-12), solo AdminEmpresa.
 /// El filtro global limita todo a la empresa de la sesión: un usuario de otra empresa responde 404.
-/// Las escrituras bloquean la empresa (<see cref="IBloqueoEmpresa"/>) para que el conteo de
+/// Las escrituras bloquean la empresa (IBloqueoEmpresa) para que el conteo de
 /// AdminEmpresa activos y de supervisores no se rompa con peticiones concurrentes.
-/// </summary>
 public sealed class GestionUsuarios(
     IQualiaDbContext db,
     IUsuarioActual usuarioActual,
@@ -146,7 +144,7 @@ public sealed class GestionUsuarios(
         }
     }
 
-    /// <summary>Supervisores activos de la empresa más el que se agrega o reactiva.</summary>
+    /// Supervisores activos de la empresa más el que se agrega o reactiva.
     private async Task VerificarLimiteSupervisoresAsync(Guid empresaId, CancellationToken ct)
     {
         var activos = await db.Usuarios.CountAsync(u => u.Rol == RolEmpresa.Supervisor && u.Activo, ct);

@@ -2,11 +2,9 @@ using Qualia.Domain.Common;
 
 namespace Qualia.Domain.Suscripciones;
 
-/// <summary>
 /// Suscripción de una empresa (tabla empresarial suscripcion,
 /// PK compuesta (empresa_id, id)). Solo puede existir una vigente
 /// (Prueba, Activa o EnMora) por empresa: índice único parcial.
-/// </summary>
 public sealed class Suscripcion : IEntidadEmpresa
 {
     public const int LongitudMaximaEstado = 50;
@@ -34,17 +32,15 @@ public sealed class Suscripcion : IEntidadEmpresa
 
     public Plan? Plan { get; private set; }
 
-    /// <summary>Prueba, Activa o EnMora.</summary>
+    /// Prueba, Activa o EnMora.
     public bool EsVigente => EsEstadoVigente(Estado);
 
     public static bool EsEstadoVigente(EstadoSuscripcion estado) =>
         estado is EstadoSuscripcion.Prueba or EstadoSuscripcion.Activa or EstadoSuscripcion.EnMora;
 
-    /// <summary>
     /// Determina si la suscripción permite iniciar nuevas evaluaciones en el instante UTC indicado
-    ///: solo <see cref="EstadoSuscripcion.Prueba"/> o <see cref="EstadoSuscripcion.Activa"/>
+    /// : solo EstadoSuscripcion.Prueba o EstadoSuscripcion.Activa
     /// mientras no haya vencido.
-    /// </summary>
     public bool PermiteNuevasEvaluaciones(DateTime ahoraUtc)
     {
         FechasUtc.Exigir(ahoraUtc, nameof(ahoraUtc));
@@ -52,11 +48,9 @@ public sealed class Suscripcion : IEntidadEmpresa
                ahoraUtc < FechaVencimiento;
     }
 
-    /// <summary>
     /// Suscripción de prueba creada al registrar la empresa (HU-01):
     /// dura hasta el inicio del mes siguiente al registro, sin prorrateo
     /// y sin permiso de excedente.
-    /// </summary>
     public static Suscripcion CrearPrueba(Guid empresaId, Plan plan, DateTime fechaRegistroUtc)
     {
         ArgumentNullException.ThrowIfNull(plan);
@@ -87,11 +81,9 @@ public sealed class Suscripcion : IEntidadEmpresa
         };
     }
 
-    /// <summary>
     /// Pago simulado aprobado: activa o renueva la suscripción hasta
     /// el inicio del mes siguiente al pago. Nunca acorta una vigencia mayor ya
-    /// concedida. La cuota del mes la gestiona <see cref="PeriodoConsumo"/>.
-    /// </summary>
+    /// concedida. La cuota del mes la gestiona PeriodoConsumo.
     public void RegistrarPagoAprobado(DateTime fechaPagoUtc)
     {
         var finMes = PeriodoMensual.DesdeFecha(fechaPagoUtc).FinUtc;
@@ -105,11 +97,9 @@ public sealed class Suscripcion : IEntidadEmpresa
         GraciaHasta = null;
     }
 
-    /// <summary>
     /// Pago simulado rechazado: no renueva ni concede minutos. Si la vigencia ya
     /// terminó con la renovación pendiente, la suscripción pasa a EnMora.
     /// Devuelve true si el estado cambió.
-    /// </summary>
     public bool RegistrarPagoRechazado(DateTime fechaUtc)
     {
         FechasUtc.Exigir(fechaUtc, nameof(fechaUtc));
@@ -124,9 +114,7 @@ public sealed class Suscripcion : IEntidadEmpresa
         return false;
     }
 
-    /// <summary>
     /// Crea la nueva suscripción al cambiar de plan desde administración comercial.
-    /// </summary>
     public static Suscripcion CrearPorCambioDePlan(
         Guid empresaId,
         Plan plan,
@@ -186,20 +174,16 @@ public sealed class Suscripcion : IEntidadEmpresa
         };
     }
 
-    /// <summary>
     /// Cierra la suscripción anterior al realizar un cambio de plan para mantener
     /// una única suscripción vigente por empresa.
-    /// </summary>
     public void CerrarPorCambioDePlan()
     {
         Estado = EstadoSuscripcion.Vencida;
         GraciaHasta = null;
     }
 
-    /// <summary>
     /// Actualiza estado, vencimiento y permiso de excedente sin cambiar de plan ni
     /// conceder cuota adicional.
-    /// </summary>
     public void ActualizarCondicionesComerciales(
         EstadoSuscripcion estado,
         DateTime fechaVencimientoUtc,

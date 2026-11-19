@@ -6,18 +6,16 @@ using Qualia.Infrastructure.Persistence;
 
 namespace Qualia.Infrastructure.Seguridad;
 
-/// <summary>
-/// <see cref="IRegistroAuditoria"/> sobre la tabla auditoria. Solo agrega la fila al contexto del scope:
+/// IRegistroAuditoria sobre la tabla auditoria. Solo agrega la fila al contexto del scope:
 /// el llamador la guarda con su propio SaveChanges y dentro de su transacción, así la auditoría
 /// se confirma o se revierte junto con la operación auditada.
-/// </summary>
 public sealed class RegistroAuditoria(QualiaDbContext db, TimeProvider reloj) : IRegistroAuditoria
 {
     private const int LongitudMaxima = 100;
 
     private static readonly JsonSerializerOptions Json = new(JsonSerializerDefaults.Web);
 
-    /// <summary>Fragmentos de nombre de propiedad que nunca se guardan en antes/despues.</summary>
+    /// Fragmentos de nombre de propiedad que nunca se guardan en antes/despues.
     private static readonly string[] FragmentosSensibles =
         ["password", "contrasena", "contraseña", "hash", "token", "secret", "secreto", "apikey", "clave"];
 
@@ -51,7 +49,7 @@ public sealed class RegistroAuditoria(QualiaDbContext db, TimeProvider reloj) : 
         return Task.CompletedTask;
     }
 
-    /// <summary>Serializa a JSON quitando, a cualquier profundidad, las propiedades con nombre sensible.</summary>
+    /// Serializa a JSON quitando, a cualquier profundidad, las propiedades con nombre sensible.
     public static string? Serializar(object? valor)
     {
         if (valor is null)

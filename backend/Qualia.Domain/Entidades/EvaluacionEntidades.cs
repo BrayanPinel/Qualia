@@ -3,10 +3,8 @@ using Qualia.Domain.Enums;
 
 namespace Qualia.Domain.Entidades;
 
-/// <summary>
-/// Segmento de la transcripción. <see cref="Texto"/> contiene SIEMPRE el texto ya enmascarado (RN-14).
+/// Segmento de la transcripción. Texto contiene SIEMPRE el texto ya enmascarado (RN-14).
 /// Los tiempos de la evidencia provienen de aquí, nunca del LLM (RN-09).
-/// </summary>
 public class SegmentoTranscripcion : IEntidadEmpresa
 {
     public Guid EmpresaId { get; set; }
@@ -19,13 +17,11 @@ public class SegmentoTranscripcion : IEntidadEmpresa
     public string Texto { get; set; } = string.Empty;
 }
 
-/// <summary>
 /// Evaluación generada por IA (máximo una por llamada).
-/// Si <see cref="RequiereRevision"/> es false, el resultado de la IA es oficial sin intervención humana.
+/// Si RequiereRevision es false, el resultado de la IA es oficial sin intervención humana.
 /// Si es true (evidencia inválida, falta sin fragmento o nota cerca del umbral), no es oficial
 /// hasta que un Supervisor la confirme o la ajuste.
-/// <see cref="Revision"/> es el contador de concurrencia optimista (revisionEsperada).
-/// </summary>
+/// Revision es el contador de concurrencia optimista (revisionEsperada).
 public class EvaluacionIA : IEntidadEmpresa
 {
     public Guid EmpresaId { get; set; }
@@ -38,13 +34,13 @@ public class EvaluacionIA : IEntidadEmpresa
     public DateTime FechaEvaluacion { get; set; }
     public int Revision { get; set; } = 1;
 
-    /// <summary>Oficial: revisada por un supervisor o calificada por la IA sin fallas detectadas.</summary>
+    /// Oficial: revisada por un supervisor o calificada por la IA sin fallas detectadas.
     public bool EsOficial => Estado != EstadoEvaluacion.EvaluadaPorIA || !RequiereRevision;
 
     public ICollection<DetalleEvaluacion> Detalles { get; set; } = [];
 }
 
-/// <summary>Resultado de IA por criterio (uno por criterio de la rúbrica).</summary>
+/// Resultado de IA por criterio (uno por criterio de la rúbrica).
 public class DetalleEvaluacion : IEntidadEmpresa
 {
     public Guid EmpresaId { get; set; }
@@ -59,10 +55,8 @@ public class DetalleEvaluacion : IEntidadEmpresa
     public ICollection<EvidenciaCriterio> Evidencias { get; set; } = [];
 }
 
-/// <summary>
 /// Evidencia validada: la cita existe dentro del segmento indicado de la misma llamada.
 /// Una lista vacía representa explícitamente la ausencia de evidencia.
-/// </summary>
 public class EvidenciaCriterio : IEntidadEmpresa
 {
     public Guid EmpresaId { get; set; }

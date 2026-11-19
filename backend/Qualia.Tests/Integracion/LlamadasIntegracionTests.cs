@@ -16,10 +16,8 @@ using Sur = Qualia.Infrastructure.Persistence.Semillas.DatosDemo.Sur;
 
 namespace Qualia.Tests.Integracion;
 
-/// <summary>
 /// Recorrido del Rol D contra PostgreSQL real: precarga → inicio de evaluación → worker →
 /// transcripción enmascarada → evaluación simulada con evidencia → consulta, más permisos y aislamiento.
-/// </summary>
 [Collection(ColeccionPostgres.Nombre)]
 public sealed class LlamadasIntegracionTests : IAsyncLifetime
 {
