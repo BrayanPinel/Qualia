@@ -4,6 +4,7 @@ using Qualia.Application.Common.Errores;
 using Qualia.Application.Common.Models;
 using Qualia.Application.Features.Campanas;
 using Qualia.Application.Features.Campanas.Dtos;
+using Qualia.API.Seguridad;
 
 namespace Qualia.API.Controllers;
 
@@ -11,7 +12,7 @@ namespace Qualia.API.Controllers;
 /// El controlador solo traduce HTTP; permisos, reglas y persistencia están en Application.
 [ApiController]
 [Authorize]
-[Route("api/campanas")]
+[Route(RutasEmpresa.Prefijo + "/campanas")]
 [Produces("application/json")]
 [ProducesResponseType<ErrorDto>(StatusCodes.Status401Unauthorized)]
 [ProducesResponseType<ErrorDto>(StatusCodes.Status403Forbidden)]

@@ -12,7 +12,7 @@ using Qualia.Domain.Enums;
 namespace Qualia.Application.Features.Campanas;
 
 /// Casos de uso de campañas y asignaciones:
-/// GET/POST/PUT /api/campanas y GET/PUT/DELETE /api/campanas/{id}/usuarios[/{usuarioId}].
+/// GET/POST/PUT /api/empresas/{empresaId}/campanas y GET/PUT/DELETE /api/empresas/{empresaId}/campanas/{id}/usuarios[/{usuarioId}].
 /// El filtro global ya limita a la empresa del token; aquí se aplican el rol y el alcance.
 public sealed class GestionCampanas(
     IQualiaDbContext db,

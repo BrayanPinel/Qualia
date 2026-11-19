@@ -4,6 +4,7 @@ using Qualia.Application.Common.Errores;
 using Qualia.Application.Common.Models;
 using Qualia.Application.Features.Llamadas;
 using Qualia.Application.Features.Llamadas.Dtos;
+using Qualia.API.Seguridad;
 
 namespace Qualia.API.Controllers;
 
@@ -12,7 +13,7 @@ namespace Qualia.API.Controllers;
 
 [ApiController]
 [Authorize]
-[Route("api/llamadas")]
+[Route(RutasEmpresa.Prefijo + "/llamadas")]
 [Produces("application/json")]
 [ProducesResponseType<ErrorDto>(StatusCodes.Status401Unauthorized)]
 [ProducesResponseType<ErrorDto>(StatusCodes.Status403Forbidden)]
