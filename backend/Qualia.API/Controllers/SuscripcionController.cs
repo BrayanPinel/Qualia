@@ -17,6 +17,7 @@ namespace Qualia.API.Controllers;
 [ApiController]
 [Route(RutasEmpresa.Prefijo + "/suscripcion")]
 [Authorize(Roles = "AdminEmpresa")]
+[Tags("Suscripción y consumo")]
 public sealed class SuscripcionController : ControllerBase
 {
     private readonly ObtenerSuscripcionHandler _obtenerSuscripcionHandler;
@@ -31,6 +32,7 @@ public sealed class SuscripcionController : ControllerBase
     }
 
     [HttpGet]
+    [EndpointSummary("Suscripción vigente")]
     [ProducesResponseType(typeof(SuscripcionDto), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ErrorDto), StatusCodes.Status403Forbidden)]
     [ProducesResponseType(typeof(ErrorDto), StatusCodes.Status404NotFound)]
@@ -41,6 +43,7 @@ public sealed class SuscripcionController : ControllerBase
     }
 
     [HttpPost("pago-simulado")]
+    [EndpointSummary("Pago simulado")]
     [ProducesResponseType(typeof(SuscripcionDto), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ErrorDto), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ErrorDto), StatusCodes.Status403Forbidden)]

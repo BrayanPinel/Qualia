@@ -16,10 +16,12 @@ namespace Qualia.API.Controllers;
 [Produces("application/json")]
 [ProducesResponseType<ErrorDto>(StatusCodes.Status401Unauthorized)]
 [ProducesResponseType<ErrorDto>(StatusCodes.Status403Forbidden)]
+[Tags("Usuarios")]
 public sealed class UsuariosController(GestionUsuarios usuarios) : ControllerBase
 {
     /// Usuarios de la empresa, paginados y ordenados por nombre.
     [HttpGet]
+    [EndpointSummary("Listar usuarios")]
     [ProducesResponseType<PaginaDto<UsuarioDto>>(StatusCodes.Status200OK)]
     [ProducesResponseType<ErrorDto>(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<PaginaDto<UsuarioDto>>> Listar([FromQuery] PaginacionDto paginacion, CancellationToken ct) =>
@@ -27,6 +29,7 @@ public sealed class UsuariosController(GestionUsuarios usuarios) : ControllerBas
 
     /// Crea un usuario de la empresa (AdminEmpresa, Supervisor, Agente o Auditor).
     [HttpPost]
+    [EndpointSummary("Crear usuario")]
     [ProducesResponseType<UsuarioDto>(StatusCodes.Status201Created)]
     [ProducesResponseType<ErrorDto>(StatusCodes.Status400BadRequest)]
     [ProducesResponseType<ErrorDto>(StatusCodes.Status409Conflict)]
@@ -35,6 +38,7 @@ public sealed class UsuariosController(GestionUsuarios usuarios) : ControllerBas
 
     /// Cambia nombre y estado. No permite dejar a la empresa sin AdminEmpresa activo.
     [HttpPut("{id:guid}")]
+    [EndpointSummary("Actualizar usuario")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType<ErrorDto>(StatusCodes.Status400BadRequest)]
     [ProducesResponseType<ErrorDto>(StatusCodes.Status404NotFound)]

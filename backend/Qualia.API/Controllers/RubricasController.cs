@@ -15,10 +15,12 @@ namespace Qualia.API.Controllers;
 [ProducesResponseType<ErrorDto>(StatusCodes.Status401Unauthorized)]
 [ProducesResponseType<ErrorDto>(StatusCodes.Status403Forbidden)]
 [ProducesResponseType<ErrorDto>(StatusCodes.Status404NotFound)]
+[Tags("Rúbricas")]
 public sealed class RubricasController(GestionRubricas rubricas) : ControllerBase
 {
     /// Reemplaza nombre y criterios. Solo una rúbrica en Borrador (409 si ya fue publicada).
     [HttpPut("{id:guid}")]
+    [EndpointSummary("Editar rúbrica en borrador")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType<ErrorDto>(StatusCodes.Status400BadRequest)]
     [ProducesResponseType<ErrorDto>(StatusCodes.Status409Conflict)]
@@ -30,6 +32,7 @@ public sealed class RubricasController(GestionRubricas rubricas) : ControllerBas
 
     /// Publica el borrador (pesos = 100) y retira la versión activa anterior de la campaña.
     [HttpPost("{id:guid}/publicar")]
+    [EndpointSummary("Publicar rúbrica")]
     [ProducesResponseType<RubricaDto>(StatusCodes.Status200OK)]
     [ProducesResponseType<ErrorDto>(StatusCodes.Status400BadRequest)]
     [ProducesResponseType<ErrorDto>(StatusCodes.Status409Conflict)]

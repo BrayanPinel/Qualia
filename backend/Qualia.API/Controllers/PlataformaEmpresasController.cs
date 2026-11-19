@@ -17,6 +17,7 @@ namespace Qualia.API.Controllers;
 [ApiController]
 [Route("api/plataforma/empresas")]
 [Authorize(Roles = "PlatformAdmin")]
+[Tags("Plataforma")]
 public sealed class PlataformaEmpresasController : ControllerBase
 {
     private readonly ListarEmpresasComercialesHandler _listarHandler;
@@ -31,6 +32,7 @@ public sealed class PlataformaEmpresasController : ControllerBase
     }
 
     [HttpGet]
+    [EndpointSummary("Listar empresas")]
     [ProducesResponseType(typeof(PaginaDto<EmpresaComercialDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ErrorDto), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> ListarEmpresas(
@@ -46,6 +48,7 @@ public sealed class PlataformaEmpresasController : ControllerBase
     }
 
     [HttpPut("{empresaId:guid}/suscripcion")]
+    [EndpointSummary("Cambiar suscripción de una empresa")]
     [ProducesResponseType(typeof(SuscripcionDto), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ErrorDto), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ErrorDto), StatusCodes.Status404NotFound)]

@@ -16,10 +16,12 @@ namespace Qualia.API.Controllers;
 [Produces("application/json")]
 [ProducesResponseType<ErrorDto>(StatusCodes.Status401Unauthorized)]
 [ProducesResponseType<ErrorDto>(StatusCodes.Status403Forbidden)]
+[Tags("Campañas")]
 public sealed class CampanasController(GestionCampanas campanas, GestionRubricas rubricas) : ControllerBase
 {
     /// Campañas visibles según el rol (AdminEmpresa/Auditor: todas; Supervisor/Agente: las suyas).
     [HttpGet]
+    [EndpointSummary("Listar campañas")]
     [ProducesResponseType<PaginaDto<CampanaDto>>(StatusCodes.Status200OK)]
     [ProducesResponseType<ErrorDto>(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<PaginaDto<CampanaDto>>> Listar([FromQuery] PaginacionDto paginacion, CancellationToken ct) =>
@@ -27,6 +29,7 @@ public sealed class CampanasController(GestionCampanas campanas, GestionRubricas
 
     /// Crea una campaña (AdminEmpresa).
     [HttpPost]
+    [EndpointSummary("Crear campaña")]
     [ProducesResponseType<CampanaDto>(StatusCodes.Status201Created)]
     [ProducesResponseType<ErrorDto>(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<CampanaDto>> Crear([FromBody] GuardarCampanaDto dto, CancellationToken ct) =>
@@ -34,6 +37,7 @@ public sealed class CampanasController(GestionCampanas campanas, GestionRubricas
 
     /// Actualiza nombre y estado de una campaña (AdminEmpresa).
     [HttpPut("{id:guid}")]
+    [EndpointSummary("Actualizar campaña")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType<ErrorDto>(StatusCodes.Status400BadRequest)]
     [ProducesResponseType<ErrorDto>(StatusCodes.Status404NotFound)]
@@ -45,6 +49,7 @@ public sealed class CampanasController(GestionCampanas campanas, GestionRubricas
 
     /// Usuarios asignados a la campaña (AdminEmpresa).
     [HttpGet("{id:guid}/usuarios")]
+    [EndpointSummary("Usuarios asignados a la campaña")]
     [ProducesResponseType<PaginaDto<UsuarioDto>>(StatusCodes.Status200OK)]
     [ProducesResponseType<ErrorDto>(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<PaginaDto<UsuarioDto>>> ListarUsuarios(Guid id, [FromQuery] PaginacionDto paginacion, CancellationToken ct) =>
@@ -52,6 +57,7 @@ public sealed class CampanasController(GestionCampanas campanas, GestionRubricas
 
     /// Asigna un Agente o Supervisor de la empresa a la campaña. Idempotente.
     [HttpPut("{id:guid}/usuarios/{usuarioId:guid}")]
+    [EndpointSummary("Asignar usuario a la campaña")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType<ErrorDto>(StatusCodes.Status404NotFound)]
     [ProducesResponseType<ErrorDto>(StatusCodes.Status409Conflict)]
@@ -63,6 +69,7 @@ public sealed class CampanasController(GestionCampanas campanas, GestionRubricas
 
     /// Revoca la asignación del usuario a la campaña. Idempotente.
     [HttpDelete("{id:guid}/usuarios/{usuarioId:guid}")]
+    [EndpointSummary("Revocar asignación")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType<ErrorDto>(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> RevocarUsuario(Guid id, Guid usuarioId, CancellationToken ct)
@@ -73,6 +80,7 @@ public sealed class CampanasController(GestionCampanas campanas, GestionRubricas
 
     /// Versiones de rúbrica de la campaña (AdminEmpresa o Supervisor asignado).
     [HttpGet("{id:guid}/rubricas")]
+    [EndpointSummary("Versiones de rúbrica de la campaña")]
     [ProducesResponseType<IReadOnlyList<RubricaDto>>(StatusCodes.Status200OK)]
     [ProducesResponseType<ErrorDto>(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<IReadOnlyList<RubricaDto>>> ListarRubricas(Guid id, CancellationToken ct) =>
@@ -80,6 +88,7 @@ public sealed class CampanasController(GestionCampanas campanas, GestionRubricas
 
     /// Crea una nueva versión de rúbrica en Borrador (AdminEmpresa).
     [HttpPost("{id:guid}/rubricas")]
+    [EndpointSummary("Crear rúbrica en borrador")]
     [ProducesResponseType<RubricaDto>(StatusCodes.Status201Created)]
     [ProducesResponseType<ErrorDto>(StatusCodes.Status400BadRequest)]
     [ProducesResponseType<ErrorDto>(StatusCodes.Status404NotFound)]

@@ -16,6 +16,7 @@ namespace Qualia.API.Controllers;
 [ApiController]
 [Route(RutasEmpresa.Prefijo + "/consumo")]
 [Authorize(Roles = "AdminEmpresa")]
+[Tags("Suscripción y consumo")]
 public sealed class ConsumoController : ControllerBase
 {
     private readonly ConsultarConsumoHandler _consultarConsumoHandler;
@@ -27,6 +28,7 @@ public sealed class ConsumoController : ControllerBase
     }
 
     [HttpGet]
+    [EndpointSummary("Consumo mensual de minutos")]
     [ProducesResponseType(typeof(ConsumoDto), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ErrorDto), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ErrorDto), StatusCodes.Status403Forbidden)]

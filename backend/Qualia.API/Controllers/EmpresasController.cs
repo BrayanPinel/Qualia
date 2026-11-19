@@ -10,11 +10,13 @@ namespace Qualia.API.Controllers;
 [ApiController]
 [Route("api/empresas")]
 [Produces("application/json")]
+[Tags("Registro de empresas")]
 public sealed class EmpresasController(RegistroEmpresa registro) : ControllerBase
 {
     /// Crea la empresa, su usuario AdminEmpresa y la suscripción de prueba del plan elegido
     /// en una sola transacción.
     [HttpPost]
+    [EndpointSummary("Registrar empresa")]
     [AllowAnonymous]
     [ProducesResponseType<EmpresaRegistradaDto>(StatusCodes.Status201Created)]
     [ProducesResponseType<ErrorDto>(StatusCodes.Status400BadRequest)]

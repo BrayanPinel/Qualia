@@ -18,16 +18,19 @@ namespace Qualia.API.Controllers;
 [ProducesResponseType<ErrorDto>(StatusCodes.Status403Forbidden)]
 [ProducesResponseType<ErrorDto>(StatusCodes.Status404NotFound)]
 [ProducesResponseType<ErrorDto>(StatusCodes.Status409Conflict)]
+[Tags("Revisión humana")]
 public sealed class EvaluacionesController(RevisionEvaluaciones revision) : ControllerBase
 {
     /// Confirma la evaluación con la revisión esperada (409 si otra revisión se adelantó).
     [HttpPost("{id:guid}/confirmar")]
+    [EndpointSummary("Confirmar evaluación")]
     [ProducesResponseType<EvaluacionDto>(StatusCodes.Status200OK)]
     public async Task<ActionResult<EvaluacionDto>> Confirmar(Guid id, [FromBody] ConfirmarEvaluacionDto dto, CancellationToken ct) =>
         Ok(await revision.ConfirmarAsync(id, dto, ct));
 
     /// Ajuste completo con motivo, puntajes, justificaciones y evidencias; conserva el resultado de IA.
     [HttpPut("{id:guid}/ajuste")]
+    [EndpointSummary("Ajustar evaluación")]
     [ProducesResponseType<EvaluacionDto>(StatusCodes.Status200OK)]
     public async Task<ActionResult<EvaluacionDto>> Ajustar(Guid id, [FromBody] AjustarEvaluacionDto dto, CancellationToken ct) =>
         Ok(await revision.AjustarAsync(id, dto, ct));

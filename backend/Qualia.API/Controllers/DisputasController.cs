@@ -15,10 +15,12 @@ namespace Qualia.API.Controllers;
 [Produces("application/json")]
 [ProducesResponseType<ErrorDto>(StatusCodes.Status401Unauthorized)]
 [ProducesResponseType<ErrorDto>(StatusCodes.Status403Forbidden)]
+[Tags("Disputas")]
 public sealed class DisputasController(GestionDisputas disputas) : ControllerBase
 {
     /// El agente propietario disputa una evaluación oficial (plan con disputas).
     [HttpPost("evaluaciones/{id:guid}/disputas")]
+    [EndpointSummary("Disputar evaluación")]
     [ProducesResponseType<DisputaDto>(StatusCodes.Status201Created)]
     [ProducesResponseType<ErrorDto>(StatusCodes.Status400BadRequest)]
     [ProducesResponseType<ErrorDto>(StatusCodes.Status404NotFound)]
@@ -28,6 +30,7 @@ public sealed class DisputasController(GestionDisputas disputas) : ControllerBas
 
     /// Disputas visibles según el rol, con estado opcional (Abierta o Resuelta).
     [HttpGet("disputas")]
+    [EndpointSummary("Listar disputas")]
     [ProducesResponseType<PaginaDto<DisputaDto>>(StatusCodes.Status200OK)]
     [ProducesResponseType<ErrorDto>(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<PaginaDto<DisputaDto>>> Listar([FromQuery] FiltroDisputasDto filtro, CancellationToken ct) =>
@@ -35,6 +38,7 @@ public sealed class DisputasController(GestionDisputas disputas) : ControllerBas
 
     /// El supervisor asignado mantiene o modifica las notas con justificación.
     [HttpPut("disputas/{id:guid}/resolucion")]
+    [EndpointSummary("Resolver disputa")]
     [ProducesResponseType<DisputaDto>(StatusCodes.Status200OK)]
     [ProducesResponseType<ErrorDto>(StatusCodes.Status400BadRequest)]
     [ProducesResponseType<ErrorDto>(StatusCodes.Status404NotFound)]

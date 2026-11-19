@@ -10,10 +10,12 @@ namespace Qualia.API.Controllers;
 [ApiController]
 [Route("api/auth")]
 [Produces("application/json")]
+[Tags("Autenticación")]
 public sealed class AutenticacionController(InicioSesion inicioSesion) : ControllerBase
 {
     /// Devuelve un token Bearer con la empresa y el rol del usuario.
     [HttpPost("login")]
+    [EndpointSummary("Login de usuario de empresa")]
     [AllowAnonymous]
     [ProducesResponseType<SesionDto>(StatusCodes.Status200OK)]
     [ProducesResponseType<ErrorDto>(StatusCodes.Status400BadRequest)]
@@ -27,10 +29,12 @@ public sealed class AutenticacionController(InicioSesion inicioSesion) : Control
 [ApiController]
 [Route("api/plataforma/auth")]
 [Produces("application/json")]
+[Tags("Autenticación")]
 public sealed class PlataformaAutenticacionController(InicioSesion inicioSesion) : ControllerBase
 {
     /// Devuelve un token Bearer con rol PlatformAdmin (sin empresa).
     [HttpPost("login")]
+    [EndpointSummary("Login de PlatformAdmin")]
     [AllowAnonymous]
     [ProducesResponseType<SesionPlataformaDto>(StatusCodes.Status200OK)]
     [ProducesResponseType<ErrorDto>(StatusCodes.Status400BadRequest)]

@@ -42,7 +42,9 @@ builder.Services.AddControllers(o => o.Filters.Add<FiltroEmpresaDeRuta>())
 builder.Services.Configure<ApiBehaviorOptions>(o =>
     o.InvalidModelStateResponseFactory = RespuestaModeloInvalido.Crear);
 
-builder.Services.AddOpenApi();
+// Documento OpenAPI con los esquemas de autenticación (Scalar muestra dónde poner el token).
+var modoDemoOpenApi = builder.Environment.IsDevelopment() && builder.Configuration.GetValue<bool>("Autenticacion:ModoDemo");
+builder.Services.AddOpenApi(o => o.AgregarSeguridadQualia(modoDemoOpenApi));
 
 var app = builder.Build();
 

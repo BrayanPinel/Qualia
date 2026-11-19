@@ -9,6 +9,7 @@ namespace Qualia.API.Controllers;
 /// Catálogo público de planes activos y sus funciones habilitadas (GET /api/planes).
 [ApiController]
 [Route("api/planes")]
+[Tags("Planes")]
 public sealed class PlanesController : ControllerBase
 {
     private readonly ListarPlanesHandler _listarPlanesHandler;
@@ -19,6 +20,7 @@ public sealed class PlanesController : ControllerBase
     }
 
     [HttpGet]
+    [EndpointSummary("Catálogo de planes")]
     [AllowAnonymous]
     [ProducesResponseType(typeof(IReadOnlyList<PlanDto>), StatusCodes.Status200OK)]
     public async Task<IActionResult> ObtenerPlanes(CancellationToken cancellationToken)

@@ -17,10 +17,12 @@ namespace Qualia.API.Controllers;
 [Produces("application/json")]
 [ProducesResponseType<ErrorDto>(StatusCodes.Status401Unauthorized)]
 [ProducesResponseType<ErrorDto>(StatusCodes.Status403Forbidden)]
+[Tags("Llamadas")]
 public sealed class LlamadasController(ConsultasLlamadas consultas, IniciarEvaluacion iniciarEvaluacion) : ControllerBase
 {
     /// Lista las llamadas visibles para el usuario (AdminEmpresa, Supervisor asignado, Agente propietario).
     [HttpGet]
+    [EndpointSummary("Listar llamadas")]
     [ProducesResponseType<PaginaDto<LlamadaDto>>(StatusCodes.Status200OK)]
     [ProducesResponseType<ErrorDto>(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<PaginaDto<LlamadaDto>>> Listar([FromQuery] FiltroLlamadasDto filtro, CancellationToken ct) =>
@@ -28,6 +30,7 @@ public sealed class LlamadasController(ConsultasLlamadas consultas, IniciarEvalu
 
     /// Detalle y estado de una llamada.
     [HttpGet("{id:guid}")]
+    [EndpointSummary("Detalle y estado de la llamada")]
     [ProducesResponseType<LlamadaDto>(StatusCodes.Status200OK)]
     [ProducesResponseType<ErrorDto>(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<LlamadaDto>> Obtener(Guid id, CancellationToken ct) =>
@@ -35,6 +38,7 @@ public sealed class LlamadasController(ConsultasLlamadas consultas, IniciarEvalu
 
     /// Transcripción enmascarada, ordenada por segmento.
     [HttpGet("{id:guid}/transcripcion")]
+    [EndpointSummary("Transcripción enmascarada")]
     [ProducesResponseType<IReadOnlyList<SegmentoDto>>(StatusCodes.Status200OK)]
     [ProducesResponseType<ErrorDto>(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<IReadOnlyList<SegmentoDto>>> Transcripcion(Guid id, CancellationToken ct) =>
@@ -42,6 +46,7 @@ public sealed class LlamadasController(ConsultasLlamadas consultas, IniciarEvalu
 
     /// URL temporal y firmada para reproducir el audio. El acceso queda auditado.
     [HttpGet("{id:guid}/audio")]
+    [EndpointSummary("URL firmada del audio")]
     [ProducesResponseType<AccesoAudioDto>(StatusCodes.Status200OK)]
     [ProducesResponseType<ErrorDto>(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<AccesoAudioDto>> Audio(Guid id, CancellationToken ct) =>
@@ -49,6 +54,7 @@ public sealed class LlamadasController(ConsultasLlamadas consultas, IniciarEvalu
 
     /// Evaluación con puntajes (IA, humano y vigente), justificación y evidencia por criterio.
     [HttpGet("{id:guid}/evaluacion")]
+    [EndpointSummary("Evaluación de la llamada")]
     [ProducesResponseType<EvaluacionDto>(StatusCodes.Status200OK)]
     [ProducesResponseType<ErrorDto>(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<EvaluacionDto>> Evaluacion(Guid id, CancellationToken ct) =>
@@ -56,6 +62,7 @@ public sealed class LlamadasController(ConsultasLlamadas consultas, IniciarEvalu
 
     /// El Supervisor asignado inicia la evaluación: reserva minutos y encola el procesamiento.
     [HttpPost("{id:guid}/evaluacion")]
+    [EndpointSummary("Iniciar evaluación con IA")]
     [ProducesResponseType<EvaluacionAceptadaDto>(StatusCodes.Status202Accepted)]
     [ProducesResponseType<ErrorDto>(StatusCodes.Status404NotFound)]
     [ProducesResponseType<ErrorDto>(StatusCodes.Status409Conflict)]
