@@ -5,22 +5,20 @@ using Qualia.Infrastructure.Audio;
 
 namespace Qualia.Infrastructure.IA;
 
-/// <summary>
 /// Ground data de una llamada demo: qué actor habla en cada intervalo.
 /// Lo genera herramientas/GenerarAudiosDemo.cs junto al audio (*.ground.json).
-/// </summary>
 public sealed record GroundData(string Archivo, string? Descripcion, decimal DuracionSeg, IReadOnlyList<SegmentoGround> Segmentos);
 
 public sealed record SegmentoGround(int Orden, string Actor, decimal InicioSeg, decimal FinSeg, string Texto);
 
-/// <summary>Lee los archivos *.ground.json que acompañan a los audios de demostración.</summary>
+/// Lee los archivos *.ground.json que acompañan a los audios de demostración.
 public sealed class LectorGroundData(IOptions<OpcionesAudio> opciones, IHostEnvironment entorno)
 {
     private static readonly JsonSerializerOptions Json = new(JsonSerializerDefaults.Web);
 
     public string DirectorioAudios => Path.GetFullPath(Path.Combine(entorno.ContentRootPath, opciones.Value.DirectorioBase));
 
-    /// <returns>null si la llamada no tiene ground data.</returns>
+    /// Devuelve null si la llamada no tiene ground data.
     public GroundData? Leer(string archivoRuta)
     {
         var rutaAudio = Path.GetFullPath(Path.Combine(DirectorioAudios, archivoRuta));
@@ -33,7 +31,7 @@ public sealed class LectorGroundData(IOptions<OpcionesAudio> opciones, IHostEnvi
         return File.Exists(rutaGround) ? JsonSerializer.Deserialize<GroundData>(File.ReadAllText(rutaGround), Json) : null;
     }
 
-    /// <summary>Todos los ground data disponibles.</summary>
+    /// Todos los ground data disponibles.
     public IReadOnlyList<GroundData> LeerTodos() =>
         Directory.Exists(DirectorioAudios)
             ? Directory.GetFiles(DirectorioAudios, "*.ground.json", SearchOption.AllDirectories)

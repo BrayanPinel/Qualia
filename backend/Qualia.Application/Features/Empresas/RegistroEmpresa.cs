@@ -11,11 +11,9 @@ using Qualia.Domain.Servicios;
 
 namespace Qualia.Application.Features.Empresas;
 
-/// <summary>
 /// POST /api/empresas (HU-01): crea Empresa, su Usuario AdminEmpresa y la suscripción de prueba con su
 /// periodo inicial en una sola transacción. Si algo falla no queda ningún registro parcial.
 /// No crea un Administrador global de la plataforma.
-/// </summary>
 public sealed class RegistroEmpresa(
     IQualiaDbContext db,
     IValidator<RegistrarEmpresaDto> validador,

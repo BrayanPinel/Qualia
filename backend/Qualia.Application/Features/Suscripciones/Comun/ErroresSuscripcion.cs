@@ -2,7 +2,7 @@ using Qualia.Application.Common.Resultados;
 
 namespace Qualia.Application.Features.Suscripciones.Comun;
 
-/// <summary>Códigos de error de negocio del módulo de suscripciones.</summary>
+/// Códigos de error de negocio del módulo de suscripciones.
 public static class ErroresSuscripcion
 {
     public const string CodigoSuscripcionNoEncontrada = "SUSCRIPCION_NO_ENCONTRADA";

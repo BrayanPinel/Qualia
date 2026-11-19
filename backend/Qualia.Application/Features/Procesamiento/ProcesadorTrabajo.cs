@@ -8,7 +8,6 @@ using Qualia.Domain.Enums;
 
 namespace Qualia.Application.Features.Procesamiento;
 
-/// <summary>
 /// Ejecuta UN intento de procesamiento de un trabajo ya reclamado (estado EnProceso).
 /// Debe ejecutarse en un scope cuyo IContextoEmpresa se estableció con la empresa del trabajo,
 /// de modo que todas las consultas quedan filtradas por esa empresa.
@@ -17,7 +16,6 @@ namespace Qualia.Application.Features.Procesamiento;
 /// 1. Transcripción + enmascarado → Segmento_transcripcion (se omite si ya existen segmentos).
 /// 2. Evaluación + validación de evidencia → Evaluacion_IA (se omite si ya existe).
 /// 3. Cierre en una transacción: llamada EvaluadaPorIA, trabajo Completado y consumo Facturado.
-/// </summary>
 public sealed class ProcesadorTrabajo(
     IQualiaDbContext db,
     ITranscriptor transcriptor,
@@ -159,7 +157,7 @@ public sealed class ProcesadorTrabajo(
         logger.LogInformation("Llamada {LlamadaId} evaluada por IA (trabajo {TrabajoId})", llamada.Id, trabajo.Id);
     }
 
-    /// <summary>Acumula en el consumo de la llamada el costo técnico de este intento (incluso si falla).</summary>
+    /// Acumula en el consumo de la llamada el costo técnico de este intento (incluso si falla).
     private async Task RegistrarUsoTecnicoAsync(Llamada llamada, UsoTecnicoIA uso, CancellationToken ct)
     {
         if (uso.EsCero)
@@ -222,11 +220,9 @@ public sealed class ProcesadorTrabajo(
         return resultado;
     }
 
-    /// <summary>
     /// Registra el fallo con datos frescos (se descarta lo pendiente del intento fallido).
     /// Fallo recuperable → ReintentoPendiente y la llamada vuelve a EnCola.
     /// Fallo definitivo → trabajo Fallido, llamada Fallida y consumo Liberado, en una transacción.
-    /// </summary>
     private async Task RegistrarFalloAsync(Guid trabajoId, Exception error, UsoTecnicoIA uso, CancellationToken ct)
     {
         db.LimpiarSeguimiento();

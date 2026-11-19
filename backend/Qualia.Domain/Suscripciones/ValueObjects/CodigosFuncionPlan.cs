@@ -1,25 +1,23 @@
 namespace Qualia.Domain.Suscripciones;
 
-/// <summary>
 /// Códigos de Funcion_plan.codigo_funcion (varchar(50)).
 /// Contrato compartido: los roles B y D deben usar estas constantes al consultar
 /// IConsultaPlanService.TieneFuncionAsync en lugar de literales.
-/// </summary>
 public static class CodigosFuncionPlan
 {
-    /// <summary>Evaluación asistida de llamadas (todos los planes).</summary>
+    /// Evaluación asistida de llamadas (todos los planes).
     public const string Evaluacion = "EVALUACION";
 
-    /// <summary>Scorecard individual básico (todos los planes).</summary>
+    /// Scorecard individual básico (todos los planes).
     public const string ScorecardBasico = "SCORECARD_BASICO";
 
-    /// <summary>Tendencia respecto al mes anterior (Pro y Enterprise).</summary>
+    /// Tendencia respecto al mes anterior (Pro y Enterprise).
     public const string Tendencia = "TENDENCIA";
 
-    /// <summary>Comparación por campaña / promedio de campaña (Pro y Enterprise).</summary>
+    /// Comparación por campaña / promedio de campaña (Pro y Enterprise).
     public const string ComparacionCampanas = "COMPARACION_CAMPANAS";
 
-    /// <summary>Disputas de evaluaciones por parte del agente (Pro y Enterprise).</summary>
+    /// Disputas de evaluaciones por parte del agente (Pro y Enterprise).
     public const string Disputas = "DISPUTAS";
 
     public static IReadOnlyList<string> Todos { get; } =

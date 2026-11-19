@@ -5,7 +5,7 @@ namespace Qualia.Domain.Entidades;
 
 // Rol B — Campañas, asignaciones y rúbricas versionadas.
 
-/// <summary>Tabla campana.</summary>
+/// Tabla campana.
 public class Campana : IEntidadEmpresa
 {
     public Guid EmpresaId { get; set; }
@@ -14,10 +14,8 @@ public class Campana : IEntidadEmpresa
     public bool Activo { get; set; } = true;
 }
 
-/// <summary>
 /// Tabla puente usuario_campana. PK (empresa_id, usuario_id, campana_id).
 /// Solo se asignan usuarios con rol Agente o Supervisor de la misma empresa (RN-03).
-/// </summary>
 public class UsuarioCampana : IEntidadEmpresa
 {
     public Guid EmpresaId { get; set; }
@@ -27,11 +25,9 @@ public class UsuarioCampana : IEntidadEmpresa
     public static bool RolAsignable(RolEmpresa rol) => rol is RolEmpresa.Agente or RolEmpresa.Supervisor;
 }
 
-/// <summary>
 /// Tabla rubrica: una VERSIÓN de rúbrica de una campaña.
 /// Borrador → Activa (publicada) → Retirada. Una versión publicada es inmutable (RN-04)
 /// y una campaña tiene como máximo una versión Activa (índice único parcial).
-/// </summary>
 public class Rubrica : IEntidadEmpresa
 {
     public const int MinimoCriterios = 1;
@@ -48,10 +44,10 @@ public class Rubrica : IEntidadEmpresa
 
     public ICollection<CriterioRubrica> Criterios { get; set; } = [];
 
-    /// <summary>Una rúbrica Activa o Retirada ya fue publicada y es inmutable (RN-04).</summary>
+    /// Una rúbrica Activa o Retirada ya fue publicada y es inmutable (RN-04).
     public bool EstaPublicada => Estado != EstadoRubrica.Borrador;
 
-    /// <summary>Solo un borrador puede modificarse; una versión publicada nunca cambia (RN-04).</summary>
+    /// Solo un borrador puede modificarse; una versión publicada nunca cambia (RN-04).
     public void AsegurarEditable()
     {
         if (EstaPublicada)
@@ -62,10 +58,8 @@ public class Rubrica : IEntidadEmpresa
         }
     }
 
-    /// <summary>
     /// Publica el borrador: exige entre 1 y 30 criterios, pesos positivos que sumen exactamente 100,
     /// umbrales entre 0 y 100 y nombres de criterio sin duplicar (RN-04, RN-05).
-    /// </summary>
     public void Publicar()
     {
         AsegurarEditable();
@@ -79,7 +73,7 @@ public class Rubrica : IEntidadEmpresa
         Estado = EstadoRubrica.Activa;
     }
 
-    /// <summary>La versión activa deja de usarse para nuevas llamadas; se conserva para las históricas (RN-07).</summary>
+    /// La versión activa deja de usarse para nuevas llamadas; se conserva para las históricas (RN-07).
     public void Retirar()
     {
         if (Estado != EstadoRubrica.Activa)
@@ -90,7 +84,7 @@ public class Rubrica : IEntidadEmpresa
         Estado = EstadoRubrica.Retirada;
     }
 
-    /// <summary>Reglas que debe cumplir el conjunto de criterios para publicarse. Lista vacía = válido.</summary>
+    /// Reglas que debe cumplir el conjunto de criterios para publicarse. Lista vacía = válido.
     public static IReadOnlyList<string> ErroresDePublicacion(IEnumerable<CriterioRubrica> criterios)
     {
         var lista = criterios.ToList();
@@ -126,7 +120,7 @@ public class Rubrica : IEntidadEmpresa
         return errores;
     }
 
-    /// <summary>Comparación sin distinguir mayúsculas ni espacios sobrantes.</summary>
+    /// Comparación sin distinguir mayúsculas ni espacios sobrantes.
     public static IReadOnlyList<string> NombresDuplicados(IEnumerable<string> nombres) =>
         nombres
             .Select(n => n.Trim())
@@ -136,7 +130,7 @@ public class Rubrica : IEntidadEmpresa
             .ToList();
 }
 
-/// <summary>Tabla criterio_rubrica.</summary>
+/// Tabla criterio_rubrica.
 public class CriterioRubrica : IEntidadEmpresa
 {
     public Guid EmpresaId { get; set; }

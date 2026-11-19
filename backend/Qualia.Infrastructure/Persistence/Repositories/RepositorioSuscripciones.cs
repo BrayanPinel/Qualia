@@ -5,11 +5,9 @@ using Qualia.Domain.Suscripciones;
 
 namespace Qualia.Infrastructure.Persistence.Repositories;
 
-/// <summary>
-/// Implementación en EF Core / PostgreSQL de <see cref="IRepositorioSuscripciones"/>.
-/// Comparte la instancia de <see cref="QualiaDbContext"/> del scope para participar
+/// Implementación en EF Core / PostgreSQL de IRepositorioSuscripciones.
+/// Comparte la instancia de QualiaDbContext del scope para participar
 /// en la misma unidad de trabajo transaccional que otros módulos.
-/// </summary>
 public sealed class RepositorioSuscripciones : IRepositorioSuscripciones
 {
     private readonly QualiaDbContext _context;

@@ -11,10 +11,8 @@ using Qualia.Application.Common.Errores;
 
 namespace Qualia.API.Controllers;
 
-/// <summary>
 /// Consulta de la suscripción vigente y procesamiento de pagos simulados de la empresa autenticada
 /// (GET /api/suscripcion y POST /api/suscripcion/pago-simulado).
-/// </summary>
 [ApiController]
 [Route("api/suscripcion")]
 [Authorize(Roles = "AdminEmpresa")]

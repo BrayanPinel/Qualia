@@ -2,24 +2,22 @@ using Qualia.Application.Features.Llamadas.Dtos;
 
 namespace Qualia.Application.Features.Llamadas;
 
-/// <summary>
 /// Emite y valida URLs temporales y firmadas para reproducir el audio de una llamada.
 /// La URL no contiene la ruta interna del archivo.
-/// </summary>
 public interface IGeneradorUrlAudio
 {
     AccesoAudioDto Generar(Guid empresaId, Guid llamadaId, string urlBase);
 
-    /// <summary>Valida firma y expiración. Devuelve false si el token fue alterado o expiró.</summary>
+    /// Valida firma y expiración. Devuelve false si el token fue alterado o expiró.
     bool Validar(string token, out Guid empresaId, out Guid llamadaId);
 }
 
-/// <summary>Acceso al contenido binario del audio (almacenamiento local, blob, etc.).</summary>
+/// Acceso al contenido binario del audio (almacenamiento local, blob, etc.).
 public interface IAlmacenamientoAudio
 {
-    /// <returns>null si el archivo no existe.</returns>
+    /// Devuelve null si el archivo no existe.
     Task<ContenidoAudio?> AbrirAsync(string archivoRuta, decimal duracionSeg, CancellationToken cancellationToken);
 }
 
-/// <param name="EsSintetico">true si no existe la grabación y se generó un audio de relleno.</param>
+/// EsSintetico: true si no existe la grabación y se generó un audio de relleno.
 public sealed record ContenidoAudio(Stream Contenido, string TipoContenido, bool EsSintetico = false);

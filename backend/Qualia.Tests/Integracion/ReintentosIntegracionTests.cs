@@ -12,7 +12,7 @@ using Norte = Qualia.Infrastructure.Persistence.Semillas.DatosDemo.Norte;
 
 namespace Qualia.Tests.Integracion;
 
-/// <summary>Reintentos limitados, motivo de fallo saneado y liberación del consumo (HU-13, RN-13).</summary>
+/// Reintentos limitados, motivo de fallo saneado y liberación del consumo (HU-13, RN-13).
 [Collection(ColeccionPostgres.Nombre)]
 public sealed class ReintentosIntegracionTests(PostgresFixture postgres)
 {

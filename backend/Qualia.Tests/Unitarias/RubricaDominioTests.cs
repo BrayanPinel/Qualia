@@ -9,7 +9,7 @@ using Qualia.Domain.Enums;
 
 namespace Qualia.Tests.Unitarias;
 
-/// <summary>Reglas de rúbricas versionadas (RN-04, RN-05) y forma de las peticiones del Rol B.</summary>
+/// Reglas de rúbricas versionadas (RN-04, RN-05) y forma de las peticiones del Rol B.
 public sealed class RubricaDominioTests
 {
     private static CriterioRubrica Criterio(string nombre, decimal peso, decimal umbral = 70) =>

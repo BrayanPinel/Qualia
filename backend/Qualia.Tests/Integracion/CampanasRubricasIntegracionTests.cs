@@ -11,10 +11,8 @@ using Sur = Qualia.Infrastructure.Persistence.Semillas.DatosDemo.Sur;
 
 namespace Qualia.Tests.Integracion;
 
-/// <summary>
 /// Rol B contra PostgreSQL real: campañas, asignaciones y rúbricas versionadas, con permisos por rol
 /// y aislamiento entre las empresas Norte y Sur.
-/// </summary>
 [Collection(ColeccionPostgres.Nombre)]
 public sealed class CampanasRubricasIntegracionTests : IAsyncLifetime
 {

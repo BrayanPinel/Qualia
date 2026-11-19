@@ -3,7 +3,7 @@ using Testcontainers.PostgreSql;
 
 namespace Qualia.Tests.Integracion.Infraestructura;
 
-/// <summary>Un contenedor PostgreSQL 16 compartido por todas las pruebas de integración.</summary>
+/// Un contenedor PostgreSQL 16 compartido por todas las pruebas de integración.
 public sealed class PostgresFixture : IAsyncLifetime
 {
     private PostgreSqlContainer? _contenedor;
@@ -41,7 +41,7 @@ public sealed class ColeccionPostgres : ICollectionFixture<PostgresFixture>
     public const string Nombre = "PostgreSQL";
 }
 
-/// <summary>Las pruebas de integración se omiten (no fallan) si Docker no está en ejecución.</summary>
+/// Las pruebas de integración se omiten (no fallan) si Docker no está en ejecución.
 public sealed class FactConDockerAttribute : FactAttribute
 {
     public FactConDockerAttribute()

@@ -10,10 +10,8 @@ using Qualia.Application.Common.Errores;
 
 namespace Qualia.API.Controllers;
 
-/// <summary>
 /// Consulta de minutos contratados, reservados, facturables, disponibles y excedentes
 /// por periodo mensual UTC (GET /api/consumo?periodo=YYYY-MM).
-/// </summary>
 [ApiController]
 [Route("api/consumo")]
 [Authorize(Roles = "AdminEmpresa")]

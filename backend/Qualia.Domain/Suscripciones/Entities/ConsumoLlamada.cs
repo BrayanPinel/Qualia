@@ -2,15 +2,13 @@ using Qualia.Domain.Common;
 
 namespace Qualia.Domain.Suscripciones;
 
-/// <summary>
 /// Consumo asociado a una llamada (tabla empresarial consumo_llamada).
 /// Cero o uno por llamada: UNIQUE (empresa_id, llamada_id).
-/// Ciclo de vida: nace <see cref="EstadoConsumo.Reservado"/>; al completar
-/// pasa a <see cref="EstadoConsumo.Facturado"/> y ante fallo definitivo a
-/// <see cref="EstadoConsumo.Liberado"/>. Los reintentos reutilizan el mismo registro.
+/// Ciclo de vida: nace EstadoConsumo.Reservado; al completar
+/// pasa a EstadoConsumo.Facturado y ante fallo definitivo a
+/// EstadoConsumo.Liberado. Los reintentos reutilizan el mismo registro.
 /// Una llamada perdida (fallo definitivo) puede volver a evaluarse: el consumo liberado
 /// se reactiva en el mismo registro, de modo que nunca hay dos consumos por llamada.
-/// </summary>
 public sealed class ConsumoLlamada : IEntidadEmpresa
 {
     public const int LongitudMaximaEstado = 20;
@@ -44,16 +42,14 @@ public sealed class ConsumoLlamada : IEntidadEmpresa
 
     public PeriodoConsumo? Periodo { get; private set; }
 
-    /// <summary>
     /// duracion_seg / 60 redondeado hacia arriba a dos decimales.
-    /// </summary>
     public static decimal CalcularMinutos(decimal duracionSeg)
     {
         ArgumentOutOfRangeException.ThrowIfNegative(duracionSeg);
         return Math.Ceiling(duracionSeg / 60m * 100m) / 100m;
     }
 
-    /// <summary>Crea la reserva inicial de minutos contra el periodo indicado.</summary>
+    /// Crea la reserva inicial de minutos contra el periodo indicado.
     public static ConsumoLlamada Reservar(PeriodoConsumo periodo, Guid llamadaId, decimal duracionSeg)
     {
         ArgumentNullException.ThrowIfNull(periodo);
@@ -76,10 +72,8 @@ public sealed class ConsumoLlamada : IEntidadEmpresa
         };
     }
 
-    /// <summary>
     /// Reintento de una llamada perdida: un consumo liberado vuelve a Reservado contra el periodo
     /// en que se reinicia la evaluación. El costo técnico acumulado se conserva.
-    /// </summary>
     public void Reactivar(PeriodoConsumo periodo, decimal duracionSeg)
     {
         ArgumentNullException.ThrowIfNull(periodo);
@@ -102,7 +96,7 @@ public sealed class ConsumoLlamada : IEntidadEmpresa
         Estado = EstadoConsumo.Reservado;
     }
 
-    /// <summary>Acumula el costo técnico, incluso si el procesamiento falla.</summary>
+    /// Acumula el costo técnico, incluso si el procesamiento falla.
     public void AcumularCostoTecnico(
         int tokensTranscriptor,
         int tokensEntradaEvaluador,
@@ -120,7 +114,7 @@ public sealed class ConsumoLlamada : IEntidadEmpresa
         CostoEstimado += costoEstimado;
     }
 
-    /// <summary>Mueve la reserva a facturable. Idempotente si ya estaba facturado.</summary>
+    /// Mueve la reserva a facturable. Idempotente si ya estaba facturado.
     public void Facturar()
     {
         switch (Estado)
@@ -137,7 +131,7 @@ public sealed class ConsumoLlamada : IEntidadEmpresa
         }
     }
 
-    /// <summary>Fallo definitivo: deja ambos importes en cero. Idempotente.</summary>
+    /// Fallo definitivo: deja ambos importes en cero. Idempotente.
     public void Liberar()
     {
         switch (Estado)

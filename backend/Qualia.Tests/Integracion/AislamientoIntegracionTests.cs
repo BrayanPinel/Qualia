@@ -17,10 +17,8 @@ using Sur = Qualia.Infrastructure.Persistence.Semillas.DatosDemo.Sur;
 
 namespace Qualia.Tests.Integracion;
 
-/// <summary>
 /// HU-08 de punta a punta con un JWT real de la empresa Norte: cualquier recurso de Sur responde 404
 /// en todos los módulos, los listados no lo incluyen y PostgreSQL rechaza las FK entre empresas.
-/// </summary>
 [Collection(ColeccionPostgres.Nombre)]
 public sealed class AislamientoIntegracionTests : IAsyncLifetime
 {

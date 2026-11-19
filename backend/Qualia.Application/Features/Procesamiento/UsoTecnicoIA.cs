@@ -1,10 +1,8 @@
 namespace Qualia.Application.Features.Procesamiento;
 
-/// <summary>
 /// Uso técnico de los proveedores de IA en UN intento de procesamiento.
 /// Se informa al módulo de consumo con IConsumoEvaluacion.RegistrarUsoTecnicoAsync,
 /// que lo acumula en Consumo_llamada incluso si la llamada falla.
-/// </summary>
 public sealed record UsoTecnicoIA(
     int TokensTranscriptor,
     int TokensEntradaEvaluador,

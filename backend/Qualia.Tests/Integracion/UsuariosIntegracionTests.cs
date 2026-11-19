@@ -21,11 +21,9 @@ using Sur = Qualia.Infrastructure.Persistence.Semillas.DatosDemo.Sur;
 
 namespace Qualia.Tests.Integracion;
 
-/// <summary>
 /// GET/POST/PUT /api/usuarios contra PostgreSQL real: alcance por empresa, unicidad del correo,
 /// límite de supervisores del plan, último AdminEmpresa (también con peticiones simultáneas)
 /// y revocación inmediata del token de un usuario desactivado.
-/// </summary>
 [Collection(ColeccionPostgres.Nombre)]
 public sealed class UsuariosIntegracionTests : IAsyncLifetime
 {

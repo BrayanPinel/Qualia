@@ -10,11 +10,9 @@ using Qualia.Domain.Enums;
 
 namespace Qualia.Application.Features.Revision;
 
-/// <summary>
 /// POST /api/evaluaciones/{id}/confirmar y PUT /api/evaluaciones/{id}/ajuste.
 /// Solo el Supervisor asignado a la campaña de la llamada. Cada decisión se ejecuta en UNA transacción
 /// (revisión condicionada + Revision_humana + auditoría) y responde con el EvaluacionDto vigente.
-/// </summary>
 public sealed class RevisionEvaluaciones(
     IQualiaDbContext db,
     IUsuarioActual usuarioActual,
@@ -60,7 +58,7 @@ public sealed class RevisionEvaluaciones(
         return await LeerVigenteAsync(contexto.Llamada.Id, ct);
     }
 
-    /// <summary>Lee el resultado ya confirmado, sin entidades rastreadas de esta unidad de trabajo.</summary>
+    /// Lee el resultado ya confirmado, sin entidades rastreadas de esta unidad de trabajo.
     private async Task<EvaluacionDto> LeerVigenteAsync(Guid llamadaId, CancellationToken ct)
     {
         db.LimpiarSeguimiento();

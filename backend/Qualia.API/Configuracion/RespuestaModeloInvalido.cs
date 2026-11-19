@@ -5,11 +5,9 @@ using Qualia.Application.Common.Errores;
 
 namespace Qualia.API.Configuracion;
 
-/// <summary>
 /// Convierte los errores de enlace de modelo de [ApiController] (JSON mal formado, campos desconocidos,
-/// tipos inválidos, cuerpo ausente) en <see cref="ErrorDto"/> 400 VALIDACION, para que el cliente reciba
+/// tipos inválidos, cuerpo ausente) en ErrorDto 400 VALIDACION, para que el cliente reciba
 /// un único formato de error. Los mensajes se reescriben para no exponer nombres de tipos internos.
-/// </summary>
 internal static class RespuestaModeloInvalido
 {
     public static IActionResult Crear(ActionContext contexto)

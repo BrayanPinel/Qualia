@@ -1,6 +1,6 @@
 namespace Qualia.Application.Features.Suscripciones.Comun;
 
-/// <summary>ConsumoDto. <see cref="Periodo"/> con formato YYYY-MM.</summary>
+/// ConsumoDto. Periodo con formato YYYY-MM.
 public sealed record ConsumoDto(
     Guid EmpresaId,
     string Periodo,
@@ -10,7 +10,7 @@ public sealed record ConsumoDto(
     decimal MinutosDisponibles,
     decimal MinutosExcedentes);
 
-/// <summary>Estado de reserva/facturación de una llamada individual.</summary>
+/// Estado de reserva/facturación de una llamada individual.
 public sealed record ConsumoLlamadaDto(
     Guid Id,
     Guid EmpresaId,

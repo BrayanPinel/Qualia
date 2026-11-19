@@ -10,12 +10,10 @@ using Qualia.Domain.Servicios;
 
 namespace Qualia.Application.Features.Autenticacion;
 
-/// <summary>
 /// POST /api/auth/login (usuarios de empresa) y POST /api/plataforma/auth/login (Administrador global).
 /// Empresa inexistente, correo inexistente y contraseña incorrecta responden el mismo 401, y en los tres
 /// casos se calcula un hash para que el tiempo de respuesta no delate cuál falló.
 /// Cuenta inactiva o empresa suspendida (403) solo se informa tras una contraseña correcta.
-/// </summary>
 public sealed class InicioSesion(
     IQualiaDbContext db,
     IValidator<LoginDto> validadorLogin,
@@ -100,7 +98,7 @@ public sealed class InicioSesion(
         return new SesionPlataformaDto(token.AccessToken, TipoToken, token.ExpiraEn, administrador.Id, RolesPlataforma.PlatformAdmin);
     }
 
-    /// <summary>Hash válido de una contraseña aleatoria: iguala el costo cuando la cuenta no existe.</summary>
+    /// Hash válido de una contraseña aleatoria: iguala el costo cuando la cuenta no existe.
     private string HashFicticio() => _hashFicticio ??= hash.Hashear(Guid.NewGuid().ToString("N"));
 
     private static ExcepcionNegocio CredencialesInvalidas() =>

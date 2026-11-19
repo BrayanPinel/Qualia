@@ -7,7 +7,7 @@ using Qualia.Application.Features.Desempeno.Dtos;
 
 namespace Qualia.API.Controllers;
 
-/// <summary>Scorecards de agentes y reporte agregado por campaña.</summary>
+/// Scorecards de agentes y reporte agregado por campaña.
 [ApiController]
 [Authorize]
 [Route("api")]
@@ -18,25 +18,25 @@ namespace Qualia.API.Controllers;
 [ProducesResponseType<ErrorDto>(StatusCodes.Status404NotFound)]
 public sealed class DesempenoController(ConsultasDesempeno desempeno) : ControllerBase
 {
-    /// <summary>Scorecard propio del agente en una campaña y mes (YYYY-MM; por defecto el mes en curso).</summary>
+    /// Scorecard propio del agente en una campaña y mes (YYYY-MM; por defecto el mes en curso).
     [HttpGet("agentes/me/scorecard")]
     [ProducesResponseType<ScorecardDto>(StatusCodes.Status200OK)]
     public async Task<ActionResult<ScorecardDto>> Propio([FromQuery] FiltroScorecardDto filtro, CancellationToken ct) =>
         Ok(await desempeno.ScorecardPropioAsync(filtro, ct));
 
-    /// <summary>Scorecard de un agente (AdminEmpresa o Supervisor asignado a la campaña).</summary>
+    /// Scorecard de un agente (AdminEmpresa o Supervisor asignado a la campaña).
     [HttpGet("agentes/{id:guid}/scorecard")]
     [ProducesResponseType<ScorecardDto>(StatusCodes.Status200OK)]
     public async Task<ActionResult<ScorecardDto>> DeAgente(Guid id, [FromQuery] FiltroScorecardDto filtro, CancellationToken ct) =>
         Ok(await desempeno.ScorecardAgenteAsync(id, filtro, ct));
 
-    /// <summary>Scorecards de los agentes de una campaña, paginados.</summary>
+    /// Scorecards de los agentes de una campaña, paginados.
     [HttpGet("campanas/{id:guid}/scorecards")]
     [ProducesResponseType<PaginaDto<ScorecardDto>>(StatusCodes.Status200OK)]
     public async Task<ActionResult<PaginaDto<ScorecardDto>>> DeCampana(Guid id, [FromQuery] FiltroScorecardsCampanaDto filtro, CancellationToken ct) =>
         Ok(await desempeno.ScorecardsCampanaAsync(id, filtro, ct));
 
-    /// <summary>Reporte agregado de la campaña (AdminEmpresa, Supervisor asignado o Auditor).</summary>
+    /// Reporte agregado de la campaña (AdminEmpresa, Supervisor asignado o Auditor).
     [HttpGet("reportes/campanas/{id:guid}")]
     [ProducesResponseType<ReporteCampanaDto>(StatusCodes.Status200OK)]
     public async Task<ActionResult<ReporteCampanaDto>> Reporte(Guid id, [FromQuery] FiltroReporteDto filtro, CancellationToken ct) =>

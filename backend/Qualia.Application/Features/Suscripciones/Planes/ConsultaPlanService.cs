@@ -5,11 +5,9 @@ using Qualia.Domain.Suscripciones;
 
 namespace Qualia.Application.Features.Suscripciones.Planes;
 
-/// <summary>
-/// Implementación del contrato compartido <see cref="IConsultaPlanService"/>.
+/// Implementación del contrato compartido IConsultaPlanService.
 /// Permite a otros módulos consultar límites y funciones del plan contratado
 /// sin acoplarse a entidades internas de suscripción.
-/// </summary>
 public sealed class ConsultaPlanService : IConsultaPlanService
 {
     private readonly IRepositorioSuscripciones _repositorio;

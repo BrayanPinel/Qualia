@@ -77,10 +77,8 @@ public sealed class AjusteCriterioValidator : AbstractValidator<AjusteCriterioDt
     }
 }
 
-/// <summary>
 /// Motivos y justificaciones: de 10 a 2,000 caracteres.
 /// Interno para que AddValidatorsFromAssembly no lo registre (requiere parámetros).
-/// </summary>
 internal sealed class TextoJustificadoValidator : AbstractValidator<string?>
 {
     public TextoJustificadoValidator(string campo, bool femenino)

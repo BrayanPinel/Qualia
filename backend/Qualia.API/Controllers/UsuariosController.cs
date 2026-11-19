@@ -8,7 +8,7 @@ using Qualia.Application.Features.Usuarios.Dtos;
 
 namespace Qualia.API.Controllers;
 
-/// <summary>Usuarios de la empresa de la sesión (solo AdminEmpresa).</summary>
+/// Usuarios de la empresa de la sesión (solo AdminEmpresa).
 [ApiController]
 [Authorize]
 [Route("api/usuarios")]
@@ -17,14 +17,14 @@ namespace Qualia.API.Controllers;
 [ProducesResponseType<ErrorDto>(StatusCodes.Status403Forbidden)]
 public sealed class UsuariosController(GestionUsuarios usuarios) : ControllerBase
 {
-    /// <summary>Usuarios de la empresa, paginados y ordenados por nombre.</summary>
+    /// Usuarios de la empresa, paginados y ordenados por nombre.
     [HttpGet]
     [ProducesResponseType<PaginaDto<UsuarioDto>>(StatusCodes.Status200OK)]
     [ProducesResponseType<ErrorDto>(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<PaginaDto<UsuarioDto>>> Listar([FromQuery] PaginacionDto paginacion, CancellationToken ct) =>
         Ok(await usuarios.ListarAsync(paginacion, ct));
 
-    /// <summary>Crea un usuario de la empresa (AdminEmpresa, Supervisor, Agente o Auditor).</summary>
+    /// Crea un usuario de la empresa (AdminEmpresa, Supervisor, Agente o Auditor).
     [HttpPost]
     [ProducesResponseType<UsuarioDto>(StatusCodes.Status201Created)]
     [ProducesResponseType<ErrorDto>(StatusCodes.Status400BadRequest)]
@@ -32,7 +32,7 @@ public sealed class UsuariosController(GestionUsuarios usuarios) : ControllerBas
     public async Task<ActionResult<UsuarioDto>> Crear([FromBody] CrearUsuarioDto dto, CancellationToken ct) =>
         StatusCode(StatusCodes.Status201Created, await usuarios.CrearAsync(dto, ct));
 
-    /// <summary>Cambia nombre y estado. No permite dejar a la empresa sin AdminEmpresa activo.</summary>
+    /// Cambia nombre y estado. No permite dejar a la empresa sin AdminEmpresa activo.
     [HttpPut("{id:guid}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType<ErrorDto>(StatusCodes.Status400BadRequest)]

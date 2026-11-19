@@ -10,14 +10,12 @@ using Qualia.Domain.Servicios;
 
 namespace Qualia.Application.Features.Revision;
 
-/// <summary>
 /// Núcleo de la revisión humana. Lo usan los endpoints de confirmación/ajuste y,
-/// mediante <see cref="IRevisionEvaluacion"/>, la resolución de disputas del Rol A.
+/// mediante IRevisionEvaluacion, la resolución de disputas del Rol A.
 /// Nunca modifica Detalle_evaluacion ni Evidencia_criterio: los resultados de IA se conservan (RN-12).
 /// Control de concurrencia optimista sobre Evaluacion_IA.revision: UPDATE condicionado a
 /// revision = revisionEsperada; si no afecta filas, 409 REVISION_DESACTUALIZADA.
 /// Los métodos que escriben NO abren ni confirman transacciones: lo hace quien los invoca.
-/// </summary>
 public sealed class ServicioRevision(
     IQualiaDbContext db,
     IValidator<AjustarEvaluacionDto> validadorAjuste,
@@ -26,17 +24,15 @@ public sealed class ServicioRevision(
 {
     public const string ComentarioConfirmacion = "Confirmación: el supervisor declara haber revisado todos los criterios.";
 
-    /// <summary>Datos necesarios para revisar una evaluación (solo lectura).</summary>
+    /// Datos necesarios para revisar una evaluación (solo lectura).
     internal sealed record ContextoRevision(EvaluacionIA Evaluacion, Llamada Llamada, IReadOnlyList<CriterioRubrica> Criterios);
 
     public async Task VerificarSupervisorAsignadoAsync(Guid evaluacionId, Guid supervisorId, CancellationToken cancellationToken) =>
         await CargarAsync(evaluacionId, supervisorId, cancellationToken);
 
-    /// <summary>
     /// Carga la evaluación con sus detalles, la llamada y los criterios de la rúbrica FIJADA en la llamada.
     /// 404 si no existe en la empresa (el filtro global oculta las de otras empresas);
     /// 403 si el supervisor no está asignado a la campaña de la llamada.
-    /// </summary>
     internal async Task<ContextoRevision> CargarAsync(Guid evaluacionId, Guid supervisorId, CancellationToken ct)
     {
         var evaluacion = await db.EvaluacionesIA.AsNoTracking()
@@ -58,13 +54,11 @@ public sealed class ServicioRevision(
         return new ContextoRevision(evaluacion, llamada, [.. llamada.Rubrica!.Criterios]);
     }
 
-    /// <summary>
     /// Confirmación (POST /api/evaluaciones/{id}/confirmar). Exige evaluación completa y sin evidencias
     /// inválidas pendientes; la evidencia inválida se corrige con un ajuste completo.
     /// Confirmar una evaluación marcada por otra falla de la IA (falta sin fragmento o nota dudosa)
     /// la oficializa y quita la marca de revisión.
     /// Una confirmación posterior a un ajuste NO borra el ajuste: el puntaje vigente sigue siendo el humano.
-    /// </summary>
     internal async Task<int> ConfirmarAsync(ContextoRevision contexto, Guid supervisorId, int revisionEsperada, CancellationToken ct)
     {
         var evaluacion = contexto.Evaluacion;
@@ -114,11 +108,9 @@ public sealed class ServicioRevision(
         return await AjustarAsync(contexto, supervisorId, ajuste, cancellationToken);
     }
 
-    /// <summary>
     /// Ajuste completo (PUT /api/evaluaciones/{id}/ajuste): todos los criterios de la rúbrica exactamente una vez,
     /// puntajes 0–100, justificación obligatoria y evidencias que existan en segmentos de LA MISMA llamada (RN-09).
     /// Guarda Revision_humana + Criterio_revisado + Evidencia_revision; el total se recalcula en el servidor (RN-08).
-    /// </summary>
     internal async Task<int> AjustarAsync(ContextoRevision contexto, Guid supervisorId, AjustarEvaluacionDto ajuste, CancellationToken ct)
     {
         var evaluacion = contexto.Evaluacion;
@@ -224,7 +216,7 @@ public sealed class ServicioRevision(
         return nuevaRevision;
     }
 
-    /// <summary>Comprobación temprana con mensaje claro; la garantía real es el UPDATE condicionado.</summary>
+    /// Comprobación temprana con mensaje claro; la garantía real es el UPDATE condicionado.
     private static void AsegurarRevisionVigente(EvaluacionIA evaluacion, int revisionEsperada)
     {
         if (evaluacion.Revision != revisionEsperada)
@@ -273,10 +265,8 @@ public sealed class ServicioRevision(
         "REVISION_DESACTUALIZADA",
         "La evaluación fue modificada por otra revisión. Vuelva a consultarla antes de decidir.");
 
-    /// <summary>
     /// RN-10: una evaluación con evidencia inválida descartada exige un ajuste antes de oficializarse.
     /// Además se comprueba que cada evidencia de IA apunte a un segmento de la misma llamada.
-    /// </summary>
     private async Task AsegurarEvidenciaIAValidaAsync(ContextoRevision contexto, CancellationToken ct)
     {
         if (contexto.Evaluacion.RequiereRevision
@@ -301,7 +291,7 @@ public sealed class ServicioRevision(
         }
     }
 
-    /// <summary>El ajuste incluye todos los criterios de la rúbrica de la llamada, exactamente una vez.</summary>
+    /// El ajuste incluye todos los criterios de la rúbrica de la llamada, exactamente una vez.
     private static void ValidarCobertura(ContextoRevision contexto, AjustarEvaluacionDto ajuste)
     {
         var esperados = contexto.Criterios.Select(c => c.Id).ToHashSet();
@@ -331,7 +321,7 @@ public sealed class ServicioRevision(
             "El ajuste debe incluir cada criterio de la rúbrica exactamente una vez.", errores);
     }
 
-    /// <summary>RN-09: cada cita debe existir en un segmento de la misma llamada (misma tolerancia que la evidencia de IA).</summary>
+    /// RN-09: cada cita debe existir en un segmento de la misma llamada (misma tolerancia que la evidencia de IA).
     private async Task ValidarEvidenciasAsync(ContextoRevision contexto, AjustarEvaluacionDto ajuste, CancellationToken ct)
     {
         var segmentos = await db.SegmentosTranscripcion.AsNoTracking()

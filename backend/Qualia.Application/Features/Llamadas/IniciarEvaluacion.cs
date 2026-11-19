@@ -9,11 +9,9 @@ using Qualia.Domain.Enums;
 
 namespace Qualia.Application.Features.Llamadas;
 
-/// <summary>
 /// POST /api/llamadas/{id}/evaluacion — inicio manual por el Supervisor asignado.
 /// Normalmente no hace falta: el despachador automático encola las llamadas Disponible.
 /// Sirve para adelantar una llamada concreta y para volver a evaluar una llamada perdida (Fallida).
-/// </summary>
 public sealed class IniciarEvaluacion(
     IQualiaDbContext db,
     IUsuarioActual usuarioActual,

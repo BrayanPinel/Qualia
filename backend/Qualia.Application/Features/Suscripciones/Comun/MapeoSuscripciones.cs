@@ -2,7 +2,7 @@ using Qualia.Domain.Suscripciones;
 
 namespace Qualia.Application.Features.Suscripciones.Comun;
 
-/// <summary>Conversión de entidades del módulo a DTOs de salida.</summary>
+/// Conversión de entidades del módulo a DTOs de salida.
 public static class MapeoSuscripciones
 {
     public static PlanDto APlanDto(this Plan plan) =>

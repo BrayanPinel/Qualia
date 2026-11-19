@@ -2,10 +2,10 @@ using FluentValidation;
 
 namespace Qualia.Application.Common.Models;
 
-/// <summary>Parámetros estándar de paginación.</summary>
+/// Parámetros estándar de paginación.
 public sealed record PaginacionQuery(int Pagina = 1, int TamanoPagina = 20);
 
-/// <summary>Reglas de paginación con FluentValidation.</summary>
+/// Reglas de paginación con FluentValidation.
 public sealed class PaginacionQueryValidator : AbstractValidator<PaginacionQuery>
 {
     public PaginacionQueryValidator()

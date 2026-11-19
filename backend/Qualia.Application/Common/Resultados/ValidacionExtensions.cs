@@ -5,10 +5,8 @@ namespace Qualia.Application.Common.Resultados;
 
 public static class ValidacionExtensions
 {
-    /// <summary>
     /// Ejecuta el validador de FluentValidation y devuelve null si es válido,
-    /// o el <see cref="ErrorAplicacion"/> uniforme 400 si hay fallos.
-    /// </summary>
+    /// o el ErrorAplicacion uniforme 400 si hay fallos.
     public static async Task<ErrorAplicacion?> ValidarAsync<T>(
         this IValidator<T> validador,
         T instancia,
@@ -21,10 +19,8 @@ public static class ValidacionExtensions
         return resultado.IsValid ? null : resultado.AErrorAplicacion();
     }
 
-    /// <summary>
     /// Convierte un resultado inválido de FluentValidation en el error uniforme 400,
     /// con claves en camelCase para coincidir con el JSON del contrato.
-    /// </summary>
     public static ErrorAplicacion AErrorAplicacion(this ValidationResult resultado)
     {
         ArgumentNullException.ThrowIfNull(resultado);

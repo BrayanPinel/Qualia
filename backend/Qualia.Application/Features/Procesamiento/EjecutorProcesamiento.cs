@@ -10,12 +10,10 @@ using Qualia.Domain.Enums;
 
 namespace Qualia.Application.Features.Procesamiento;
 
-/// <summary>
 /// Un ciclo del worker: busca trabajos disponibles, los reclama de forma atómica
 /// y procesa cada uno en su propio scope con el contexto de empresa del trabajo.
-/// El worker (BackgroundService) solo llama a <see cref="EjecutarCicloAsync"/> en bucle;
+/// El worker (BackgroundService) solo llama a EjecutarCicloAsync en bucle;
 /// las pruebas lo invocan directamente.
-/// </summary>
 public sealed class EjecutorProcesamiento(
     IServiceScopeFactory scopes,
     TimeProvider reloj,
@@ -24,7 +22,7 @@ public sealed class EjecutorProcesamiento(
 {
     private readonly OpcionesProcesamiento _opciones = opciones.Value;
 
-    /// <summary>Devuelve la cantidad de trabajos procesados en el ciclo.</summary>
+    /// Devuelve la cantidad de trabajos procesados en el ciclo.
     public async Task<int> EjecutarCicloAsync(CancellationToken cancellationToken)
     {
         var ahora = reloj.GetUtcNow().UtcDateTime;
@@ -73,10 +71,8 @@ public sealed class EjecutorProcesamiento(
             .ToListAsync(ct);
     }
 
-    /// <summary>
     /// Reclamo atómico (UPDATE condicionado): pasa a EnProceso, incrementa intentos y fija la
     /// expiración del bloqueo. Si dos workers compiten, solo uno obtiene la fila.
-    /// </summary>
     private async Task<bool> ReclamarAsync(IServiceProvider servicios, Guid trabajoId, CancellationToken ct)
     {
         var db = servicios.GetRequiredService<IQualiaDbContext>();
@@ -94,10 +90,8 @@ public sealed class EjecutorProcesamiento(
         return filas == 1;
     }
 
-    /// <summary>
     /// Pendiente / ReintentoPendiente cuya espera ya venció, o EnProceso cuyo bloqueo expiró
     /// (el proceso que lo tenía se detuvo).
-    /// </summary>
     private static Expression<Func<TrabajoProcesamiento, bool>> EstaDisponible(DateTime ahora) => t =>
         ((t.Estado == EstadoTrabajo.Pendiente || t.Estado == EstadoTrabajo.ReintentoPendiente)
          && (t.ProximoIntento == null || t.ProximoIntento <= ahora))

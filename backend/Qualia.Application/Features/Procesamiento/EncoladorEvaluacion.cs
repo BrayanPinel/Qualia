@@ -8,13 +8,11 @@ using Qualia.Domain.Enums;
 
 namespace Qualia.Application.Features.Procesamiento;
 
-/// <summary>
 /// Encola la evaluación de una llamada en UNA transacción: Disponible → EnCola (UPDATE condicionado),
 /// reserva de minutos y creación del Trabajo_procesamiento. Si algo falla, no queda nada a medias.
 /// Lo usan el despachador automático y el inicio manual del supervisor.
 /// En un reintento también acepta una llamada Fallida: reutiliza su trabajo y su consumo
 /// (una fila de cada uno por llamada), de modo que no se duplica el cobro.
-/// </summary>
 public sealed class EncoladorEvaluacion(
     IQualiaDbContext db,
     IConsumoEvaluacion consumo,

@@ -12,11 +12,9 @@ using Qualia.Domain.Suscripciones;
 
 namespace Qualia.Application.Features.Disputas;
 
-/// <summary>
 /// Disputas (HU-05): el agente disputa una evaluación oficial propia si su plan lo permite; el supervisor
-/// asignado a la campaña la resuelve. "Modificar" y "Mantener" delegan en <see cref="IRevisionEvaluacion"/>
+/// asignado a la campaña la resuelve. "Modificar" y "Mantener" delegan en IRevisionEvaluacion
 /// (revisión humana), que conserva el resultado de IA, audita y controla la concurrencia con revisionEsperada.
-/// </summary>
 public sealed class GestionDisputas(
     IQualiaDbContext db,
     IUsuarioActual usuarioActual,
@@ -96,7 +94,7 @@ public sealed class GestionDisputas(
         return DisputaDto.Desde(disputa);
     }
 
-    /// <summary>AdminEmpresa: todas las de su empresa. Supervisor: las de sus campañas. Agente: las suyas.</summary>
+    /// AdminEmpresa: todas las de su empresa. Supervisor: las de sus campañas. Agente: las suyas.
     public async Task<PaginaDto<DisputaDto>> ListarAsync(FiltroDisputasDto filtro, CancellationToken ct)
     {
         var usuario = usuarioActual.RequerirRol(RolEmpresa.AdminEmpresa, RolEmpresa.Supervisor, RolEmpresa.Agente);

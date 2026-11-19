@@ -12,10 +12,8 @@ using Qualia.Infrastructure.Procesamiento;
 
 namespace Qualia.Tests.Unitarias;
 
-/// <summary>
 /// Adaptadores reales (Deepgram + Groq) con respuestas HTTP falsas.
 /// Verifica el contrato con los proveedores, el enmascarado previo a Groq y el guardado de JSON crudos.
-/// </summary>
 public sealed class ProveedoresIATests : IDisposable
 {
     private static readonly Guid Empresa = Guid.Parse("10000000-0000-0000-0000-000000000001");
@@ -218,7 +216,7 @@ public sealed class ProveedoresIATests : IDisposable
         Assert.Equal(2, manejador.Cuerpos.Count);
     }
 
-    /// <summary>Responde en orden las respuestas registradas por host; la última se repite.</summary>
+    /// Responde en orden las respuestas registradas por host; la última se repite.
     private sealed class ManejadorFalso : HttpMessageHandler
     {
         private readonly Dictionary<string, Queue<(HttpStatusCode Estado, string Cuerpo)>> _respuestas = [];

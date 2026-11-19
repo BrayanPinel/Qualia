@@ -1,9 +1,7 @@
 namespace Qualia.Domain.Suscripciones;
 
-/// <summary>
 /// Función habilitada por un plan (tabla global funcion_plan,
-/// PK compuesta (plan_id, codigo_funcion)). Ver <see cref="CodigosFuncionPlan"/>.
-/// </summary>
+/// PK compuesta (plan_id, codigo_funcion)). Ver CodigosFuncionPlan.
 public sealed class FuncionPlan
 {
     public const int LongitudMaximaCodigo = 50;

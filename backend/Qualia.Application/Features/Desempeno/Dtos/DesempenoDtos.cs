@@ -30,20 +30,20 @@ public sealed record ReporteCampanaDto(
     decimal? Promedio,
     int CriticosFallidos);
 
-/// <summary>Query de los scorecards individuales. Sin periodo se usa el mes UTC en curso.</summary>
+/// Query de los scorecards individuales. Sin periodo se usa el mes UTC en curso.
 public sealed class FiltroScorecardDto
 {
     public Guid? CampanaId { get; set; }
     public string? Periodo { get; set; }
 }
 
-/// <summary>Query de los scorecards de una campaña (paginados por agente).</summary>
+/// Query de los scorecards de una campaña (paginados por agente).
 public sealed class FiltroScorecardsCampanaDto : PaginacionDto
 {
     public string? Periodo { get; set; }
 }
 
-/// <summary>Query del reporte agregado de una campaña.</summary>
+/// Query del reporte agregado de una campaña.
 public sealed class FiltroReporteDto
 {
     public string? Periodo { get; set; }

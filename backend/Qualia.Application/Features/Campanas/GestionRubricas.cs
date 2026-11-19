@@ -10,7 +10,6 @@ using Qualia.Domain.Enums;
 
 namespace Qualia.Application.Features.Campanas;
 
-/// <summary>
 /// Rúbricas versionadas: GET/POST /api/campanas/{id}/rubricas, PUT /api/rubricas/{id}
 /// y POST /api/rubricas/{id}/publicar.
 /// Cada POST crea una NUEVA versión en Borrador (versión = última de la campaña + 1).
@@ -18,7 +17,6 @@ namespace Qualia.Application.Features.Campanas;
 /// Publicar exige pesos que sumen 100 y nombres sin duplicar (RN-05), retira la versión
 /// Activa anterior de la campaña y respeta el límite de rúbricas activas del plan.
 /// No hay borrado: las versiones usadas por llamadas se conservan (RN-07).
-/// </summary>
 public sealed class GestionRubricas(
     IQualiaDbContext db,
     IUsuarioActual usuarioActual,
@@ -28,7 +26,7 @@ public sealed class GestionRubricas(
     TimeProvider reloj,
     ILogger<GestionRubricas> logger)
 {
-    /// <summary>AdminEmpresa o Supervisor asignado a la campaña. Versiones de la más reciente a la más antigua.</summary>
+    /// AdminEmpresa o Supervisor asignado a la campaña. Versiones de la más reciente a la más antigua.
     public async Task<IReadOnlyList<RubricaDto>> ListarPorCampanaAsync(Guid campanaId, CancellationToken ct)
     {
         var usuario = usuarioActual.RequerirRol(RolEmpresa.AdminEmpresa, RolEmpresa.Supervisor);
@@ -92,7 +90,7 @@ public sealed class GestionRubricas(
         return MapearDto(rubrica);
     }
 
-    /// <summary>Reemplaza nombre y criterios de un Borrador (PUT con CrearRubricaDto).</summary>
+    /// Reemplaza nombre y criterios de un Borrador (PUT con CrearRubricaDto).
     public async Task ActualizarAsync(Guid rubricaId, CrearRubricaDto dto, CancellationToken ct)
     {
         var admin = RequerirAdmin();

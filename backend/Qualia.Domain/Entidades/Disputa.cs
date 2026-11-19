@@ -3,11 +3,9 @@ using Qualia.Domain.Enums;
 
 namespace Qualia.Domain.Entidades;
 
-/// <summary>
 /// Disputa de un agente sobre una evaluación oficial. Mientras está Abierta no tiene resolución,
 /// resolutor ni fecha de resolución, y la evaluación se excluye de los promedios oficiales (RN-11).
 /// Solo puede haber una disputa Abierta por evaluación.
-/// </summary>
 public class Disputa : IEntidadEmpresa
 {
     public const int LongitudMinimaTexto = 10;

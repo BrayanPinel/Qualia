@@ -1,10 +1,8 @@
 namespace Qualia.Domain.Common;
 
-/// <summary>
 /// Guardas para instantes UTC. Las columnas timestamptz de PostgreSQL
-/// (Npgsql) solo aceptan <see cref="DateTime"/> con <see cref="DateTimeKind.Utc"/>;
+/// (Npgsql) solo aceptan DateTime con DateTimeKind.Utc;
 /// se valida en el dominio para fallar temprano y con un mensaje claro.
-/// </summary>
 public static class FechasUtc
 {
     public static DateTime Exigir(DateTime valor, string nombreParametro)

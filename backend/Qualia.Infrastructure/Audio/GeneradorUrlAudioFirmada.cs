@@ -7,11 +7,9 @@ using Qualia.Application.Features.Llamadas.Dtos;
 
 namespace Qualia.Infrastructure.Audio;
 
-/// <summary>
 /// URLs temporales firmadas con HMAC-SHA256: {urlBase}/api/audio-temporal/{token}, donde
 /// token = empresa.llamada.expiracionUnix.firma. Permite que un audio del navegador reproduzca
 /// el archivo sin enviar el JWT, sin exponer la ruta interna y solo durante la vigencia indicada.
-/// </summary>
 public sealed class GeneradorUrlAudioFirmada : IGeneradorUrlAudio
 {
     public const string RutaBase = "/api/audio-temporal/";

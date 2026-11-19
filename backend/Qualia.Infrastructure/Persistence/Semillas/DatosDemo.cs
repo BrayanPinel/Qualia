@@ -1,15 +1,13 @@
 namespace Qualia.Infrastructure.Persistence.Semillas;
 
-/// <summary>
 /// Identificadores fijos de los datos de demostración.
 /// Dos empresas para verificar aislamiento: Norte y Sur.
-/// </summary>
 public static class DatosDemo
 {
-    /// <summary>Contraseña de todos los usuarios demo y del administrador demo. Solo desarrollo.</summary>
+    /// Contraseña de todos los usuarios demo y del administrador demo. Solo desarrollo.
     public const string Contrasena = "Qualia-Demo-2026";
 
-    /// <summary>Administrador global demo (POST /api/plataforma/auth/login).</summary>
+    /// Administrador global demo (POST /api/plataforma/auth/login).
     public static class Plataforma
     {
         public static readonly Guid Administrador = Guid.Parse("90000000-0000-0000-0001-000000000001");
@@ -29,7 +27,7 @@ public static class DatosDemo
         public static readonly Guid Rubrica = Guid.Parse("10000000-0000-0000-0003-000000000001");
         public static readonly Guid RubricaBorrador = Guid.Parse("10000000-0000-0000-0003-000000000002");
 
-        /// <summary>Llamadas 1–6 (Disponible, rúbrica publicada). Impares: Andrés; pares: Alicia.</summary>
+        /// Llamadas 1–6 (Disponible, rúbrica publicada). Impares: Andrés; pares: Alicia.
         public static readonly Guid[] Llamadas =
         [
             Guid.Parse("10000000-0000-0000-0005-000000000001"),
@@ -40,7 +38,7 @@ public static class DatosDemo
             Guid.Parse("10000000-0000-0000-0005-000000000006"),
         ];
 
-        /// <summary>Llamada ligada a una rúbrica en Borrador (para probar RUBRICA_SIN_PUBLICAR).</summary>
+        /// Llamada ligada a una rúbrica en Borrador (para probar RUBRICA_SIN_PUBLICAR).
         public static readonly Guid LlamadaRubricaBorrador = Guid.Parse("10000000-0000-0000-0005-000000000099");
     }
 

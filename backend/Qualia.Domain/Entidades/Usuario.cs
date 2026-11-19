@@ -3,7 +3,7 @@ using Qualia.Domain.Enums;
 
 namespace Qualia.Domain.Entidades;
 
-/// <summary>Usuario de una empresa. El correo es único dentro de la empresa, no global.</summary>
+/// Usuario de una empresa. El correo es único dentro de la empresa, no global.
 public class Usuario : IEntidadEmpresa
 {
     public Guid EmpresaId { get; set; }
@@ -13,6 +13,6 @@ public class Usuario : IEntidadEmpresa
     public RolEmpresa Rol { get; set; }
     public bool Activo { get; set; } = true;
 
-    /// <summary>Hash de contraseña; nunca se expone en DTOs ni en auditoría.</summary>
+    /// Hash de contraseña; nunca se expone en DTOs ni en auditoría.
     public string PasswordHash { get; set; } = string.Empty;
 }

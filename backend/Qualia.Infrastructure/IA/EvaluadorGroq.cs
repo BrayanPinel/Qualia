@@ -8,13 +8,11 @@ using Qualia.Domain.Enums;
 
 namespace Qualia.Infrastructure.IA;
 
-/// <summary>
 /// Evaluador real: pide a Groq un borrador por criterio con evidencia citada.
 /// Los criterios se envían con ids cortos (C1, C2…) para que el modelo no altere los GUID.
 /// Los segmentos se identifican por su número de orden; las citas se validan después
-/// en <see cref="ConstructorEvaluacion"/> (RN-09).
+/// en ConstructorEvaluacion (RN-09).
 /// El texto enviado ya está enmascarado (RN-14).
-/// </summary>
 public sealed class EvaluadorGroq(ClienteGroq groq, IOptions<OpcionesGroq> opciones) : IEvaluadorIA
 {
     private static readonly JsonSerializerOptions JsonRubrica = new(JsonSerializerDefaults.Web)
@@ -71,10 +69,8 @@ public sealed class EvaluadorGroq(ClienteGroq groq, IOptions<OpcionesGroq> opcio
         return new ResultadoEvaluacionIA(modelo, ModoIA.Real, criterios, respuesta.TokensEntrada, respuesta.TokensSalida, respuesta.CostoUsd);
     }
 
-    /// <summary>
     /// Traduce la respuesta del modelo. Un criterio desconocido o un segmento inexistente
-    /// se dejan pasar marcados para que <see cref="ConstructorEvaluacion"/> los rechace.
-    /// </summary>
+    /// se dejan pasar marcados para que ConstructorEvaluacion los rechace.
     public static IReadOnlyList<CriterioEvaluado> Interpretar(
         string json, IReadOnlyDictionary<string, Guid> idsCortos, IReadOnlyDictionary<int, Guid> segmentosPorOrden)
     {

@@ -6,14 +6,12 @@ using Qualia.Infrastructure.Persistence;
 
 namespace Qualia.Tests.Infraestructura;
 
-/// <summary>
 /// Verificación de integración contra PostgreSQL real usando el
-/// <see cref="QualiaDbContext"/> existente.
+/// QualiaDbContext existente.
 /// No crea entidades, no genera migraciones y no modifica el modelo de datos:
 /// solo comprueba que la API carga su configuración y que el contexto puede
 /// abrir una conexión.
 /// Requiere el contenedor de infra/docker-compose.yml en ejecución.
-/// </summary>
 public sealed class ConexionPostgresTests
 {
     private const string ClaveCadena = "PostgresConnection";

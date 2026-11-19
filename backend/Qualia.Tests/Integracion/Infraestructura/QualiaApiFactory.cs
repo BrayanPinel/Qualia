@@ -12,11 +12,9 @@ using Qualia.Application.Features.Procesamiento;
 
 namespace Qualia.Tests.Integracion.Infraestructura;
 
-/// <summary>
 /// API real (Program) contra una base de datos PostgreSQL propia de cada factory.
 /// El worker en segundo plano se desactiva: las pruebas ejecutan los ciclos de procesamiento
-/// de forma explícita con <see cref="ProcesarColaAsync"/> para ser deterministas.
-/// </summary>
+/// de forma explícita con ProcesarColaAsync para ser deterministas.
 public sealed class QualiaApiFactory(
     PostgresFixture postgres,
     string baseDatos,
@@ -66,7 +64,7 @@ public sealed class QualiaApiFactory(
 
     public HttpClient ClienteAnonimo() => CreateClient(new WebApplicationFactoryClientOptions { AllowAutoRedirect = false });
 
-    /// <summary>Ejecuta ciclos del worker hasta vaciar la cola disponible.</summary>
+    /// Ejecuta ciclos del worker hasta vaciar la cola disponible.
     public async Task<int> ProcesarColaAsync()
     {
         var ejecutor = Services.GetRequiredService<EjecutorProcesamiento>();

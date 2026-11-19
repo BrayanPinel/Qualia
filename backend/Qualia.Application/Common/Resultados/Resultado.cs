@@ -2,9 +2,7 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace Qualia.Application.Common.Resultados;
 
-/// <summary>
-/// Resultado de un caso de uso sin valor de retorno: éxito o <see cref="ErrorAplicacion"/>.
-/// </summary>
+/// Resultado de un caso de uso sin valor de retorno: éxito o ErrorAplicacion.
 public sealed class Resultado
 {
     private static readonly Resultado InstanciaExito = new();
@@ -30,10 +28,8 @@ public sealed class Resultado
     public static implicit operator Resultado(ErrorAplicacion error) => Fallo(error);
 }
 
-/// <summary>
-/// Resultado de un caso de uso: valor exitoso o <see cref="ErrorAplicacion"/>.
+/// Resultado de un caso de uso: valor exitoso o ErrorAplicacion.
 /// Evita usar excepciones para el flujo de negocio esperado (404, 409, pago rechazado…).
-/// </summary>
 public sealed class Resultado<T>
 {
     private Resultado(T valor)

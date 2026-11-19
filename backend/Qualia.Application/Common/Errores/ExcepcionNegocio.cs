@@ -1,9 +1,7 @@
 namespace Qualia.Application.Common.Errores;
 
-/// <summary>
 /// Error de negocio con código HTTP y código identificable.
-/// El middleware global lo transforma en <see cref="ErrorDto"/>.
-/// </summary>
+/// El middleware global lo transforma en ErrorDto.
 public class ExcepcionNegocio(int status, string codigo, string mensaje, IDictionary<string, string[]>? errores = null)
     : Exception(mensaje)
 {
@@ -21,7 +19,7 @@ public class ExcepcionNegocio(int status, string codigo, string mensaje, IDictio
     public static ExcepcionNegocio Conflicto(string codigo, string mensaje) => new(409, codigo, mensaje);
 }
 
-/// <summary>Formato uniforme de error</summary>
+/// Formato uniforme de error
 public sealed record ErrorDto(
     int Status,
     string Codigo,

@@ -6,25 +6,25 @@ namespace Qualia.Application.Features.Procesamiento;
 // hoy son simuladas y reproducibles (modo Simulado); un adaptador real
 // solo debe implementar estas interfaces.
 
-/// <summary>Convierte el audio de una llamada en segmentos con hablante y tiempos.</summary>
+/// Convierte el audio de una llamada en segmentos con hablante y tiempos.
 public interface ITranscriptor
 {
     Task<ResultadoTranscripcion> TranscribirAsync(SolicitudTranscripcion solicitud, CancellationToken cancellationToken);
 }
 
-/// <summary>Evalúa la transcripción (ya enmascarada) contra los criterios de la rúbrica fijada en la llamada.</summary>
+/// Evalúa la transcripción (ya enmascarada) contra los criterios de la rúbrica fijada en la llamada.
 public interface IEvaluadorIA
 {
     Task<ResultadoEvaluacionIA> EvaluarAsync(SolicitudEvaluacion solicitud, CancellationToken cancellationToken);
 }
 
-/// <summary>Reemplaza datos sensibles (correos, teléfonos, tarjetas, documentos) antes de almacenar o evaluar (RN-14).</summary>
+/// Reemplaza datos sensibles (correos, teléfonos, tarjetas, documentos) antes de almacenar o evaluar (RN-14).
 public interface IEnmascaradorDatos
 {
     string Enmascarar(string texto);
 }
 
-/// <summary>Despierta al worker cuando hay trabajo nuevo (evita esperar al siguiente sondeo).</summary>
+/// Despierta al worker cuando hay trabajo nuevo (evita esperar al siguiente sondeo).
 public interface ISenalProcesamiento
 {
     void Notificar();
@@ -50,7 +50,7 @@ public sealed record CriterioParaEvaluar(
     bool EsCritico,
     decimal UmbralCumplimiento);
 
-/// <summary>Segmento enviado al evaluador: el texto ya está enmascarado.</summary>
+/// Segmento enviado al evaluador: el texto ya está enmascarado.
 public sealed record SegmentoParaEvaluar(Guid SegmentoId, int Orden, string Hablante, string Texto);
 
 public sealed record SolicitudEvaluacion(
@@ -59,7 +59,7 @@ public sealed record SolicitudEvaluacion(
     IReadOnlyList<CriterioParaEvaluar> Criterios,
     IReadOnlyList<SegmentoParaEvaluar> Segmentos);
 
-/// <summary>Evidencia sugerida por el modelo; se valida antes de guardarse (RN-09).</summary>
+/// Evidencia sugerida por el modelo; se valida antes de guardarse (RN-09).
 public sealed record EvidenciaPropuesta(Guid SegmentoId, string CitaTextual);
 
 public sealed record CriterioEvaluado(

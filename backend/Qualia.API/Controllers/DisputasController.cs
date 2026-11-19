@@ -7,7 +7,7 @@ using Qualia.Application.Features.Disputas.Dtos;
 
 namespace Qualia.API.Controllers;
 
-/// <summary>Disputas de evaluaciones: el agente las abre y el supervisor asignado las resuelve.</summary>
+/// Disputas de evaluaciones: el agente las abre y el supervisor asignado las resuelve.
 [ApiController]
 [Authorize]
 [Route("api")]
@@ -16,7 +16,7 @@ namespace Qualia.API.Controllers;
 [ProducesResponseType<ErrorDto>(StatusCodes.Status403Forbidden)]
 public sealed class DisputasController(GestionDisputas disputas) : ControllerBase
 {
-    /// <summary>El agente propietario disputa una evaluación oficial (plan con disputas).</summary>
+    /// El agente propietario disputa una evaluación oficial (plan con disputas).
     [HttpPost("evaluaciones/{id:guid}/disputas")]
     [ProducesResponseType<DisputaDto>(StatusCodes.Status201Created)]
     [ProducesResponseType<ErrorDto>(StatusCodes.Status400BadRequest)]
@@ -25,14 +25,14 @@ public sealed class DisputasController(GestionDisputas disputas) : ControllerBas
     public async Task<ActionResult<DisputaDto>> Crear(Guid id, [FromBody] CrearDisputaDto dto, CancellationToken ct) =>
         StatusCode(StatusCodes.Status201Created, await disputas.CrearAsync(id, dto, ct));
 
-    /// <summary>Disputas visibles según el rol, con estado opcional (Abierta o Resuelta).</summary>
+    /// Disputas visibles según el rol, con estado opcional (Abierta o Resuelta).
     [HttpGet("disputas")]
     [ProducesResponseType<PaginaDto<DisputaDto>>(StatusCodes.Status200OK)]
     [ProducesResponseType<ErrorDto>(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<PaginaDto<DisputaDto>>> Listar([FromQuery] FiltroDisputasDto filtro, CancellationToken ct) =>
         Ok(await disputas.ListarAsync(filtro, ct));
 
-    /// <summary>El supervisor asignado mantiene o modifica las notas con justificación.</summary>
+    /// El supervisor asignado mantiene o modifica las notas con justificación.
     [HttpPut("disputas/{id:guid}/resolucion")]
     [ProducesResponseType<DisputaDto>(StatusCodes.Status200OK)]
     [ProducesResponseType<ErrorDto>(StatusCodes.Status400BadRequest)]

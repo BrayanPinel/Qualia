@@ -15,11 +15,9 @@ using Sur = Qualia.Infrastructure.Persistence.Semillas.DatosDemo.Sur;
 
 namespace Qualia.Tests.Integracion;
 
-/// <summary>
 /// Integración real entre el motor de llamadas (D) y el módulo de consumo (C), sin dobles:
 /// reserva al iniciar, facturación al completar, liberación ante fallo definitivo y
 /// bloqueo por suscripción o cuota, todo contra PostgreSQL.
-/// </summary>
 [Collection(ColeccionPostgres.Nombre)]
 public sealed class ConsumoRealIntegracionTests(PostgresFixture postgres)
 {
@@ -116,7 +114,7 @@ public sealed class ConsumoRealIntegracionTests(PostgresFixture postgres)
         Assert.True(await sql(scope.ServiceProvider.GetRequiredService<QualiaDbContext>()) > 0);
     }
 
-    /// <summary>La transacción se revirtió: la llamada sigue Disponible, sin trabajo ni consumo.</summary>
+    /// La transacción se revirtió: la llamada sigue Disponible, sin trabajo ni consumo.
     private static async Task AsegurarSinEfectosAsync(QualiaApiFactory api, Guid usuario, Guid llamadaId)
     {
         var detalle = await QualiaApiFactory.LeerAsync<LlamadaDto>(await api.ClienteComo(usuario).GetAsync($"/api/llamadas/{llamadaId}"));

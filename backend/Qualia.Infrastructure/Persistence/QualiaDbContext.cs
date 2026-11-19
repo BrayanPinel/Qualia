@@ -14,10 +14,8 @@ public sealed class QualiaDbContext(DbContextOptions<QualiaDbContext> options, I
 {
     public const string Esquema = "qualia";
 
-    /// <summary>
     /// Empresa usada por los Global Query Filters. EF Core evalúa esta propiedad en cada consulta,
     /// por lo que el mismo modelo sirve para todas las empresas.
-    /// </summary>
     public Guid? EmpresaIdActual => contextoEmpresa.EmpresaIdActual;
 
     public DbSet<Empresa> Empresas => Set<Empresa>();
@@ -61,11 +59,9 @@ public sealed class QualiaDbContext(DbContextOptions<QualiaDbContext> options, I
         AplicarFiltrosPorEmpresa(modelBuilder);
     }
 
-    /// <summary>
     /// Global Query Filter (HasQueryFilter) para TODAS las entidades que implementan IEntidadEmpresa:
     /// e = e.EmpresaId == EmpresaIdActual. Sin empresa en el contexto no se devuelve ninguna fila.
     /// Las entidades nuevas de cualquier rol quedan filtradas automáticamente al implementar la interfaz.
-    /// </summary>
     private void AplicarFiltrosPorEmpresa(ModelBuilder modelBuilder)
     {
         foreach (var tipo in modelBuilder.Model.GetEntityTypes())

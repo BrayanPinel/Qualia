@@ -3,11 +3,9 @@ using Qualia.Application.Features.Procesamiento;
 
 namespace Qualia.Infrastructure.Procesamiento;
 
-/// <summary>
 /// Enmascarado de datos sensibles por expresiones regulares (RN-14).
 /// El orden importa: primero los patrones más específicos.
 /// Cubre el texto escrito y la forma en que un transcriptor real entrega lo dictado.
-/// </summary>
 public sealed partial class EnmascaradorDatos : IEnmascaradorDatos
 {
     public const string Correo = "[CORREO]";

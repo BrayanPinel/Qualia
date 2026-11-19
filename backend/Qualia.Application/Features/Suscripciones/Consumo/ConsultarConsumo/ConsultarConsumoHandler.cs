@@ -7,10 +7,8 @@ using Qualia.Application.Common.Seguridad;
 
 namespace Qualia.Application.Features.Suscripciones.Consumo.ConsultarConsumo;
 
-/// <summary>
 /// Caso de uso GET /api/consumo?periodo=YYYY-MM.
 /// Un mes sin periodo devuelve cantidades en cero.
-/// </summary>
 public sealed class ConsultarConsumoHandler
 {
     private readonly IRepositorioSuscripciones _repositorio;

@@ -8,10 +8,8 @@ using Qualia.Tests.Integracion.Infraestructura;
 
 namespace Qualia.Tests.Integracion;
 
-/// <summary>
 /// Migración oficial: coincide con el modelo, crea las 24 tablas del diagrama desde una base vacía,
 /// es idempotente y una base antigua creada con EnsureCreated se detecta con un mensaje claro.
-/// </summary>
 [Collection(ColeccionPostgres.Nombre)]
 public sealed class MigracionesIntegracionTests(PostgresFixture postgres)
 {

@@ -11,10 +11,8 @@ using Qualia.Domain.Servicios;
 
 namespace Qualia.Application.Features.Llamadas;
 
-/// <summary>
 /// Casos de uso de lectura del módulo de llamadas:
 /// listado, detalle, transcripción, evaluación y acceso temporal al audio.
-/// </summary>
 public sealed class ConsultasLlamadas(
     IQualiaDbContext db,
     AlcanceLlamadas alcance,
@@ -23,7 +21,7 @@ public sealed class ConsultasLlamadas(
     IGeneradorUrlAudio generadorUrlAudio,
     IRegistroAuditoria auditoria)
 {
-    /// <summary>Proyección a LlamadaDto: campaña y versión salen de la rúbrica (sin FK duplicada a campaña).</summary>
+    /// Proyección a LlamadaDto: campaña y versión salen de la rúbrica (sin FK duplicada a campaña).
     private static readonly Expression<Func<Llamada, LlamadaDto>> AProyeccionDto = l => new LlamadaDto(
         l.Id,
         l.EmpresaId,

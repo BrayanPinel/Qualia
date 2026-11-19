@@ -4,10 +4,8 @@ using Microsoft.AspNetCore.Mvc.Testing;
 
 namespace Qualia.Tests;
 
-/// <summary>
 /// Prueba mínima de bootstrap: la API debe iniciar y exponer OpenAPI
 /// sin necesidad de una base de datos levantada.
-/// </summary>
 public class ArranqueTests : IClassFixture<WebApplicationFactory<Program>>
 {
     private readonly WebApplicationFactory<Program> _factory;

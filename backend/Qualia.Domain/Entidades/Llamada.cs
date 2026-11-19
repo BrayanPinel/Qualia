@@ -3,10 +3,8 @@ using Qualia.Domain.Enums;
 
 namespace Qualia.Domain.Entidades;
 
-/// <summary>
 /// Llamada ficticia precargada. Conserva la versión de rúbrica fijada al ingresar (RN-07):
-/// la campaña y la versión se obtienen a través de <see cref="Rubrica"/>.
-/// </summary>
+/// la campaña y la versión se obtienen a través de Rubrica.
 public class Llamada : IEntidadEmpresa
 {
     // Transiciones válidas del ciclo de procesamiento.
@@ -28,7 +26,7 @@ public class Llamada : IEntidadEmpresa
     public Guid RubricaId { get; set; }
     public Guid AgenteId { get; set; }
 
-    /// <summary>Referencia interna al audio. Nunca se expone en las respuestas de la API.</summary>
+    /// Referencia interna al audio. Nunca se expone en las respuestas de la API.
     public string ArchivoRuta { get; set; } = string.Empty;
 
     public decimal DuracionSeg { get; set; }
@@ -59,10 +57,8 @@ public class Llamada : IEntidadEmpresa
         Estado = nuevo;
     }
 
-    /// <summary>
     /// Al iniciar un intento de procesamiento, una llamada que quedó en un estado
     /// intermedio (por ejemplo, tras una caída del proceso) vuelve a EnCola.
-    /// </summary>
     public void ReanudarEnCola()
     {
         if (Estado is EstadoLlamada.Transcribiendo or EstadoLlamada.Transcrita or EstadoLlamada.Evaluando)

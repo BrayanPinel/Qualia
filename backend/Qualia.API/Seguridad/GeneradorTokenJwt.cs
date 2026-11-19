@@ -10,10 +10,8 @@ using Qualia.Domain.Enums;
 
 namespace Qualia.API.Seguridad;
 
-/// <summary>
 /// Clave simétrica (HMAC-SHA256) con la que se firman y validan los tokens. Viene de Jwt__Key en el .env.
 /// En Development, si falta, se genera una aleatoria en memoria: los tokens dejan de valer al reiniciar.
-/// </summary>
 public sealed class ClaveJwt
 {
     public const int LongitudMinima = 32;
@@ -49,10 +47,8 @@ public sealed class ClaveJwt
     }
 }
 
-/// <summary>
-/// <see cref="IGeneradorToken"/> con JWT firmado (JWS). Los claims usan los mismos tipos que lee
-/// <see cref="UsuarioActualHttp"/>: NameIdentifier, empresa_id y Role.
-/// </summary>
+/// IGeneradorToken con JWT firmado (JWS). Los claims usan los mismos tipos que lee
+/// UsuarioActualHttp: NameIdentifier, empresa_id y Role.
 public sealed class GeneradorTokenJwt(IOptions<JwtOptions> opciones, ClaveJwt clave, TimeProvider reloj) : IGeneradorToken
 {
     private static readonly JsonWebTokenHandler Manejador = new();

@@ -9,11 +9,9 @@ namespace Qualia.Infrastructure.IA;
 
 public sealed record RespuestaGroq(string Contenido, int TokensEntrada, int TokensSalida, decimal CostoUsd);
 
-/// <summary>
 /// Cliente HTTP de Groq en modo JSON.
 /// Guarda la solicitud y la respuesta crudas, y traduce los códigos HTTP a errores del motor:
 /// 429 y 5xx se reintentan; credenciales inválidas fallan de inmediato.
-/// </summary>
 public sealed class ClienteGroq(HttpClient http, IOptions<OpcionesGroq> opciones, AlmacenRespuestasIA almacen)
 {
     private readonly OpcionesGroq _opciones = opciones.Value;
@@ -90,7 +88,7 @@ public sealed class ClienteGroq(HttpClient http, IOptions<OpcionesGroq> opciones
     private const int MaximoEsperasPorLimite = 3;
     private static readonly TimeSpan EsperaMaximaPorLimite = TimeSpan.FromSeconds(30);
 
-    /// <summary>Usa la cabecera retry-after de Groq; por defecto 5 s y como máximo 30 s.</summary>
+    /// Usa la cabecera retry-after de Groq; por defecto 5 s y como máximo 30 s.
     private static TimeSpan EsperaPorLimite(HttpResponseMessage respuesta)
     {
         var sugerida = respuesta.Headers.RetryAfter?.Delta

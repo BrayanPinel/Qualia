@@ -1,9 +1,7 @@
 namespace Qualia.Domain.Suscripciones;
 
-/// <summary>
 /// Identificadores y definiciones deterministas del catálogo inicial de planes
 /// del MVP. Se comparten entre el seed de EF Core y las pruebas.
-/// </summary>
 public static class PlanesCatalogo
 {
     public const int RetencionDiasMvp = 365;

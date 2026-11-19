@@ -1,6 +1,6 @@
 namespace Qualia.Application.Features.Suscripciones.Comun;
 
-/// <summary>PlanDto.</summary>
+/// PlanDto.
 public sealed record PlanDto(
     Guid Id,
     string Nombre,

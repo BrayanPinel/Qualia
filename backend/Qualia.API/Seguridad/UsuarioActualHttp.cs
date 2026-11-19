@@ -2,7 +2,7 @@ using Qualia.Application.Common.Seguridad;
 
 namespace Qualia.API.Seguridad;
 
-/// <summary>Lee la identidad de los claims del token ya validado.</summary>
+/// Lee la identidad de los claims del token ya validado.
 
 public sealed class UsuarioActualHttp(IHttpContextAccessor accesor) : IUsuarioActual
 {

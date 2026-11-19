@@ -6,9 +6,7 @@ using Qualia.Application.Features.Suscripciones.Planes;
 
 namespace Qualia.API.Controllers;
 
-/// <summary>
 /// Catálogo público de planes activos y sus funciones habilitadas (GET /api/planes).
-/// </summary>
 [ApiController]
 [Route("api/planes")]
 public sealed class PlanesController : ControllerBase

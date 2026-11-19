@@ -3,12 +3,10 @@ using Qualia.Domain.Suscripciones;
 
 namespace Qualia.Infrastructure.Persistence.Seeders;
 
-/// <summary>
 /// Seeder idempotente para el catálogo inicial de planes comerciales (Básico,
 /// Pro, Enterprise) y sus funciones (funcion_plan).
 /// Puede invocarse múltiples veces en el arranque o en pruebas de integración sin
 /// duplicar registros.
-/// </summary>
 public sealed class PlanesSeeder
 {
     private readonly QualiaDbContext _dbContext;
@@ -18,9 +16,7 @@ public sealed class PlanesSeeder
         _dbContext = dbContext;
     }
 
-    /// <summary>
     /// Construye las instancias de dominio del catálogo inicial de planes y funciones.
-    /// </summary>
     public static IReadOnlyList<Plan> CrearCatalogoInicial()
     {
         var basico = new Plan(
@@ -69,9 +65,7 @@ public sealed class PlanesSeeder
         return [basico, pro, enterprise];
     }
 
-    /// <summary>
     /// Inserta de forma idempotente los planes iniciales y sus funciones faltantes.
-    /// </summary>
     public async Task SembrarAsync(CancellationToken cancellationToken = default)
     {
         var catalogo = CrearCatalogoInicial();

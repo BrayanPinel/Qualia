@@ -2,10 +2,8 @@ using Qualia.Application.Common.Seguridad;
 
 namespace Qualia.Infrastructure.Seguridad;
 
-/// <summary>
-/// Implementación scoped de <see cref="IContextoEmpresa"/>:
+/// Implementación scoped de IContextoEmpresa:
 /// usa la empresa establecida explícitamente (worker) o, si no hay, la del usuario autenticado.
-/// </summary>
 public sealed class ContextoEmpresa(IUsuarioActual usuarioActual) : IContextoEmpresa
 {
     private Guid? _establecida;

@@ -2,12 +2,10 @@ using Qualia.Domain.Common;
 
 namespace Qualia.Domain.Suscripciones;
 
-/// <summary>
 /// Auditoría de cambios comerciales hechos por PlatformAdmin (tabla global
 /// auditoria_plataforma, HU-07). No concede acceso a contenido de llamadas.
 /// antes/despues son JSON (jsonb) y nunca contienen contraseñas,
 /// hashes, tokens ni secretos.
-/// </summary>
 public sealed class AuditoriaPlataforma
 {
     public const int LongitudMaximaAccion = 100;
@@ -25,10 +23,10 @@ public sealed class AuditoriaPlataforma
 
     public string Accion { get; private set; } = string.Empty;
 
-    /// <summary>Estado previo serializado como JSON (jsonb NULL).</summary>
+    /// Estado previo serializado como JSON (jsonb NULL).
     public string? Antes { get; private set; }
 
-    /// <summary>Estado posterior serializado como JSON (jsonb NULL).</summary>
+    /// Estado posterior serializado como JSON (jsonb NULL).
     public string? Despues { get; private set; }
 
     public DateTime Fecha { get; private set; }

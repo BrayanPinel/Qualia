@@ -2,14 +2,12 @@ using Qualia.Application.Features.Procesamiento;
 
 namespace Qualia.Infrastructure.IA;
 
-/// <summary>Fragmento tal como lo entrega Deepgram.</summary>
+/// Fragmento tal como lo entrega Deepgram.
 public sealed record EnunciadoDeepgram(int Hablante, decimal InicioSeg, decimal FinSeg, string Texto);
 
-/// <summary>
 /// Une fragmentos consecutivos del mismo actor en un solo segmento.
 /// Deepgram corta por pausas; sin agrupar, un número dictado quedaría partido
 /// en varios segmentos y escaparía al enmascarado.
-/// </summary>
 public static class AgrupadorEnunciados
 {
     public static IReadOnlyList<SegmentoTranscrito> Agrupar(

@@ -3,10 +3,8 @@ using Qualia.Application.Common.Seguridad;
 
 namespace Qualia.Tests.Unitarias;
 
-/// <summary>
 /// Guarda: ningún tipo público de Application ni de la API (DTOs, respuestas, comandos)
 /// puede exponer un hash de contraseña. Solo las entidades de dominio lo tienen.
-/// </summary>
 public sealed class ExposicionCredencialesTests
 {
     private static readonly string[] NombresProhibidos = ["PasswordHash", "HashContrasena", "ContrasenaHash"];

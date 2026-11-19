@@ -56,10 +56,8 @@ public sealed record ResultadoCriterioDto(
     bool FalloCritico,
     IReadOnlyList<EvidenciaDto> Evidencias);
 
-/// <summary>
 /// Fragmento que sustenta la nota de un criterio. Si el criterio no se cumple, es el fragmento
 /// donde el agente cometió la falta: cita, texto completo del segmento, hablante e instante del audio.
-/// </summary>
 public sealed record EvidenciaDto(
     Guid SegmentoId,
     string CitaTextual,
@@ -68,7 +66,7 @@ public sealed record EvidenciaDto(
     string Hablante,
     string TextoSegmento);
 
-/// <summary>Parámetros de GET /api/llamadas (paginación y filtros opcionales).</summary>
+/// Parámetros de GET /api/llamadas (paginación y filtros opcionales).
 public sealed class FiltroLlamadasDto
 {
     public int Pagina { get; set; } = 1;
@@ -78,6 +76,6 @@ public sealed class FiltroLlamadasDto
 
     public string? Estado { get; set; }
 
-    /// <summary>true: bandeja del supervisor (evaluaciones con falla de la IA pendientes de revisión).</summary>
+    /// true: bandeja del supervisor (evaluaciones con falla de la IA pendientes de revisión).
     public bool? RequiereRevision { get; set; }
 }

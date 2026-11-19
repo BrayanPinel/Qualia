@@ -6,7 +6,7 @@ using Qualia.Application.Features.Campanas.Dtos;
 
 namespace Qualia.API.Controllers;
 
-/// <summary>Edición de borradores y publicación de versiones de rúbrica (Rol B, AdminEmpresa).</summary>
+/// Edición de borradores y publicación de versiones de rúbrica (Rol B, AdminEmpresa).
 [ApiController]
 [Authorize]
 [Route("api/rubricas")]
@@ -16,7 +16,7 @@ namespace Qualia.API.Controllers;
 [ProducesResponseType<ErrorDto>(StatusCodes.Status404NotFound)]
 public sealed class RubricasController(GestionRubricas rubricas) : ControllerBase
 {
-    /// <summary>Reemplaza nombre y criterios. Solo una rúbrica en Borrador (409 si ya fue publicada).</summary>
+    /// Reemplaza nombre y criterios. Solo una rúbrica en Borrador (409 si ya fue publicada).
     [HttpPut("{id:guid}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType<ErrorDto>(StatusCodes.Status400BadRequest)]
@@ -27,7 +27,7 @@ public sealed class RubricasController(GestionRubricas rubricas) : ControllerBas
         return NoContent();
     }
 
-    /// <summary>Publica el borrador (pesos = 100) y retira la versión activa anterior de la campaña.</summary>
+    /// Publica el borrador (pesos = 100) y retira la versión activa anterior de la campaña.
     [HttpPost("{id:guid}/publicar")]
     [ProducesResponseType<RubricaDto>(StatusCodes.Status200OK)]
     [ProducesResponseType<ErrorDto>(StatusCodes.Status400BadRequest)]

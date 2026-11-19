@@ -68,5 +68,5 @@ app.MapControllers();
 
 app.Run();
 
-// Necesario para las pruebas de integración (WebApplicationFactory<Program>).
+// Necesario para las pruebas de integración (WebApplicationFactory de Program).
 public partial class Program;

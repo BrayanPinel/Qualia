@@ -2,7 +2,7 @@ using System.Text.Json.Serialization;
 
 namespace Qualia.Application.Features.Suscripciones.Plataforma.CambiarSuscripcion;
 
-/// <summary>CambiarSuscripcionDto.</summary>
+/// CambiarSuscripcionDto.
 [JsonUnmappedMemberHandling(JsonUnmappedMemberHandling.Disallow)]
 public sealed record CambiarSuscripcionDto(
     Guid PlanId,
