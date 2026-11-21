@@ -3,7 +3,7 @@ using Qualia.Domain.Enums;
 
 namespace Qualia.Domain.Entidades;
 
-/// Llamada ficticia precargada. Conserva la versión de rúbrica fijada al ingresar (RN-07):
+/// Llamada precargada o subida por la empresa. Conserva la versión de rúbrica fijada al ingresar (RN-07):
 /// la campaña y la versión se obtienen a través de Rubrica.
 public class Llamada : IEntidadEmpresa
 {

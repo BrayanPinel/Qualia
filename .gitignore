@@ -124,3 +124,7 @@ docs-ia/
 
 # Respuestas crudas de los proveedores de IA (contienen transcripciones sin enmascarar)
 RespuestasIA/
+
+# Audios subidos por las empresas en desarrollo (grabaciones reales con datos personales)
+backend/Qualia.API/AudiosDemo/cargas/
+backend/Qualia.API/AudiosDemo/nota-whatsapp.*

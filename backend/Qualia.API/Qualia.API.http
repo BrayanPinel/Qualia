@@ -76,6 +76,29 @@ X-Usuario-Demo: {{supervisora}}
 GET {{host}}/api/empresas/{{empresaNorte}}/llamadas
 X-Usuario-Demo: {{agenteAndres}}
 
+### 8. Cargar una grabación propia (nota de voz de WhatsApp .opus/.ogg, .mp3, .wav o .m4a; máx. 25 MB y 30 min)
+# 201 con la llamada Disponible y su duración medida; el worker la evalúa solo. Seguir con los pasos 3 a 5
+# usando el "id" de la respuesta. Ajustar la ruta del archivo a uno real.
+# Solo en Development (Procesamiento:CargaManualHabilitada); fuera de él responde 403.
+POST {{host}}/api/empresas/{{empresaNorte}}/llamadas
+X-Usuario-Demo: {{supervisora}}
+Content-Type: multipart/form-data; boundary=qualia
+
+--qualia
+Content-Disposition: form-data; name="campanaId"
+
+10000000-0000-0000-0002-000000000001
+--qualia
+Content-Disposition: form-data; name="agenteId"
+
+{{agenteAndres}}
+--qualia
+Content-Disposition: form-data; name="audio"; filename="nota-whatsapp.opus"
+Content-Type: audio/ogg
+
+< ./AudiosDemo/nota-whatsapp.opus
+--qualia--
+
 ###############################################################################
 # Casos de error esperados
 ###############################################################################

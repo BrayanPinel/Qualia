@@ -72,7 +72,10 @@ public static class DependencyInjection
         // --- audio ---
         services.Configure<OpcionesAudio>(configuration.GetSection(OpcionesAudio.Seccion));
         services.AddSingleton<IGeneradorUrlAudio, GeneradorUrlAudioFirmada>();
-        services.AddSingleton<IAlmacenamientoAudio, AlmacenamientoAudioLocal>();
+        services.AddSingleton<AlmacenamientoAudioLocal>();
+        services.AddSingleton<IAlmacenamientoAudio>(sp => sp.GetRequiredService<AlmacenamientoAudioLocal>());
+        services.AddSingleton<IGuardadoAudio>(sp => sp.GetRequiredService<AlmacenamientoAudioLocal>());
+        services.AddSingleton<IMedidorDuracionAudio, MedidorDuracionAudio>();
 
         // --- planes, suscripciones y consumo ---
         // Los contratos IConsumoEvaluacion e IConsultaPlanService los registra Application con sus servicios reales.

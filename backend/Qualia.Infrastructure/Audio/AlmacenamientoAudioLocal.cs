@@ -4,9 +4,11 @@ using Qualia.Application.Features.Llamadas;
 
 namespace Qualia.Infrastructure.Audio;
 
-/// Almacenamiento local de audios de demostración. Protege contra rutas que intenten salir
-/// de la carpeta base. En modo demostración genera un WAV sintético si el archivo no existe.
-public sealed class AlmacenamientoAudioLocal(IOptions<OpcionesAudio> opciones, IHostEnvironment entorno) : IAlmacenamientoAudio
+/// Almacenamiento local de audios: los de demostración y los que cargan las empresas (subcarpeta cargas).
+/// Protege contra rutas que intenten salir de la carpeta base. En modo demostración genera un WAV
+/// sintético si el archivo no existe.
+public sealed class AlmacenamientoAudioLocal(IOptions<OpcionesAudio> opciones, IHostEnvironment entorno)
+    : IAlmacenamientoAudio, IGuardadoAudio
 {
     private const int MuestrasPorSegundo = 8000;
     private const decimal DuracionMaximaSintetica = 1800m;
@@ -15,10 +17,7 @@ public sealed class AlmacenamientoAudioLocal(IOptions<OpcionesAudio> opciones, I
 
     public Task<ContenidoAudio?> AbrirAsync(string archivoRuta, decimal duracionSeg, CancellationToken cancellationToken)
     {
-        var baseDir = Path.GetFullPath(Path.Combine(entorno.ContentRootPath, _opciones.DirectorioBase));
-        var ruta = Path.GetFullPath(Path.Combine(baseDir, archivoRuta));
-
-        if (!ruta.StartsWith(baseDir + Path.DirectorySeparatorChar, StringComparison.OrdinalIgnoreCase))
+        if (ResolverRuta(archivoRuta) is not { } ruta)
         {
             return Task.FromResult<ContenidoAudio?>(null);
         }
@@ -37,11 +36,45 @@ public sealed class AlmacenamientoAudioLocal(IOptions<OpcionesAudio> opciones, I
         return Task.FromResult<ContenidoAudio?>(new ContenidoAudio(GenerarWav(duracionSeg), "audio/wav", EsSintetico: true));
     }
 
+    public async Task GuardarAsync(string archivoRuta, Stream contenido, CancellationToken cancellationToken)
+    {
+        var ruta = ResolverRuta(archivoRuta)
+            ?? throw new InvalidOperationException("La ruta del audio sale de la carpeta base.");
+
+        Directory.CreateDirectory(Path.GetDirectoryName(ruta)!);
+
+        // Se escribe en un temporal y se renombra: el worker nunca ve un archivo a medio escribir.
+        var temporal = ruta + ".parcial";
+        await using (var archivo = new FileStream(temporal, FileMode.Create, FileAccess.Write, FileShare.None, 64 * 1024, useAsync: true))
+        {
+            await contenido.CopyToAsync(archivo, cancellationToken);
+        }
+
+        File.Move(temporal, ruta, overwrite: true);
+    }
+
+    public Task EliminarAsync(string archivoRuta, CancellationToken cancellationToken)
+    {
+        if (ResolverRuta(archivoRuta) is { } ruta)
+        {
+            File.Delete(ruta);
+        }
+
+        return Task.CompletedTask;
+    }
+
+    private string? ResolverRuta(string archivoRuta)
+    {
+        var baseDir = Path.GetFullPath(Path.Combine(entorno.ContentRootPath, _opciones.DirectorioBase));
+        var ruta = Path.GetFullPath(Path.Combine(baseDir, archivoRuta));
+        return ruta.StartsWith(baseDir + Path.DirectorySeparatorChar, StringComparison.OrdinalIgnoreCase) ? ruta : null;
+    }
+
     private static string TipoContenido(string ruta) => Path.GetExtension(ruta).ToLowerInvariant() switch
     {
         ".mp3" => "audio/mpeg",
         ".wav" => "audio/wav",
-        ".ogg" => "audio/ogg",
+        ".ogg" or ".opus" => "audio/ogg",
         ".m4a" => "audio/mp4",
         _ => "application/octet-stream",
     };

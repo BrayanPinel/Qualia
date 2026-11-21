@@ -5,6 +5,11 @@ public sealed class OpcionesProcesamiento
 {
     public const string Seccion = "Procesamiento";
 
+    /// Habilita POST /api/empresas/{empresaId}/llamadas para subir grabaciones a mano.
+    /// La carga manual está fuera del alcance del MVP: se usa para probar el backend con audios reales
+    /// (por ejemplo notas de voz de WhatsApp) mientras el frontend define cómo se reciben las llamadas.
+    public bool CargaManualHabilitada { get; set; }
+
     /// Si es false no se registra el worker en segundo plano (pruebas o despliegues sin worker).
     public bool WorkerHabilitado { get; set; } = true;
 

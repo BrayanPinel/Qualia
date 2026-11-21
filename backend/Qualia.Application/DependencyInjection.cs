@@ -51,6 +51,7 @@ public static class DependencyInjection
         services.AddScoped<AlcanceLlamadas>();
         services.AddScoped<ConsultasLlamadas>();
         services.AddScoped<IniciarEvaluacion>();
+        services.AddScoped<CargarLlamada>();
         services.AddScoped<EncoladorEvaluacion>();
         services.AddScoped<ProcesadorTrabajo>();
         services.AddSingleton<EjecutorProcesamiento>();

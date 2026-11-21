@@ -19,5 +19,22 @@ public interface IAlmacenamientoAudio
     Task<ContenidoAudio?> AbrirAsync(string archivoRuta, decimal duracionSeg, CancellationToken cancellationToken);
 }
 
+/// Escritura de audios cargados por la empresa. Separado de IAlmacenamientoAudio porque
+/// la lectura la usan el reproductor y el transcriptor, y la escritura solo la carga.
+public interface IGuardadoAudio
+{
+    Task GuardarAsync(string archivoRuta, Stream contenido, CancellationToken cancellationToken);
+
+    /// Limpieza cuando la llamada no llegó a registrarse. No falla si el archivo no existe.
+    Task EliminarAsync(string archivoRuta, CancellationToken cancellationToken);
+}
+
+/// Lee la duración real desde la cabecera del archivo: con ella se reservan y facturan los minutos.
+/// Devuelve null si el formato no se reconoce o el archivo está dañado.
+public interface IMedidorDuracionAudio
+{
+    decimal? Medir(ReadOnlySpan<byte> contenido, string extension);
+}
+
 /// EsSintetico: true si no existe la grabación y se generó un audio de relleno.
 public sealed record ContenidoAudio(Stream Contenido, string TipoContenido, bool EsSintetico = false);
