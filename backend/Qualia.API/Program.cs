@@ -27,6 +27,9 @@ builder.Services.AddScoped<IUsuarioActual, UsuarioActualHttp>();
 // Autenticación: JWT Bearer; en Development con ModoDemo también la cabecera X-Usuario-Demo.
 builder.Services.AgregarAutenticacionQualia(builder.Configuration, builder.Environment);
 
+// CORS para el frontend: orígenes en CORS_ALLOWED_ORIGINS (.env).
+builder.Services.AgregarCorsQualia(builder.Configuration, builder.Environment);
+
 // Rutas /api/empresas/{empresaId}/…: la empresa de la URL debe ser la de la sesión (404 si no).
 builder.Services.AddControllers(o => o.Filters.Add<FiltroEmpresaDeRuta>())
     .AddJsonOptions(o =>
@@ -65,6 +68,10 @@ if (!app.Environment.IsDevelopment())
 {
     app.UseHttpsRedirection();
 }
+
+// Antes de la autenticación: el preflight OPTIONS no lleva token. Las cabeceras CORS se agregan
+// al iniciar la respuesta, así que también llegan en los ErrorDto del middleware de errores.
+app.UseCors(PoliticaCors.Nombre);
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();

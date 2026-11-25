@@ -1,1 +1,102 @@
 @import "tailwindcss";
+
+/*
+  Design tokens de Qualia: "Editorial con verde oliva oscuro".
+  Toda pantalla usa estas clases (bg-carbon, text-oliva, border-borde, font-titulo…);
+  no se escriben colores sueltos en los componentes.
+
+  Marca
+    carbon         #18181B  Sidebar, texto principal, encabezados e iconos neutros
+    oliva          #4B5F45  Acción principal, enlaces destacados, reproductor y progreso activo
+    oliva-hover    #3C4C37  Hover del botón oliva
+    piedra         #EFECE6  Fondos secundarios, burbujas del agente, selecciones suaves
+    alabastro      #F8F7F4  Fondo general de la aplicación
+    superficie     #FFFFFF  Tarjetas, formularios, paneles; texto sobre botones oscuros
+
+  Auxiliares
+    texto-secundario #57534E  Metadatos y ayudas
+    borde            #D6D3CE  Bordes y separadores (1 px)
+    sidebar-activo   #30302F  Elemento seleccionado del sidebar
+    sidebar-texto    #D6D3CE  Texto secundario sobre carbón
+
+  Estados semánticos (siempre con icono y texto, nunca solo color)
+    exito  #166534 / #DCFCE7   Cumple
+    alerta #92400E / #FEF3C7   Por revisar, advertencia
+    error  #B91C1C / #FEE2E2   No cumple, error
+
+  Tipografía: Manrope 600/700 para títulos (H1 32, H2 24, H3 20); Inter 400/500/600 para texto
+  (16 general, 14 etiquetas/botones/tablas, 12–13 metadatos). Todo en rem.
+  Espaciado base 8 px (escala de Tailwind: 1 = 4 px). Radio estándar 8 px (rounded-lg).
+*/
+@theme {
+  --color-carbon: #18181b;
+  --color-oliva: #4b5f45;
+  --color-oliva-hover: #3c4c37;
+  --color-piedra: #efece6;
+  --color-alabastro: #f8f7f4;
+  --color-superficie: #ffffff;
+
+  --color-texto-secundario: #57534e;
+  --color-borde: #d6d3ce;
+  --color-sidebar-activo: #30302f;
+  --color-sidebar-texto: #d6d3ce;
+
+  --color-exito: #166534;
+  --color-exito-fondo: #dcfce7;
+  --color-alerta: #92400e;
+  --color-alerta-fondo: #fef3c7;
+  --color-error: #b91c1c;
+  --color-error-fondo: #fee2e2;
+
+  --font-titulo: "Manrope", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+
+  --text-h1: 2rem;
+  --text-h1--line-height: 1.25;
+  --text-h2: 1.5rem;
+  --text-h2--line-height: 1.3;
+  --text-h3: 1.25rem;
+  --text-h3--line-height: 1.3;
+  --text-meta: 0.8125rem;
+  --text-meta--line-height: 1.4;
+
+  --shadow-flotante: 0 8px 24px -12px rgb(24 24 27 / 0.18);
+}
+
+@layer base {
+  html {
+    background-color: var(--color-alabastro);
+    color: var(--color-carbon);
+    font-family: var(--font-sans);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-titulo);
+    text-wrap: balance;
+  }
+
+  ::selection {
+    background-color: var(--color-piedra);
+  }
+
+  /* Foco visible y coherente en toda la app (teclado). */
+  :focus-visible {
+    outline: 2px solid var(--color-oliva);
+    outline-offset: 2px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+/* Números tabulares (puntajes, tiempos, porcentajes, columnas numéricas): clase tabular-nums de Tailwind. */
