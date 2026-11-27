@@ -4,6 +4,8 @@ import { LoginView } from './features/auth/components/LoginView'
 import { RedireccionInicial } from './features/auth/components/RedireccionInicial'
 import { RutaProtegida } from './features/auth/components/RutaProtegida'
 import { SesionProvider } from './features/auth/context/SesionProvider'
+import { CampanasView } from './features/campanas/components/CampanasView'
+import { DetalleCampanaView } from './features/campanas/components/DetalleCampanaView'
 import { DesempenoView } from './features/desempeno/components/DesempenoView'
 import { ReporteCampanaView } from './features/desempeno/components/ReporteCampanaView'
 import { RegistroEmpresaView } from './features/empresas/components/RegistroEmpresaView'
@@ -42,7 +44,8 @@ function App() {
 
               <Route element={<RutaProtegida roles={['AdminEmpresa']} />}>
                 <Route path="/usuarios" element={<UsuariosView />} />
-                <Route path="/campanas/*" element={<ModuloPendienteView titulo="Campañas y rúbricas" />} />
+                <Route path="/campanas" element={<CampanasView />} />
+                <Route path="/campanas/:id" element={<DetalleCampanaView />} />
                 <Route path="/suscripcion" element={<SuscripcionView />} />
               </Route>
 
