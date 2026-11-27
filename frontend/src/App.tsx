@@ -4,9 +4,15 @@ import { LoginView } from './features/auth/components/LoginView'
 import { RedireccionInicial } from './features/auth/components/RedireccionInicial'
 import { RutaProtegida } from './features/auth/components/RutaProtegida'
 import { SesionProvider } from './features/auth/context/SesionProvider'
+import { DesempenoView } from './features/desempeno/components/DesempenoView'
+import { ReporteCampanaView } from './features/desempeno/components/ReporteCampanaView'
 import { RegistroEmpresaView } from './features/empresas/components/RegistroEmpresaView'
 import { InicioView } from './features/inicio/components/InicioView'
+import { BandejaRevisionView } from './features/llamadas/components/BandejaRevisionView'
+import { DetalleLlamadaView } from './features/llamadas/components/DetalleLlamadaView'
+import { LlamadasView } from './features/llamadas/components/LlamadasView'
 import { EmpresasPlataformaView } from './features/plataforma/components/EmpresasPlataformaView'
+import { SuscripcionView } from './features/suscripcion/components/SuscripcionView'
 import { UsuariosView } from './features/usuarios/components/UsuariosView'
 import { AppLayout } from './layouts/AppLayout'
 import { ModuloPendienteView, NoEncontradaView } from './shared/components/VistasGenerales'
@@ -37,15 +43,17 @@ function App() {
               <Route element={<RutaProtegida roles={['AdminEmpresa']} />}>
                 <Route path="/usuarios" element={<UsuariosView />} />
                 <Route path="/campanas/*" element={<ModuloPendienteView titulo="Campañas y rúbricas" />} />
-                <Route path="/suscripcion" element={<ModuloPendienteView titulo="Suscripción" />} />
+                <Route path="/suscripcion" element={<SuscripcionView />} />
               </Route>
 
               <Route element={<RutaProtegida roles={['AdminEmpresa', 'Supervisor', 'Agente']} />}>
-                <Route path="/llamadas/*" element={<ModuloPendienteView titulo="Llamadas" />} />
-                <Route path="/desempeno/*" element={<ModuloPendienteView titulo="Desempeño" />} />
+                <Route path="/llamadas" element={<LlamadasView />} />
+                <Route path="/llamadas/:id" element={<DetalleLlamadaView />} />
+                <Route path="/desempeno" element={<DesempenoView />} />
               </Route>
 
               <Route element={<RutaProtegida roles={['Supervisor']} />}>
+                <Route path="/revision" element={<BandejaRevisionView />} />
                 <Route path="/revision/*" element={<ModuloPendienteView titulo="Revisión de calidad" />} />
               </Route>
 
@@ -54,7 +62,7 @@ function App() {
               </Route>
 
               <Route element={<RutaProtegida roles={['AdminEmpresa', 'Supervisor', 'Auditor']} />}>
-                <Route path="/reportes/*" element={<ModuloPendienteView titulo="Reportes" />} />
+                <Route path="/reportes" element={<ReporteCampanaView />} />
               </Route>
 
               <Route element={<RutaProtegida roles={['PlatformAdmin']} />}>
