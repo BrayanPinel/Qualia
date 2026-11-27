@@ -33,6 +33,7 @@ public sealed class GestionDisputas(
     public const string CodigoDisputaAbierta = "DISPUTA_ABIERTA_EXISTENTE";
     public const string CodigoDisputaNoEncontrada = "DISPUTA_NO_ENCONTRADA";
     public const string CodigoDisputaResuelta = "DISPUTA_YA_RESUELTA";
+    public const string CodigoDisputaFueraDeAlcance = "DISPUTA_FUERA_DE_ALCANCE";
 
     public async Task<DisputaDto> CrearAsync(Guid evaluacionId, CrearDisputaDto dto, CancellationToken ct)
     {
@@ -91,41 +92,49 @@ public sealed class GestionDisputas(
             throw;
         }
 
-        return DisputaDto.Desde(disputa);
+        return DisputaDto.Desde(disputa, evaluacion.LlamadaId);
     }
 
     /// AdminEmpresa: todas las de su empresa. Supervisor: las de sus campañas. Agente: las suyas.
     public async Task<PaginaDto<DisputaDto>> ListarAsync(FiltroDisputasDto filtro, CancellationToken ct)
     {
-        var usuario = usuarioActual.RequerirRol(RolEmpresa.AdminEmpresa, RolEmpresa.Supervisor, RolEmpresa.Agente);
+        var usuario = RequerirLector();
         await validadorFiltro.ValidarOLanzarAsync(filtro, ct);
 
-        var consulta = db.Disputas.AsNoTracking();
-        consulta = usuario.Rol switch
-        {
-            RolEmpresa.Supervisor => consulta.Where(d => db.EvaluacionesIA.Any(e => e.Id == d.EvaluacionId
-                && db.Llamadas.Any(l => l.Id == e.LlamadaId
-                    && db.UsuariosCampana.Any(uc => uc.UsuarioId == usuario.UsuarioId && uc.CampanaId == l.Rubrica!.CampanaId)))),
-            RolEmpresa.Agente => consulta.Where(d => db.EvaluacionesIA.Any(e => e.Id == d.EvaluacionId
-                && db.Llamadas.Any(l => l.Id == e.LlamadaId && l.AgenteId == usuario.UsuarioId))),
-            _ => consulta,
-        };
-
+        var consulta = VisiblesPara(usuario);
         if (filtro.Estado is { } estado)
         {
             consulta = consulta.Where(d => d.Estado == estado);
         }
 
         var total = await consulta.CountAsync(ct);
-        var items = await consulta
-            .OrderByDescending(d => d.CreadaEn)
-            .ThenBy(d => d.Id)
-            .Skip(filtro.Saltar)
-            .Take(filtro.TamanoPagina)
-            .Select(d => new DisputaDto(d.Id, d.EmpresaId, d.EvaluacionId, d.Estado, d.Motivo, d.Resolucion, d.ResueltaPorId, d.CreadaEn, d.ResueltaEn))
+        var items = await Proyectar(consulta
+                .OrderByDescending(d => d.CreadaEn)
+                .ThenBy(d => d.Id)
+                .Skip(filtro.Saltar)
+                .Take(filtro.TamanoPagina))
             .ToListAsync(ct);
 
         return new PaginaDto<DisputaDto>(items, filtro.Pagina, filtro.TamanoPagina, total);
+    }
+
+    /// Detalle con el mismo alcance que el listado. Otra empresa o inexistente: 404; de la empresa pero fuera del alcance del rol: 403.
+    public async Task<DisputaDto> ObtenerAsync(Guid disputaId, CancellationToken ct)
+    {
+        var usuario = RequerirLector();
+
+        var visible = await Proyectar(VisiblesPara(usuario).Where(d => d.Id == disputaId)).FirstOrDefaultAsync(ct);
+        if (visible is not null)
+        {
+            return visible;
+        }
+
+        if (await db.Disputas.AnyAsync(d => d.Id == disputaId, ct))
+        {
+            throw ExcepcionNegocio.Prohibido(CodigoDisputaFueraDeAlcance, "No tiene acceso a esta disputa.");
+        }
+
+        throw ExcepcionNegocio.NoEncontrado(CodigoDisputaNoEncontrada, "La disputa no existe.");
     }
 
     public async Task<DisputaDto> ResolverAsync(Guid disputaId, ResolverDisputaDto dto, CancellationToken ct)
@@ -181,9 +190,33 @@ public sealed class GestionDisputas(
             throw;
         }
 
-        var resuelta = await db.Disputas.AsNoTracking().FirstAsync(d => d.Id == disputaId, ct);
-        return DisputaDto.Desde(resuelta);
+        return await Proyectar(db.Disputas.AsNoTracking().Where(d => d.Id == disputaId)).FirstAsync(ct);
     }
+
+    private UsuarioEmpresa RequerirLector() =>
+        usuarioActual.RequerirRol(RolEmpresa.AdminEmpresa, RolEmpresa.Supervisor, RolEmpresa.Agente);
+
+    /// Disputas que el rol puede ver: AdminEmpresa todas; Supervisor las de sus campañas; Agente las de sus llamadas.
+    private IQueryable<Disputa> VisiblesPara(UsuarioEmpresa usuario)
+    {
+        var consulta = db.Disputas.AsNoTracking();
+        return usuario.Rol switch
+        {
+            RolEmpresa.Supervisor => consulta.Where(d => db.EvaluacionesIA.Any(e => e.Id == d.EvaluacionId
+                && db.Llamadas.Any(l => l.Id == e.LlamadaId
+                    && db.UsuariosCampana.Any(uc => uc.UsuarioId == usuario.UsuarioId && uc.CampanaId == l.Rubrica!.CampanaId)))),
+            RolEmpresa.Agente => consulta.Where(d => db.EvaluacionesIA.Any(e => e.Id == d.EvaluacionId
+                && db.Llamadas.Any(l => l.Id == e.LlamadaId && l.AgenteId == usuario.UsuarioId))),
+            _ => consulta,
+        };
+    }
+
+    /// La llamada sale de la evaluación disputada (subconsulta escalar: no altera el orden ni la paginación).
+    private IQueryable<DisputaDto> Proyectar(IQueryable<Disputa> consulta) =>
+        consulta.Select(d => new DisputaDto(
+            d.Id, d.EmpresaId, d.EvaluacionId,
+            db.EvaluacionesIA.Where(e => e.Id == d.EvaluacionId).Select(e => e.LlamadaId).First(),
+            d.Estado, d.Motivo, d.Resolucion, d.ResueltaPorId, d.CreadaEn, d.ResueltaEn));
 
     private static ExcepcionNegocio DisputaAbierta() =>
         ExcepcionNegocio.Conflicto(CodigoDisputaAbierta, "Ya existe una disputa abierta para esta evaluación.");

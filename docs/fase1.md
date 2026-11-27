@@ -433,6 +433,7 @@ En `GET /api/empresas/{empresaId}/campanas`, AdminEmpresa y Auditor reciben las 
 | PUT /api/empresas/{empresaId}/evaluaciones/{id}/ajuste | Supervisor asignado | AjustarEvaluacionDto | 200 EvaluacionDto |
 | POST /api/empresas/{empresaId}/evaluaciones/{id}/disputas | Agente propietario; plan habilitado | CrearDisputaDto | 201 DisputaDto |
 | GET /api/empresas/{empresaId}/disputas | AdminEmpresa; Supervisor asignado; Agente propietario | Paginación y estado opcional | 200 PaginaDto<DisputaDto> |
+| GET /api/empresas/{empresaId}/disputas/{id} | AdminEmpresa; Supervisor asignado; Agente propietario | - | 200 DisputaDto |
 | PUT /api/empresas/{empresaId}/disputas/{id}/resolucion | Supervisor asignado | ResolverDisputaDto | 200 DisputaDto |
 
 ### 7.5 Endpoints de desempeño
@@ -522,7 +523,7 @@ AccesoAudioDto { url: string, expiraEn: datetime }
 EvaluacionDto { id: id, empresaId: id, llamadaId: id, estado: EstadoEvaluacion, revision: integer, modoIA: "Real" | "Simulado", modeloUsado: string, requiereRevision: boolean, oficial: boolean, puntajeTotal: decimal, criterios: ResultadoCriterioDto[] }
 ResultadoCriterioDto { criterioId: id, nombre: string, peso: decimal, puntajeIA: decimal, puntajeHumano?: decimal, puntajeVigente: decimal, umbralCumplimiento: decimal, cumple: boolean, justificacion: string, falloCritico: boolean, evidencias: EvidenciaDto[] }
 EvidenciaDto { segmentoId: id, citaTextual: string, inicioSeg: decimal, finSeg: decimal, hablante: string, textoSegmento: string }
-DisputaDto { id: id, empresaId: id, evaluacionId: id, estado: "Abierta" | "Resuelta", motivo: string, resolucion?: string, resueltaPorId?: id, creadaEn: datetime, resueltaEn?: datetime }
+DisputaDto { id: id, empresaId: id, evaluacionId: id, llamadaId: id, estado: "Abierta" | "Resuelta", motivo: string, resolucion?: string, resueltaPorId?: id, creadaEn: datetime, resueltaEn?: datetime }
 ScorecardDto { empresaId: id, agenteId: id, campanaId: id, periodo: string, llamadasEvaluadas: integer, llamadasConfirmadas: integer, llamadasElegibles: integer, muestraSuficiente: boolean, puntajePromedio?: decimal, tendencia?: decimal, promedioCampana?: decimal, criticosFallidos: integer, criterios: PromedioCriterioDto[] }
 PromedioCriterioDto { rubricaId: id, version: integer, criterioId: id, nombre: string, promedio: decimal, cantidad: integer }
 ReporteCampanaDto { empresaId: id, campanaId: id, periodo: string, llamadasElegibles: integer, muestraSuficiente: boolean, promedio?: decimal, criticosFallidos: integer }
