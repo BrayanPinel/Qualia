@@ -35,11 +35,13 @@ public sealed class FiltroDisputasDto : PaginacionDto
     public EstadoDisputa? Estado { get; set; }
 }
 
-/// DisputaDto { id, empresaId, evaluacionId, estado, motivo, resolucion?, resueltaPorId?, creadaEn, resueltaEn? }.
+/// DisputaDto { id, empresaId, evaluacionId, llamadaId, estado, motivo, resolucion?, resueltaPorId?, creadaEn, resueltaEn? }.
+/// llamadaId permite pedir la evaluación y la transcripción, que se consultan por llamada.
 public sealed record DisputaDto(
     Guid Id,
     Guid EmpresaId,
     Guid EvaluacionId,
+    Guid LlamadaId,
     EstadoDisputa Estado,
     string Motivo,
     string? Resolucion,
@@ -47,6 +49,6 @@ public sealed record DisputaDto(
     DateTime CreadaEn,
     DateTime? ResueltaEn)
 {
-    public static DisputaDto Desde(Disputa d) =>
-        new(d.Id, d.EmpresaId, d.EvaluacionId, d.Estado, d.Motivo, d.Resolucion, d.ResueltaPorId, d.CreadaEn, d.ResueltaEn);
+    public static DisputaDto Desde(Disputa d, Guid llamadaId) =>
+        new(d.Id, d.EmpresaId, d.EvaluacionId, llamadaId, d.Estado, d.Motivo, d.Resolucion, d.ResueltaPorId, d.CreadaEn, d.ResueltaEn);
 }

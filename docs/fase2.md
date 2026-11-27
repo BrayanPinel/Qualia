@@ -184,7 +184,7 @@ Los módulos se comunican mediante interfaces de `Application/Common/Interfaces`
 | HU-13 | Procesamiento asistido por IA | ✅ | Worker automático y `POST /api/empresas/{empresaId}/llamadas/{id}/evaluacion` |
 | HU-03 | Consulta de evaluación y evidencia | ✅ | `/api/empresas/{empresaId}/llamadas/{id}/evaluacion`, `/transcripcion`, `/audio` |
 | HU-04 | Confirmación o ajuste | ✅ | `/api/empresas/{empresaId}/evaluaciones/{id}/confirmar`, `/api/empresas/{empresaId}/evaluaciones/{id}/ajuste` |
-| HU-05 | Consulta propia y disputa | ✅ | `/api/empresas/{empresaId}/evaluaciones/{id}/disputas`, `/api/empresas/{empresaId}/disputas` |
+| HU-05 | Consulta propia y disputa | ✅ | `/api/empresas/{empresaId}/evaluaciones/{id}/disputas`, `/api/empresas/{empresaId}/disputas`, `/api/empresas/{empresaId}/disputas/{id}` |
 | HU-09 | Scorecard del agente | ✅ | `GET /api/empresas/{empresaId}/agentes/me/scorecard` |
 | HU-10 | Desempeño del equipo | ✅ | `/api/empresas/{empresaId}/agentes/{id}/scorecard`, `/api/empresas/{empresaId}/campanas/{id}/scorecards`, `/api/empresas/{empresaId}/reportes/campanas/{id}` |
 
@@ -357,6 +357,7 @@ En Development, con `Autenticacion:ModoDemo=true`, la API acepta además la cabe
 | PUT /api/empresas/{empresaId}/evaluaciones/{id}/ajuste | Supervisor asignado | HU-04 |
 | POST /api/empresas/{empresaId}/evaluaciones/{id}/disputas | Agente propietario; plan habilitado | HU-05 |
 | GET /api/empresas/{empresaId}/disputas | AdminEmpresa; Supervisor asignado; Agente propietario | HU-05 |
+| GET /api/empresas/{empresaId}/disputas/{id} | AdminEmpresa; Supervisor asignado; Agente propietario | HU-05 |
 | PUT /api/empresas/{empresaId}/disputas/{id}/resolucion | Supervisor asignado | HU-05 |
 | GET /api/empresas/{empresaId}/agentes/me/scorecard | Agente | HU-09 |
 | GET /api/empresas/{empresaId}/agentes/{id}/scorecard | AdminEmpresa; Supervisor asignado | HU-10 |

@@ -58,6 +58,36 @@ public sealed class DisputasIntegracionTests : IAsyncLifetime
     }
 
     [FactConDocker]
+    public async Task El_detalle_trae_la_llamada_y_respeta_el_alcance_de_cada_rol()
+    {
+        var evaluacion = await EvaluacionOficialAsync(Norte.Llamadas[0], Norte.Supervisora);
+        var disputa = await QualiaApiFactory.LeerAsync<DisputaDto>(await DisputarAsync(Norte.AgenteAndres, evaluacion.Id));
+
+        Assert.Equal(Norte.Llamadas[0], disputa.LlamadaId);
+        Assert.Equal(Norte.Llamadas[0], (await ListarAsync(Norte.Admin)).Items.Single().LlamadaId);
+
+        foreach (var lector in new[] { Norte.AgenteAndres, Norte.Supervisora, Norte.Admin })
+        {
+            var detalle = await ObtenerAsync(lector, disputa.Id);
+            Assert.Equal(HttpStatusCode.OK, detalle.StatusCode);
+            var dto = await QualiaApiFactory.LeerAsync<DisputaDto>(detalle);
+            Assert.Equal(disputa.Id, dto.Id);
+            Assert.Equal(evaluacion.Id, dto.EvaluacionId);
+            Assert.Equal(Norte.Llamadas[0], dto.LlamadaId);
+            Assert.Equal(EstadoDisputa.Abierta, dto.Estado);
+        }
+
+        // Misma empresa, fuera del alcance del rol: 403. Otra empresa o inexistente: 404.
+        Assert.Equal(GestionDisputas.CodigoDisputaFueraDeAlcance, await CodigoAsync(await ObtenerAsync(Norte.AgenteAlicia, disputa.Id)));
+        Assert.Equal(GestionDisputas.CodigoDisputaFueraDeAlcance, await CodigoAsync(await ObtenerAsync(Norte.SupervisorSinCampana, disputa.Id)));
+        Assert.Equal("ROL_NO_AUTORIZADO", await CodigoAsync(await ObtenerAsync(Norte.Auditor, disputa.Id)));
+        var otraEmpresa = await ObtenerAsync(Sur.Supervisor, disputa.Id);
+        Assert.Equal(HttpStatusCode.NotFound, otraEmpresa.StatusCode);
+        Assert.Equal(GestionDisputas.CodigoDisputaNoEncontrada, await CodigoAsync(otraEmpresa));
+        Assert.Equal(HttpStatusCode.NotFound, (await ObtenerAsync(Norte.Admin, Guid.NewGuid())).StatusCode);
+    }
+
+    [FactConDocker]
     public async Task Reglas_para_abrir_una_disputa()
     {
         var oficial = await EvaluacionOficialAsync(Norte.Llamadas[0], Norte.Supervisora);
@@ -101,6 +131,7 @@ public sealed class DisputasIntegracionTests : IAsyncLifetime
         Assert.Equal(Resolucion, resuelta.Resolucion);
         Assert.Equal(Norte.Supervisora, resuelta.ResueltaPorId);
         Assert.NotNull(resuelta.ResueltaEn);
+        Assert.Equal(Norte.Llamadas[0], resuelta.LlamadaId);
 
         var despues = await EvaluacionAsync(Norte.Llamadas[0], Norte.Supervisora);
         Assert.Equal(evaluacion.Revision + 1, despues.Revision);
@@ -298,6 +329,9 @@ public sealed class DisputasIntegracionTests : IAsyncLifetime
 
     private Task<HttpResponseMessage> ResolverAsync(Guid supervisorId, Guid disputaId, object cuerpo) =>
         _api.ClienteComo(supervisorId).PutAsJsonAsync($"/api/disputas/{disputaId}/resolucion", cuerpo);
+
+    private Task<HttpResponseMessage> ObtenerAsync(Guid usuarioId, Guid disputaId) =>
+        _api.ClienteComo(usuarioId).GetAsync($"/api/disputas/{disputaId}");
 
     private async Task<PaginaDto<DisputaDto>> ListarAsync(Guid usuarioId, string consulta = "") =>
         await QualiaApiFactory.LeerAsync<PaginaDto<DisputaDto>>(await _api.ClienteComo(usuarioId).GetAsync($"/api/disputas{consulta}"));

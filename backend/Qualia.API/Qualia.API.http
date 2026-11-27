@@ -513,6 +513,14 @@ Content-Type: application/json
 GET {{host}}/api/empresas/{{empresaNorte}}/disputas?estado=Abierta
 X-Usuario-Demo: {{supervisora}}
 
+### 200 Detalle de la disputa (incluye llamadaId para pedir la evaluación y la transcripción)
+GET {{host}}/api/empresas/{{empresaNorte}}/disputas/{{crearDisputa.response.body.$.id}}
+X-Usuario-Demo: {{agenteAndres}}
+
+### 403 DISPUTA_FUERA_DE_ALCANCE (supervisor de la misma empresa sin la campaña)
+GET {{host}}/api/empresas/{{empresaNorte}}/disputas/{{crearDisputa.response.body.$.id}}
+X-Usuario-Demo: {{supervisorSinCampana}}
+
 ### 200 Resolver manteniendo las notas (revisionEsperada = revisión actual de la evaluación)
 PUT {{host}}/api/empresas/{{empresaNorte}}/disputas/{{crearDisputa.response.body.$.id}}/resolucion
 X-Usuario-Demo: {{supervisora}}

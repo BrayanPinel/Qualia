@@ -36,6 +36,14 @@ public sealed class DisputasController(GestionDisputas disputas) : ControllerBas
     public async Task<ActionResult<PaginaDto<DisputaDto>>> Listar([FromQuery] FiltroDisputasDto filtro, CancellationToken ct) =>
         Ok(await disputas.ListarAsync(filtro, ct));
 
+    /// Detalle de una disputa visible para el rol; incluye llamadaId para cargar la evaluación y la transcripción.
+    [HttpGet("disputas/{id:guid}")]
+    [EndpointSummary("Obtener disputa")]
+    [ProducesResponseType<DisputaDto>(StatusCodes.Status200OK)]
+    [ProducesResponseType<ErrorDto>(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<DisputaDto>> Obtener(Guid id, CancellationToken ct) =>
+        Ok(await disputas.ObtenerAsync(id, ct));
+
     /// El supervisor asignado mantiene o modifica las notas con justificación.
     [HttpPut("disputas/{id:guid}/resolucion")]
     [EndpointSummary("Resolver disputa")]
