@@ -9,6 +9,7 @@ import { formatearNumero } from '../../../shared/utils/formato'
 import { obtenerEvaluacion } from '../api/llamadasApi'
 import { ETIQUETA_ESTADO_EVALUACION } from '../types/llamada.types'
 import { CLASE_ENLACE_ACCION } from '../utils/estilos'
+import { DisputarBoton } from '../../disputas/components/DisputarBoton'
 import { CriterioEvaluacionCard } from './CriterioEvaluacionCard'
 
 interface PropsEvaluacion {
@@ -30,8 +31,11 @@ export function EvaluacionLlamadaCard({ llamadaId, rol, claveEstado, onSaltar }:
     </Link>
   )
 
+  // El Agente puede disputar su evaluación solo cuando ya es oficial (módulo de disputas).
+  const disputar = datos?.oficial && rol === 'Agente' && <DisputarBoton evaluacionId={datos.id} />
+
   return (
-    <Tarjeta titulo="Evaluación" acciones={revisar || undefined}>
+    <Tarjeta titulo="Evaluación" acciones={revisar || disputar || undefined}>
       {error && <EstadoError mensaje={error} onReintentar={recargar} />}
       {!error && !datos && cargando && <EstadoCarga texto="Cargando evaluación…" />}
       {!error && datos && (
