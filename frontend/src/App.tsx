@@ -6,6 +6,7 @@ import { RutaProtegida } from './features/auth/components/RutaProtegida'
 import { SesionProvider } from './features/auth/context/SesionProvider'
 import { CampanasView } from './features/campanas/components/CampanasView'
 import { DetalleCampanaView } from './features/campanas/components/DetalleCampanaView'
+import { RubricaView } from './features/campanas/components/RubricaView'
 import { DesempenoView } from './features/desempeno/components/DesempenoView'
 import { ReporteCampanaView } from './features/desempeno/components/ReporteCampanaView'
 import { RegistroEmpresaView } from './features/empresas/components/RegistroEmpresaView'
@@ -46,6 +47,7 @@ function App() {
                 <Route path="/usuarios" element={<UsuariosView />} />
                 <Route path="/campanas" element={<CampanasView />} />
                 <Route path="/campanas/:id" element={<DetalleCampanaView />} />
+                <Route path="/campanas/:id/rubricas/:rubricaId" element={<RubricaView />} />
                 <Route path="/suscripcion" element={<SuscripcionView />} />
               </Route>
 
