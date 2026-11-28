@@ -8,6 +8,8 @@ import { CampanasView } from './features/campanas/components/CampanasView'
 import { DetalleCampanaView } from './features/campanas/components/DetalleCampanaView'
 import { RubricaView } from './features/campanas/components/RubricaView'
 import { DesempenoView } from './features/desempeno/components/DesempenoView'
+import { BandejaDisputasView } from './features/disputas/components/BandejaDisputasView'
+import { DetalleDisputaView } from './features/disputas/components/DetalleDisputaView'
 import { ReporteCampanaView } from './features/desempeno/components/ReporteCampanaView'
 import { RegistroEmpresaView } from './features/empresas/components/RegistroEmpresaView'
 import { InicioView } from './features/inicio/components/InicioView'
@@ -19,10 +21,9 @@ import { RevisionEvaluacionView } from './features/revision/components/RevisionE
 import { SuscripcionView } from './features/suscripcion/components/SuscripcionView'
 import { UsuariosView } from './features/usuarios/components/UsuariosView'
 import { AppLayout } from './layouts/AppLayout'
-import { ModuloPendienteView, NoEncontradaView } from './shared/components/VistasGenerales'
+import { NoEncontradaView } from './shared/components/VistasGenerales'
 
-// Orquestador raíz: solo declara las rutas. Cada módulo entrega aquí sus vistas por PR
-// (las marcadas con ModuloPendienteView se reemplazan por la vista real del integrante).
+// Orquestador raíz: solo declara las rutas. Cada módulo entrega aquí sus vistas por PR.
 
 const EMPRESA = ['AdminEmpresa', 'Supervisor', 'Agente', 'Auditor'] as const
 
@@ -56,15 +57,14 @@ function App() {
                 <Route path="/llamadas" element={<LlamadasView />} />
                 <Route path="/llamadas/:id" element={<DetalleLlamadaView />} />
                 <Route path="/desempeno" element={<DesempenoView />} />
+                {/* Admin las consulta, el Supervisor las resuelve y el Agente ve las suyas. */}
+                <Route path="/disputas" element={<BandejaDisputasView />} />
+                <Route path="/disputas/:id" element={<DetalleDisputaView />} />
               </Route>
 
               <Route element={<RutaProtegida roles={['Supervisor']} />}>
                 <Route path="/revision" element={<BandejaRevisionView />} />
                 <Route path="/revision/:llamadaId" element={<RevisionEvaluacionView />} />
-              </Route>
-
-              <Route element={<RutaProtegida roles={['AdminEmpresa', 'Supervisor']} />}>
-                <Route path="/disputas/*" element={<ModuloPendienteView titulo="Disputas" />} />
               </Route>
 
               <Route element={<RutaProtegida roles={['AdminEmpresa', 'Supervisor', 'Auditor']} />}>

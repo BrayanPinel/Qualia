@@ -55,7 +55,7 @@ export const NAVEGACION: readonly ItemNavegacion[] = [
     etiqueta: 'Disputas',
     descripcion: 'Disputas abiertas por los agentes y su resolución.',
     icono: IconoDisputa,
-    roles: ['AdminEmpresa', 'Supervisor'],
+    roles: ['AdminEmpresa', 'Supervisor', 'Agente'],
   },
   {
     ruta: '/desempeno',
