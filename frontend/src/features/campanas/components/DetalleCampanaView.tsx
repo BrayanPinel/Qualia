@@ -11,6 +11,7 @@ import { CLASE_ENLACE_ACCION } from '../utils/estilos'
 import { AsignacionesCard } from './AsignacionesCard'
 import { BadgeEstadoCampana, BadgeRubricaActiva } from './BadgesCampana'
 import { CampanaForm } from './CampanaForm'
+import { HistorialRubricasCard } from './HistorialRubricasCard'
 
 /** Detalle de una campaña (AdminEmpresa): estado, edición y personas asignadas. */
 export function DetalleCampanaView() {
@@ -52,7 +53,10 @@ export function DetalleCampanaView() {
         <BadgeRubricaActiva rubricaActivaId={campana.rubricaActivaId} />
       </div>
 
-      <AsignacionesCard campanaId={campana.id} />
+      <div className="flex flex-col gap-6">
+        <HistorialRubricasCard campanaId={campana.id} />
+        <AsignacionesCard campanaId={campana.id} />
+      </div>
 
       <Dialogo abierto={editando} titulo="Editar campaña" onCerrar={() => setEditando(false)}>
         {editando && (
