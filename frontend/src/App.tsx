@@ -15,6 +15,7 @@ import { BandejaRevisionView } from './features/llamadas/components/BandejaRevis
 import { DetalleLlamadaView } from './features/llamadas/components/DetalleLlamadaView'
 import { LlamadasView } from './features/llamadas/components/LlamadasView'
 import { EmpresasPlataformaView } from './features/plataforma/components/EmpresasPlataformaView'
+import { RevisionEvaluacionView } from './features/revision/components/RevisionEvaluacionView'
 import { SuscripcionView } from './features/suscripcion/components/SuscripcionView'
 import { UsuariosView } from './features/usuarios/components/UsuariosView'
 import { AppLayout } from './layouts/AppLayout'
@@ -59,7 +60,7 @@ function App() {
 
               <Route element={<RutaProtegida roles={['Supervisor']} />}>
                 <Route path="/revision" element={<BandejaRevisionView />} />
-                <Route path="/revision/*" element={<ModuloPendienteView titulo="Revisión de calidad" />} />
+                <Route path="/revision/:llamadaId" element={<RevisionEvaluacionView />} />
               </Route>
 
               <Route element={<RutaProtegida roles={['AdminEmpresa', 'Supervisor']} />}>
